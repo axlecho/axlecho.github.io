@@ -152,6 +152,241 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-audio 混音" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/audio 混音/">audio 混音</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/audio 混音/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:25:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。</p>
+<h2 id="音频的基本知识"><a href="#音频的基本知识" class="headerlink" title="音频的基本知识"></a>音频的基本知识</h2><p><img src="file:///C:/Users/Administrator/Desktop/audio" alt="示意图"></p>
+<p>很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）<br>音轨有很多属性如</p>
+<ul>
+<li>采样率(sampleRate)</li>
+<li>编码格式(format)</li>
+<li>通道(channelCount)</li>
+<li>总帧数(frameCount) ?</li>
+<li>音量(volume) ?</li>
+<li>播放速率(playbackRate) ?</li>
+</ul>
+<p>前三个比较重要，具体去了解一下</p>
+<h4 id="采样率"><a href="#采样率" class="headerlink" title="采样率"></a>采样率</h4><p>看到知乎上有一个回答，感觉挺形象的<a href="http://www.zhihu.com/question/20351692?utm_campaign=rss&amp;utm_medium=rss&amp;utm_source=rss&amp;utm_content=title" target="_blank" rel="noopener">什么是音频的采样率？采样率和音质有没有关系？</a></p>
+<p>一般的采样率固定在<strong>44100HZ</strong>(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音。<br>还有一个采样率<strong>48000HZ</strong>也比较常见</p>
+<h4 id="编码格式"><a href="#编码格式" class="headerlink" title="编码格式"></a>编码格式</h4><p>指每次采样所用的bit数，比如8bit，16bit<br>从命名来看，android好像用来8bit，16bit跟32bit</p>
+<ul>
+<li>AUDIO_FORMAT_PCM_16_BIT</li>
+<li>AUDIO_FORMAT_PCM_8_BIT</li>
+<li>AUDIO_FORMAT_PCM_32_BIT</li>
+<li>AUDIO_FORMAT_PCM_8_24_BIT</li>
+<li>AUDIO_FORMAT_PCM_FLOAT</li>
+<li>AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?</li>
+<li>AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?</li>
+</ul>
+<h4 id="通道"><a href="#通道" class="headerlink" title="通道"></a>通道</h4><p>就是两个耳机有不同的声音？？<br>一般有单通道(mono) 双通道(stereo)</p>
+<h2 id="AudioMixer混音过程"><a href="#AudioMixer混音过程" class="headerlink" title="AudioMixer混音过程"></a>AudioMixer混音过程</h2><p>参考博客园上的一篇博客<a href="http://www.tuicool.com/articles/2mqUjav" target="_blank" rel="noopener">[Android] 混音器AudioMixer</a> 结合代码分析。</p>
+<h4 id="AudioMixer的创建"><a href="#AudioMixer的创建" class="headerlink" title="AudioMixer的创建"></a>AudioMixer的创建</h4><p>mNormalFrameCount为输入buffer大小？？mSampleRate为输出采样率</p>
+<pre><code>AudioFlinger::MixerThread::MixerThread(...)
+    : ...{
+    ...
+    mAudioMixer = new AudioMixer(mNormalFrameCount, mSampleRate);
+    ...
+}
+</code></pre><h4 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h4><p>在MixerThread的prepareTracks_l会对AudioMixer的参数进行配置，如音量，输入源，混音参数等。</p>
+<pre><code>AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTracks_l(...){
+    ...
+    // 设置输入源  name是引索集合，track是mActiveTracks？？
+    mAudioMixer-&gt;setBufferProvider(name, track);
+
+    // 启用该启用的音轨并更新状态
+    mAudioMixer-&gt;enable(name);
+
+    // 设置左右音量
+    mAudioMixer-&gt;setParameter(name, param, AudioMixer::VOLUME0, &amp;vlf);
+    mAudioMixer-&gt;setParameter(name, param, AudioMixer::VOLUME1, &amp;vrf);
+    mAudioMixer-&gt;setParameter(name, param, AudioMixer::AUXLEVEL, &amp;vaf);
+
+    // 设置混音格式
+    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::FORMAT, (void *)track-&gt;format());
+
+    // 设置通道数
+    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::CHANNEL_MASK, (void *)(uintptr_t)track-&gt;channelMask());
+
+    ...
+    // 设置采样率
+    mAudioMixer-&gt;setParameter(name,AudioMixer::RESAMPLE,AudioMixer::SAMPLE_RATE,(void *)(uintptr_t)reqSampleRate);
+
+    // 设置播放速率  
+    mAudioMixer-&gt;setParameter(name,AudioMixer::TIMESTRETCH,AudioMixer::PLAYBACK_RATE,&amp;playbackRate);
+
+    ... // mark一下
+    if (mMixerBufferEnabled &amp;&amp; (track-&gt;mainBuffer() == mSinkBuffer || track-&gt;mainBuffer() == mMixerBuffer)) {
+         mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::MIXER_FORMAT, (void *)mMixerBufferFormat);
+    }
+
+    // 设置输出
+    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::MAIN_BUFFER, (void *)mMixerBuffer);
+    ...
+}
+</code></pre><h4 id="混音函数选择"><a href="#混音函数选择" class="headerlink" title="混音函数选择"></a>混音函数选择</h4><p>先计算track的flags，然后通过flags来判断要混音的函数</p>
+<pre><code>void AudioMixer::process__validate(state_t* state, int64_t pts)
+{
+    ...(计算需要invalidate的track)
+
+    // 主要通过下列几个参数去判断
+    bool all16BitsStereoNoResample = true;
+    bool resampling = false;
+    bool volumeRamp = false;
+    uint32_t en = state-&gt;enabledTracks;
+
+    while (en) {    //对所有需要进行混音的track
+        const int i = 31 - __builtin_clz(en); //取出最高位为1的bit
+        en &amp;= ~(1&lt;&lt;i);  //把这一位置为0
+
+        countActiveTracks++;
+        track_t&amp; t = state-&gt;tracks[i];  //取出来track
+
+        // 计算flags
+        uint32_t n = 0;
+        n |= NEEDS_CHANNEL_1 + t.channelCount - 1;    //至少有一个channel需要混音
+        n |= NEEDS_FORMAT_16;          //必须为16bit PCM
+        n |= t.doesResample() ? NEEDS_RESAMPLE_ENABLED : NEEDS_RESAMPLE_DISABLED; //是否需要重采样
+        if (t.auxLevel != 0 &amp;&amp; t.auxBuffer != NULL) {
+            n |= NEEDS_AUX_ENABLED;
+        }
+
+        if (t.volumeInc[0]|t.volumeInc[1]) {
+            volumeRamp = true;
+        } else if (!t.doesResample() &amp;&amp; t.volumeRL == 0) {
+            n |= NEEDS_MUTE_ENABLED;
+        }
+        t.needs = n;    //更新track flag
+
+        ...(通过flags选择混音函数)
+
+        //这里调用一次进行混音，后续会在MixerThread的threadLoop_mix内调用
+        state-&gt;hook(state, pts);  
+
+        ...
+    }
+}
+</code></pre><h4 id="混音"><a href="#混音" class="headerlink" title="混音"></a>混音</h4><p>就是像搓面把几根面搓成一团</p>
+<p><a href="file:///C:/Users/Administrator/Desktop/audio/混音示意.jpg" target="_blank" rel="noopener">示意图</a></p>
+<p>在android里使用process_xxx函数来实现，几个方法大同小异(不是我说的),举个process__genericResampling当例子。</p>
+<pre><code>// generic code with resampling
+void AudioMixer::process__genericResampling(state_t* state, int64_t pts)
+{
+    int32_t* const outTemp = state-&gt;outputTemp;
+    size_t numFrames = state-&gt;frameCount;
+
+    uint32_t e0 = state-&gt;enabledTracks;
+    while (e0) {
+        ...(选出有相同mainBuffer的track集合e1)
+        int32_t *out = t1.mainBuffer;
+        memset(outTemp, 0, size);
+
+        // 搓面
+        while (e1) {
+            const int i = 31 - __builtin_clz(e1);
+            e1 &amp;= ~(1&lt;&lt;i);
+            track_t&amp; t = state-&gt;tracks[i];
+            int32_t *aux = NULL;
+            if (CC_UNLIKELY(t.needs &amp; NEEDS_AUX)) {
+                aux = t.auxBuffer;
+            }
+
+            // this is a little goofy, on the resampling case we don&apos;t
+            // acquire/release the buffers because it&apos;s done by
+            // the resampler.
+            if (t.needs &amp; NEEDS_RESAMPLE) {
+                t.resampler-&gt;setPTS(pts);
+                t.hook(&amp;t, outTemp, numFrames, state-&gt;resampleTemp, aux);
+            } else {...}
+        }
+    }
+}
+</code></pre><p>真正的采样在这(最终的采样在resample)</p>
+<pre><code>void AudioMixer::track__genericResample(track_t* t, int32_t* out, size_t outFrameCount,
+        int32_t* temp, int32_t* aux)
+{
+    ALOGVV(&quot;track__genericResample\n&quot;);
+    t-&gt;resampler-&gt;setSampleRate(t-&gt;sampleRate);
+
+    // ramp gain - resample to temp buffer and scale/mix in 2nd step
+    if (aux != NULL) {
+        ...(设置ramp音量)
+    } else {
+        if (CC_UNLIKELY(t-&gt;volumeInc[0]|t-&gt;volumeInc[1])) {
+            t-&gt;resampler-&gt;setVolume(UNITY_GAIN_FLOAT, UNITY_GAIN_FLOAT);
+            memset(temp, 0, outFrameCount * MAX_NUM_CHANNELS * sizeof(int32_t));
+            t-&gt;resampler-&gt;resample(temp, outFrameCount, t-&gt;bufferProvider);
+            volumeRampStereo(t, out, outFrameCount, temp, aux);
+        }
+
+        // constant gain
+        else {
+            t-&gt;resampler-&gt;setVolume(t-&gt;mVolume[0], t-&gt;mVolume[1]);
+            t-&gt;resampler-&gt;resample(out, outFrameCount, t-&gt;bufferProvider);
+        }
+    }
+}
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/audio 混音/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-公司年会" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -2063,189 +2298,6 @@ app.process.frames.forEach(function(frame) {
 
 
   
-    <article id="post-SurfaceFlinger学习-Surface的绘制过程（续）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/">SurfaceFlinger学习--Surface的绘制过程（续）</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/" class="archive-article-date">
-  	<time datetime="2018-04-27T05:23:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
-<pre><code>void SurfaceFlinger::handleMessageRefresh() {
-    ATRACE_CALL();
-    preComposition();
-    rebuildLayerStacks();
-    setUpHWComposer();
-#ifdef QCOM_BSP
-    setUpTiledDr();
-#endif
-    doDebugFlashRegions();
-    doComposition();
-    postComposition();
-}
-</code></pre><p>主要工作就是合成layer与显示</p>
-<p>一个一个来仔细看- -</p>
-<h2 id="preComposition-判断是否有未完成的绘制"><a href="#preComposition-判断是否有未完成的绘制" class="headerlink" title="preComposition 判断是否有未完成的绘制"></a>preComposition 判断是否有未完成的绘制</h2><pre><code>void SurfaceFlinger::preComposition()
-{
-    bool needExtraInvalidate = false;
-    const LayerVector&amp; layers(mDrawingState.layersSortedByZ);
-    const size_t count = layers.size();
-    // 调用每个layer的onPreComposition 判读是否有未完成的绘制。
-    for (size_t i=0 ; i&lt;count ; i++) {
-        if (layers[i]-&gt;onPreComposition()) {
-            needExtraInvalidate = true;
-        }
-    }
-
-    // 没看懂啦~
-    if (needExtraInvalidate) {
-        signalLayerUpdate();
-    }
-}
-</code></pre><h2 id="rebuildLayerStacks-重新计算layer需要重绘的区域"><a href="#rebuildLayerStacks-重新计算layer需要重绘的区域" class="headerlink" title="rebuildLayerStacks 重新计算layer需要重绘的区域"></a>rebuildLayerStacks 重新计算layer需要重绘的区域</h2><pre><code>void SurfaceFlinger::rebuildLayerStacks() {
-    ...(奇怪的宏定义)
-
-    // rebuild the visible layer list per screen
-    // 对每个屏幕可见的layer进行rebuild
-    ...(循环每个屏幕)
-    ...(定义各种变量)
-    // 计算每一个layer的可见区域
-    SurfaceFlinger::computeVisibleRegions(dpyId, layers,hw-&gt;getLayerStack(), dirtyRegion, opaqueRegion);
-    ...(设置计算结果)
-
-}
-</code></pre><h2 id="setUpHWComposer-设置HWComposer"><a href="#setUpHWComposer-设置HWComposer" class="headerlink" title="setUpHWComposer 设置HWComposer"></a>setUpHWComposer 设置HWComposer</h2><pre><code>void SurfaceFlinger::setUpHWComposer() {
-    ...(循环所有屏幕)
-    bool dirty = !mDisplays[dpy]-&gt;getDirtyRegion(false).isEmpty();
-    bool empty = mDisplays[dpy]-&gt;getVisibleLayersSortedByZ().size() == 0;
-    bool wasEmpty = !mDisplays[dpy]-&gt;lastCompositionHadVisibleLayers;
-    bool mustRecompose = dirty &amp;&amp; !(empty &amp;&amp; wasEmpty);
-
-    // new hwc
-    HWComposer&amp; hwc(getHwComposer());
-    if (hwc.initCheck() == NO_ERROR) {
-        // build the h/w work list
-        ...(不知道在干啥)
-
-        // set the per-frame data
-        ...(各种种种)
-        ...(奇怪的宏定义)
-        ...(各种获取layer)
-        // 做了一些变换
-        layer-&gt;setPerFrameData(hw, *cur);
-        ...（奇怪的宏定义)
-
-        // If possible, attempt to use the cursor overlay on each display.
-        ...(不知道在干啥)
-        }
-
-        status_t err = hwc.prepare();
-        ALOGE_IF(err, &quot;HWComposer::prepare failed (%s)&quot;, strerror(-err));
-
-        for (size_t dpy=0 ; dpy&lt;mDisplays.size() ; dpy++) {
-            sp&lt;const DisplayDevice&gt; hw(mDisplays[dpy]);
-            hw-&gt;prepareFrame(hwc);
-        }
-    }
-}
-</code></pre><h2 id="doDebugFlashRegions-绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理"><a href="#doDebugFlashRegions-绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理" class="headerlink" title="doDebugFlashRegions 绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理"></a>doDebugFlashRegions 绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理</h2><pre><code>void SurfaceFlinger::doDebugFlashRegions()
-{
-    // is debugging enabled
-    if (CC_LIKELY(!mDebugRegion)) return;
-
-    const bool repaintEverything = mRepaintEverything;
-    for (size_t dpy=0 ; dpy&lt;mDisplays.size() ; dpy++) {
-        const sp&lt;DisplayDevice&gt;&amp; hw(mDisplays[dpy]);
-
-        if (hw-&gt;isDisplayOn()) {
-            const int32_t height = hw-&gt;getHeight();
-            RenderEngine&amp; engine(getRenderEngine());
-            ...(又是奇怪的宏，直接无视)
-            {
-                // transform the dirty region into this screen&apos;s coordinate space
-                const Region dirtyRegion(hw-&gt;getDirtyRegion(repaintEverything));
-                if (!dirtyRegion.isEmpty()) {
-                   // redraw the whole screen
-                   doComposeSurfaces(hw, Region(hw-&gt;bounds()));
-                   // and draw the dirty region
-                   ...（继续无视)
-                   // 注意这里，类似与绘图了 一个Layer有两片buffer，一片用于绘制，一片用于显示，绘制完交换
-                   engine.fillRegionWithColor(dirtyRegion, height, 1, 0, 1, 1);
-                   hw-&gt;compositionComplete();
-                   hw-&gt;swapBuffers(getHwComposer());
-               }
-            }
-        }
-    }
-
-    // 留意下这个，好像也很重要
-    postFramebuffer();
-    ...(延时??)
-    HWComposer&amp; hwc(getHwComposer());
-    if (hwc.initCheck() == NO_ERROR) {
-        status_t err = hwc.prepare();
-        ALOGE_IF(err, &quot;HWComposer::prepare failed (%s)&quot;, strerror(-err));
-    }
-}
-</code></pre><hr>
-<p>感觉自己越来越懒啦</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -2351,11 +2403,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
+                <a href="javascript:void(0)" class="js-tag color3">android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">android</a>
+                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2367,11 +2419,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">movie</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">movie</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
             
             <div class="clearfix"></div>

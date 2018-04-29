@@ -152,6 +152,100 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-NFC金融" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/NFC金融/">NFC金融</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/NFC金融/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:32:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近两天研究了下移动金融的东西，水是相当的深。</p>
+<p>NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。</p>
+<h2 id="乱七八糟的卡"><a href="#乱七八糟的卡" class="headerlink" title="乱七八糟的卡"></a>乱七八糟的卡</h2><p>说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是<strong>集成电路卡(Integrated Circuit Card,IC卡)</strong>,又称<strong>智能卡(Smart card)</strong>,还有一些乱七八糟的叫法。<br>et.新的银行卡，工卡，公交卡等，基本都是这玩意了。</p>
+<p>另外的还有<strong>身份识别卡（Identification Card）</strong>，比较老的只读卡。<br>et.老的门禁卡，停车卡</p>
+<p><del>还有一个很乱的概念**cpu卡,不清楚是什么的东西</del></p>
+<p>#####ic卡<br>ic卡又分为<strong>接触式IC卡</strong>和<strong>非接触式IC卡</strong>，很形象。。没必要解释。。<br>接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。</p>
+<p><strong>ISO14443协议</strong>是非接触式IC卡标准(Contactless card standards)协议。</p>
+<p>#####nfc卡<br>nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。</span><br></pre></td></tr></table></figure>
+<p>nfc卡的种类，其实就是各个公司基于标准的实现</p>
+<ul>
+<li>NfcA — ISO 14443-3A</li>
+<li>NfcB — ISO 14443-3B</li>
+<li>NfcF — JIS 6319-4</li>
+<li>NfcV — ISO 15693</li>
+<li>IsoDep — ISO 14443-4</li>
+</ul>
+<p><strong>M卡</strong>指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。</p>
+<p>PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的<br><a href="http://blog.csdn.net/h3c4lenovo/article/details/8179879" target="_blank" rel="noopener">【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？</a></p>
+<h2 id="卡模拟"><a href="#卡模拟" class="headerlink" title="卡模拟"></a>卡模拟</h2><p>卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，<strong>HCE</strong>），另外一种是基于硬件的（不知道叫什么）。<br>这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。</p>
+<p>#####SE<br>安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。</p>
+<p>现在主要有三种形态</p>
+<ul>
+<li>内置SE模式（eSE）</li>
+<li>UICC（SIM卡）</li>
+<li>AdvancedSecurity SD card（ASSD SD卡）</li>
+</ul>
+<p>#####模拟的卡（APPLET)<br>模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet<br>概念还是很模糊 – 比如所APPLET是怎么加载到SE上的  </p>
+<p>#####TSM<br>发卡服务器,APPLET由TSM来发送安装。。</p>
+<p>SMARTCARD<br>EMV<br>PBOC</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/NFC金融/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-目标" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -780,92 +874,6 @@
 
 
   
-    <article id="post-深圳故事2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/深圳故事2/">深圳故事2</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/27/深圳故事2/" class="archive-article-date">
-  	<time datetime="2018-04-27T05:30:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近很忙，帮着吉他社做了app，偶尔忙到晚上两三点，似乎是回到了大学的熬夜帮别人做毕设的时代，还有新堂花园F5默默的走了一人，却一点也不感到悲伤。。</p>
-<p>怎么说呢，毕业满一年了，没有什么实感，去年的很多事情都不是很记得了，偶尔也想把那时候的一些想法和经历记下来，却总是没心情，或者老是找些要向前看的借口，感觉也渐渐变懒了啊。</p>
-<hr>
-<p>喝完酒后的第二天，我们聚到张的房间，商量着未来的计划，当时打算先到上梅林找我们的部长（可笑的是直到离职的时候连部长还没见过），张还是不死心，想去做最后的一搏，那时候我就没怎么报期望了。然后再到深圳那边找房子，然后再回来把行李搬过去。这时候那个刚考过的一个哥们过来敲门，那时候我们都没有心情开门，以为是跟我们一级的hr过来安慰我们，敲了很久之后开口说话，又过了很长一段时间，看着他们三个不想动，我就过去帮他开了门。后面进来说了什么我有点忘了，好像是关于对公司的这种做法很惊讶很气愤之类的话，反正当时也挺心不在焉的，说明了自己情况后安慰了他说不会被开除的啦之类的话。后来他松了一口气（心里作用？），说保重后会有期就关门走了。</p>
-<hr>
-<p>之后就背了个书包叫了uber在门口等车，记得当时天气很晴朗，风却很大，地上的沙尘卷起了一个个漩涡，那感觉还蛮凄凉的。。</p>
-<hr>
-<p>（现在暂时离开深圳了，那时候的故事也渐渐的淡忘，当时的情绪也记不大清了，捡记得的事情写吧）</p>
-<p>后面就直接去vivo的深圳总部找部长，他们的部长跟我的部长还不不一样，然后我就跟我们部长谈了，都是围绕着本分在那里废话，谈了半个多小时，我最后放弃了，就没事聊聊，现在想想估计部长也没拿hr没办法，也没有心情去保我们，毕竟又不是亲戚啥啥的。中午临走前还一起吃了顿饭，另外一个部长还比较仗义，说是要给我们推荐工作。 (在这里不知道能不能被看到 <strong>郑重表示感谢了</strong>)</p>
-<p>吃完饭后，就算是与vivo的缘分已尽了，说来讽刺，我还记得当时vivo招应届生的宣传语 – “最好的遇见，是有未来”</p>
-<hr>
-<p>吃完饭后，四人就一同去找房子，一开始想去找不是中介的房子，转了几圈没找着，就钻入间Q房网，端水倒茶，还是比较客气的，后来两个中介小哥貌似是跟张老乡，聊得很来，聊了有大半天，然后就出发去看房子，那房子我记得离地铁有点远，不过是小区房，应该是我至今见到最好的房子了，四个人在那间房间这里锤锤，那里瞅瞅，觉得还比较满意，我们就决定第二天给钱。总共好像要出1万</p>
-<p>那天晚上，张女朋友过来，然后我跟另外两人就住一起，两个人就越觉得不划算，说现在的状况，我们只配去住那些破烂的农民房，这么高档的小区房住了也心不安balabala的，还谈到拿不出那么多钱，说要第二天一起反悔。然后又谈到了以后的路怎么走，小胖就想出国，胡说是要去广州。</p>
-<p>第二天，跟房东直接谈，后面过真反悔了，小胖咬死了说拿不出那么多钱，房东坚持要一次付清，搞得大家都很不愉快，最后没办法就不租了，小胖这时也提出要去找他亲戚去了，四个人就变三个人，打辆车来到了白石洲住酒店。</p>
-<hr>
-<p>（好累啊，这几天呆在家里压力巨大，下去抽个烟先～ 这周有空就写写吧）</p>
-<hr>
-<p>Valar Morghulis</p>
-<p>后来呢，胡忘记去了哪里，只剩和张在酒店里，vivo的部长后面给我们推荐了家公司，在一个下午就过去面试了。</p>
-<p>去了之后好像也没怎么面，估计是技术层面简历写的已经过关了吧，张就面了会，不过最后也通过了，就是工资还没谈，直到我们到了楼下才跟我们说，（涉及到公司的机密，我就不说多少了，反正比当时预料的最低工资还要略低点）。后面和张回酒店，纠结了半天，鉴于我们这种情况，还是去了。后面就开始找房子，期间酒店还漏水，滴得满屋子都是，换了个房间，总共住了有十几天酒店，临走还忘了给酒店刷差评。。</p>
-<p>房子在新塘花园那边，跟别人合租，后面稳定住4个人，戏称新塘花园f4。（前前后后来了有走了好几个人,后面改新塘花园f5了)。胡还跟我住了有两三天，后来就去广州了（听说后面又来了深圳，不过没有再联系便是）</p>
-<p>新塘花园跟新公司的故事，就开始平淡了起来，后面应该是2.5吧，到离开这家公司为止，人来人往，聚散无常，深圳就是这种地方。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">life</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/27/深圳故事2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -971,11 +979,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
+                <a href="javascript:void(0)" class="js-tag color3">android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">android</a>
+                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -987,11 +995,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">movie</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">movie</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
             
             <div class="clearfix"></div>

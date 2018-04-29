@@ -152,6 +152,189 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-SurfaceFlinger学习-Surface的绘制过程（续）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/">SurfaceFlinger学习--Surface的绘制过程（续）</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:23:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
+<pre><code>void SurfaceFlinger::handleMessageRefresh() {
+    ATRACE_CALL();
+    preComposition();
+    rebuildLayerStacks();
+    setUpHWComposer();
+#ifdef QCOM_BSP
+    setUpTiledDr();
+#endif
+    doDebugFlashRegions();
+    doComposition();
+    postComposition();
+}
+</code></pre><p>主要工作就是合成layer与显示</p>
+<p>一个一个来仔细看- -</p>
+<h2 id="preComposition-判断是否有未完成的绘制"><a href="#preComposition-判断是否有未完成的绘制" class="headerlink" title="preComposition 判断是否有未完成的绘制"></a>preComposition 判断是否有未完成的绘制</h2><pre><code>void SurfaceFlinger::preComposition()
+{
+    bool needExtraInvalidate = false;
+    const LayerVector&amp; layers(mDrawingState.layersSortedByZ);
+    const size_t count = layers.size();
+    // 调用每个layer的onPreComposition 判读是否有未完成的绘制。
+    for (size_t i=0 ; i&lt;count ; i++) {
+        if (layers[i]-&gt;onPreComposition()) {
+            needExtraInvalidate = true;
+        }
+    }
+
+    // 没看懂啦~
+    if (needExtraInvalidate) {
+        signalLayerUpdate();
+    }
+}
+</code></pre><h2 id="rebuildLayerStacks-重新计算layer需要重绘的区域"><a href="#rebuildLayerStacks-重新计算layer需要重绘的区域" class="headerlink" title="rebuildLayerStacks 重新计算layer需要重绘的区域"></a>rebuildLayerStacks 重新计算layer需要重绘的区域</h2><pre><code>void SurfaceFlinger::rebuildLayerStacks() {
+    ...(奇怪的宏定义)
+
+    // rebuild the visible layer list per screen
+    // 对每个屏幕可见的layer进行rebuild
+    ...(循环每个屏幕)
+    ...(定义各种变量)
+    // 计算每一个layer的可见区域
+    SurfaceFlinger::computeVisibleRegions(dpyId, layers,hw-&gt;getLayerStack(), dirtyRegion, opaqueRegion);
+    ...(设置计算结果)
+
+}
+</code></pre><h2 id="setUpHWComposer-设置HWComposer"><a href="#setUpHWComposer-设置HWComposer" class="headerlink" title="setUpHWComposer 设置HWComposer"></a>setUpHWComposer 设置HWComposer</h2><pre><code>void SurfaceFlinger::setUpHWComposer() {
+    ...(循环所有屏幕)
+    bool dirty = !mDisplays[dpy]-&gt;getDirtyRegion(false).isEmpty();
+    bool empty = mDisplays[dpy]-&gt;getVisibleLayersSortedByZ().size() == 0;
+    bool wasEmpty = !mDisplays[dpy]-&gt;lastCompositionHadVisibleLayers;
+    bool mustRecompose = dirty &amp;&amp; !(empty &amp;&amp; wasEmpty);
+
+    // new hwc
+    HWComposer&amp; hwc(getHwComposer());
+    if (hwc.initCheck() == NO_ERROR) {
+        // build the h/w work list
+        ...(不知道在干啥)
+
+        // set the per-frame data
+        ...(各种种种)
+        ...(奇怪的宏定义)
+        ...(各种获取layer)
+        // 做了一些变换
+        layer-&gt;setPerFrameData(hw, *cur);
+        ...（奇怪的宏定义)
+
+        // If possible, attempt to use the cursor overlay on each display.
+        ...(不知道在干啥)
+        }
+
+        status_t err = hwc.prepare();
+        ALOGE_IF(err, &quot;HWComposer::prepare failed (%s)&quot;, strerror(-err));
+
+        for (size_t dpy=0 ; dpy&lt;mDisplays.size() ; dpy++) {
+            sp&lt;const DisplayDevice&gt; hw(mDisplays[dpy]);
+            hw-&gt;prepareFrame(hwc);
+        }
+    }
+}
+</code></pre><h2 id="doDebugFlashRegions-绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理"><a href="#doDebugFlashRegions-绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理" class="headerlink" title="doDebugFlashRegions 绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理"></a>doDebugFlashRegions 绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理</h2><pre><code>void SurfaceFlinger::doDebugFlashRegions()
+{
+    // is debugging enabled
+    if (CC_LIKELY(!mDebugRegion)) return;
+
+    const bool repaintEverything = mRepaintEverything;
+    for (size_t dpy=0 ; dpy&lt;mDisplays.size() ; dpy++) {
+        const sp&lt;DisplayDevice&gt;&amp; hw(mDisplays[dpy]);
+
+        if (hw-&gt;isDisplayOn()) {
+            const int32_t height = hw-&gt;getHeight();
+            RenderEngine&amp; engine(getRenderEngine());
+            ...(又是奇怪的宏，直接无视)
+            {
+                // transform the dirty region into this screen&apos;s coordinate space
+                const Region dirtyRegion(hw-&gt;getDirtyRegion(repaintEverything));
+                if (!dirtyRegion.isEmpty()) {
+                   // redraw the whole screen
+                   doComposeSurfaces(hw, Region(hw-&gt;bounds()));
+                   // and draw the dirty region
+                   ...（继续无视)
+                   // 注意这里，类似与绘图了 一个Layer有两片buffer，一片用于绘制，一片用于显示，绘制完交换
+                   engine.fillRegionWithColor(dirtyRegion, height, 1, 0, 1, 1);
+                   hw-&gt;compositionComplete();
+                   hw-&gt;swapBuffers(getHwComposer());
+               }
+            }
+        }
+    }
+
+    // 留意下这个，好像也很重要
+    postFramebuffer();
+    ...(延时??)
+    HWComposer&amp; hwc(getHwComposer());
+    if (hwc.initCheck() == NO_ERROR) {
+        status_t err = hwc.prepare();
+        ALOGE_IF(err, &quot;HWComposer::prepare failed (%s)&quot;, strerror(-err));
+    }
+}
+</code></pre><hr>
+<p>感觉自己越来越懒啦</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/SurfaceFlinger学习-Surface的绘制过程（续）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-SurfaceFlinger学习-Surface的绘制过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1062,78 +1245,6 @@ protected:
 
 
   
-    <article id="post-心理测量者" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/心理测量者/">心理测量者</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/27/心理测量者/" class="archive-article-date">
-  	<time datetime="2018-04-27T05:22:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>今天早上花了5个多小时看老虚的心里测量者，好久没熬夜看动漫了。<br>剧情啊人物啊深度啊都很好，就是设定依然扯淡，妈的一个国家级别的中央机构弄来弄去就那几个人，还有大boss居然被一个头盔扫晕了，躲子弹却躲得那么溜。。</p>
-<p>不过还是半神作，讲了一些哲学的东西，突然意识动漫这东西也可以像音乐，绘画一样在于传达一些自己对世界的一些看法。<br>话说老虚的几部动漫的op都很好听</p>
-<ul>
-<li>小圆脸:ClariS-Connect(コネクト)</li>
-<li>fate ubw:aimer-brave shine</li>
-<li>心理测量者:凛として时雨-abnormalize</li>
-</ul>
-<p>(后面发现ubw并不是老虚的…)</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">动漫</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/27/心理测量者/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
@@ -1239,11 +1350,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
+                <a href="javascript:void(0)" class="js-tag color3">android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">android</a>
+                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1255,11 +1366,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">movie</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">movie</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
             
             <div class="clearfix"></div>

@@ -152,6 +152,150 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-关于MVC模式思考" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/关于MVC模式思考/">关于MVC模式思考</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/关于MVC模式思考/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:20:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一直被问mvc模式是什么，一直都稀里糊涂的半知半解，直到昨天用python使用了django框架才知道是什么回事。 mvc分m-model v-view c-control 分别对应django的models，views，urls， </p>
+<ul>
+<li>model为数据模型，具体一般表现为数据库等数据源</li>
+<li>view就是网页视图，直接访问model提供服务</li>
+<li>control控制访问路径 </li>
+</ul>
+<p>与mvp的区别在于c-control 与 p-presenter，在mvp模式中view不直接访问model，也就是在处理事务时你不能直接操作数据库，而是通过presenter提供的方法去操作model。 这样做最大的好处当然是解耦，presenter提供功能接口，view提供视图操作，model维护数据源。 好像还有一个mvvm模式，有空也应该去了解下。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/关于MVC模式思考/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-mvp模式开发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/mvp模式开发/">mvp模式开发</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/mvp模式开发/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:20:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MVP，即Model-View-Presener 模型与视图之间通过Presener联系，分离业务与视图 结合<a href="http://robolectric.org/" target="_blank" rel="noopener">Robolectric</a>、<a href="http://mockito.org/" target="_blank" rel="noopener">Mockito</a>实现TDD 结合square全家桶（<a href="http://square.github.io/otto/" target="_blank" rel="noopener">otto</a>、<a href="http://square.github.io/dagger/" target="_blank" rel="noopener">dagger</a>等黑科技）可更有效的实现 现在具体问题:  </p>
+<p>1.单元测试的网络模拟 </p>
+<ul>
+<li>使用Robolectric的FakeHttp，貌似对OkHttp不起作用</li>
+<li>使用OkHttp的MockServer,相当搭了个本地服务器,使用起来感觉还可以 重点讲一下</li>
+</ul>
+<p><a href="https://github.com/square/okhttp/tree/master/mockwebserver" target="_blank" rel="noopener">OkHttp</a>的MockServer示例： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MockWebServer server = <span class="keyword">new</span> MockWebServer();</span><br><span class="line">server.enqueue(<span class="keyword">new</span> MockResponse().setBody(<span class="string">"hello,world"</span>));</span><br><span class="line">server.enqueue(<span class="keyword">new</span> MockResponse().setBody(<span class="string">"are you ok"</span>));</span><br><span class="line"><span class="comment">// 设置主机指向MockServer</span></span><br><span class="line">Constants.SERVER = <span class="string">"http://"</span> + server.getHostName() + </span><br><span class="line">    <span class="string">":"</span> + server.getPort();</span><br></pre></td></tr></table></figure>
+<p>其中server.getHostName()返回localhost,端口是随机的，相当于在本地搭了测试环境- -</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/mvp模式开发/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-关于音乐" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -594,7 +738,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">life</a>
+                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,7 +750,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
+                <a href="javascript:void(0)" class="js-tag color5">life</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -618,11 +762,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">movie</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">movie</a>
               </li>
             
             <div class="clearfix"></div>

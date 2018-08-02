@@ -152,6 +152,144 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-在android源码添加项目的正确办法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/在android源码添加项目的正确办法/">在android源码添加项目的正确办法</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/在android源码添加项目的正确办法/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:28:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>主要是Android.mk文件</p>
+<p>lib版本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := your-module-name</span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_MODULE_CLASS := JAVA_LIBRARIES</span><br><span class="line">LOCAL_SRC_FILES := $(call all-subdir-java-files)</span><br><span class="line"></span><br><span class="line">LOCAL_JAVA_LIBRARIES := framework services</span><br><span class="line">#LOCAL_SDK_VERSION := current  </span><br><span class="line">include $(BUILD_JAVA_LIBRARY)</span><br></pre></td></tr></table></figure></p>
+<p>apk版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Android threekey</span><br><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_SRC_FILES := $(call all-java-files-under, src)</span><br><span class="line">LOCAL_SDK_VERSION := current</span><br><span class="line">LOCAL_PACKAGE_NAME := threekey-test</span><br><span class="line">LOCAL_CERTIFICATE := platform</span><br><span class="line">include $(BUILD_PACKAGE)</span><br></pre></td></tr></table></figure>
+<p>####路径问题<br>递归所有目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_SRC_FILES := $(call all-subdir-java-files)</span><br></pre></td></tr></table></figure></p>
+<p>指定目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_SRC_FILES := $(call $(src_dirs))</span><br></pre></td></tr></table></figure></p>
+<p>当前目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_SRC_FILES := $(call all-java-files-under, src)</span><br></pre></td></tr></table></figure></p>
+<p>####注册项目<br>具体看<a href="https://android.googlesource.com/platform/vendor/sample/+/acd7c6b02a14e8694d0dced56ea37e79707fba1e/frameworks/PlatformLibrary/README.txt" target="_blank" rel="noopener">google README.txt</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/在android源码添加项目的正确办法/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-梦魇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/梦魇/">梦魇</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/27/梦魇/" class="archive-article-date">
+  	<time datetime="2018-04-27T05:28:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>下午6点起来发现开了灯还是没亮，又听到有女孩的声音，还听见狗灰叫我去打球。但怎么也走不出自己的房间。</p>
+<p>突然意识自己在做梦，但怎么也醒不来</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">life</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/27/梦魇/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-framework编译结果" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -901,302 +1039,6 @@ void ServerProxy::releaseBuffer(Buffer* buffer)
 
 
   
-    <article id="post-Charlotte" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/Charlotte/">Charlotte</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/27/Charlotte/" class="archive-article-date">
-  	<time datetime="2018-04-27T05:27:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>好久没看到好一点的动漫了，感觉自己是要渐渐脱宅的节奏啊。<br>昨天看完后有好多感想，老想写个post出来，到今天就基本上情节都忘光了，唉~<br>不过总体来讲还是很不错的，主要是没什么讨厌的角色，也没什么虐心的剧情，结局也挺happy，看完没什么感觉但就觉得还可以的动漫（感觉跟凉宫一样类型的）</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">动漫</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/27/Charlotte/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-蓝牙设备播放流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/蓝牙设备播放流程/">蓝牙设备播放流程</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/27/蓝牙设备播放流程/" class="archive-article-date">
-  	<time datetime="2018-04-27T05:25:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>因为蓝牙通路与其他设备不同（多了一个蓝牙设备），因此播放的流程也与其他设备略有不同。</p>
-<p><img src="http://axlechoblog-wordpress.stor.sinaapp.com/uploads/2016/02/蓝牙音频播放流程.png" alt="流程图"></p>
-<h4 id="蓝牙设备的连接"><a href="#蓝牙设备的连接" class="headerlink" title="蓝牙设备的连接"></a>蓝牙设备的连接</h4><p>从setDeviceConnectionState开始,AudioPolicyManager先注册Device后，再去打开设备对应的output，如果是duplicating类型的话，还要建一个DuplicateOutput，关联该output与<strong>mPrimaryOutput</strong></p>
-<pre><code>//---&gt;frameworks/av/services/audiopolicy/managerdefault/AudioPolicyManager.cpp
-status_t AudioPolicyManager::setDeviceConnectionState(audio_devices_t device,
-                                                      audio_policy_dev_state_t state,
-                                                      const char *device_address,
-                                                      const char *device_name)
-{
-    return setDeviceConnectionStateInt(device, state, device_address, device_name);
-}
-
-status_t AudioPolicyManager::setDeviceConnectionStateInt(audio_devices_t device,
-                                                     audio_policy_dev_state_t state,
-                                                     const char *device_address,
-                                                     const char *device_name)
-{
-    ...
-    sp&lt;DeviceDescriptor&gt; devDesc = mHwModules.getDeviceDescriptor(device, device_address, device_name);
-    ...
-    // handle output devices
-    ...
-    SortedVector &lt;audio_io_handle_t&gt; outputs;
-    ssize_t index = mAvailableOutputDevices.indexOf(devDesc);
-    mPreviousOutputs = mOutputs;
-    ...(注册设备)
-    if (index &gt;= 0) {
-        sp&lt;HwModule&gt; module = mHwModules.getModuleForDevice(device);
-        if (module == 0) {
-            mAvailableOutputDevices.remove(devDesc);
-            return INVALID_OPERATION;
-        }
-        mAvailableOutputDevices[index]-&gt;attach(module);
-    } else {
-        return NO_MEMORY;
-    }
-
-    if (checkOutputsForDevice(devDesc, state, outputs, devDesc-&gt;mAddress) != NO_ERROR) {
-        mAvailableOutputDevices.remove(devDesc);
-        return INVALID_OPERATION;
-    }
-    ...
-}
-
-
-status_t AudioPolicyManager::checkOutputsForDevice(const sp&lt;DeviceDescriptor&gt; devDesc,
-                                                   audio_policy_dev_state_t state,
-                                                   SortedVector&lt;audio_io_handle_t&gt;&amp; outputs,
-                                                   const String8 address)
-{
-    ...
-    // 打开设备所对应的output
-    for (ssize_t profile_index = 0; profile_index &lt; (ssize_t)profiles.size(); profile_index++) {
-        sp&lt;IOProfile&gt; profile = profiles[profile_index];
-        ...
-        status_t status = mpClientInterface-&gt;openOutput(profile-&gt;getModuleHandle(),
-                                                        &amp;output,
-                                                        &amp;config,
-                                                        &amp;desc-&gt;mDevice,
-                                                        address,
-                                                        &amp;desc-&gt;mLatency,
-                                                        desc-&gt;mFlags);
-    }
-    ...
-    // 后续处理
-    if (output != AUDIO_IO_HANDLE_NONE) {
-        addOutput(output, desc);
-        ... 
-        else if (((desc-&gt;mFlags &amp; AUDIO_OUTPUT_FLAG_DIRECT) == 0) &amp;&amp;
-                        hasPrimaryOutput()) {
-            ...
-            // open a duplicating output thread for the new output and the primary output
-            duplicatedOutput =
-                    mpClientInterface-&gt;openDuplicateOutput(output,
-                                                           mPrimaryOutput-&gt;mIoHandle);
-            ...
-        }
-    }
-}
-</code></pre><p>openOutput的流程跟其他Output的流程是一样的，最终在AudioFlinger建立了对应Output的Thread。DuplicateOutput使用openDuplicateOutput来打开，最终也是在AudioFlinger建立一个DuplicatingThread。</p>
-<pre><code>//---&gt;frameworks/av/services/audiopolicy/service/AudioPolicyClientImpl.cpp
-// AudioPolicyService的转发
-audio_io_handle_t AudioPolicyService::AudioPolicyClient::openDuplicateOutput(
-                                                                audio_io_handle_t output1,
-                                                                audio_io_handle_t output2)
-{
-    sp&lt;IAudioFlinger&gt; af = AudioSystem::get_audio_flinger();
-    if (af == 0) {
-        ALOGW(&quot;%s: could not get AudioFlinger&quot;, __func__);
-        return 0;
-    }
-    return af-&gt;openDuplicateOutput(output1, output2);
-}
-
-//---&gt;frameworks/av/services/audioflinger/AudioFlinger.cpp
-audio_io_handle_t AudioFlinger::openDuplicateOutput(audio_io_handle_t output1,
-        audio_io_handle_t output2)
-{
-    // 这里两个output对应的thread都是MixerThread，意味着DuplicatingThread对应的线程是MixerThread？？
-    Mutex::Autolock _l(mLock);
-    MixerThread *thread1 = checkMixerThread_l(output1);
-    MixerThread *thread2 = checkMixerThread_l(output2);
-    ...
-
-    audio_io_handle_t id = nextUniqueId();
-    DuplicatingThread *thread = new DuplicatingThread(this, thread1, id, mSystemReady);
-    thread-&gt;addOutputTrack(thread2);
-    mPlaybackThreads.add(id, thread);
-    thread-&gt;ioConfigChanged(AUDIO_OUTPUT_OPENED);
-    return id;
-}
-
-//---&gt;frameworks/av/services/audioflinger/Threads.cpp    
-AudioFlinger::DuplicatingThread::DuplicatingThread(const sp&lt;AudioFlinger&gt;&amp; audioFlinger,
-        AudioFlinger::MixerThread* mainThread, audio_io_handle_t id, bool systemReady)
-    :   MixerThread(audioFlinger, mainThread-&gt;getOutput(), id, mainThread-&gt;outDevice(),
-                    systemReady, DUPLICATING),
-        mWaitTimeMs(UINT_MAX)
-{
-    addOutputTrack(mainThread);
-}
-</code></pre><p>DuplicatingThread的addOutputTrack会创建对应thread的track(也就是生产者啦)</p>
-<pre><code>//---&gt;frameworks/av/services/audioflinger/Threads.cpp    
-void AudioFlinger::DuplicatingThread::addOutputTrack(MixerThread *thread)
-{
-    Mutex::Autolock _l(mLock);
-    // The downstream MixerThread consumes thread-&gt;frameCount() amount of frames per mix pass.
-    // Adjust for thread-&gt;sampleRate() to determine minimum buffer frame count.
-    // Then triple buffer because Threads do not run synchronously and may not be clock locked.
-    const size_t frameCount =
-            3 * sourceFramesNeeded(mSampleRate, thread-&gt;frameCount(), thread-&gt;sampleRate());
-
-    sp&lt;OutputTrack&gt; outputTrack = new OutputTrack(thread,
-                                            this,
-                                            mSampleRate,
-                                            mFormat,
-                                            mChannelMask,
-                                            frameCount,
-                                            IPCThreadState::self()-&gt;getCallingUid());
-    ...
-}
-</code></pre><h2 id="DuplicatingThread播放"><a href="#DuplicatingThread播放" class="headerlink" title="DuplicatingThread播放"></a>DuplicatingThread播放</h2><p>普通的连蓝牙播放（音乐，触屏音等）还不会用到DuplicatingThread，只有在需要双设备播放的情况下（如闹铃，来电等），才会用到DuplicatingThread。DuplicatingThread跟别的PlaybackThread一样，也有prepareTrack_l和mix，就是write的时候不大一样。</p>
-<pre><code>ssize_t AudioFlinger::DuplicatingThread::threadLoop_write()
-{
-    // 对每个Tracks写数据 这里DuplicatingThread相当于生产者了
-    for (size_t i = 0; i &lt; outputTracks.size(); i++) {
-        outputTracks[i]-&gt;write(mSinkBuffer, writeFrames);
-    }
-    mStandby = false;
-    return (ssize_t)mSinkBufferSize;
-}
-</code></pre><p>OutputThrack与AudioTrack类似，也是用obtainBuffer与releaseBuffer来驱动PlaybackThread</p>
-<pre><code>bool AudioFlinger::PlaybackThread::OutputTrack::write(void* data, uint32_t frames)
-{
-    ...
-    while (waitTimeLeftMs) {
-        ...
-        status_t status = obtainBuffer(&amp;mOutBuffer, waitTimeLeftMs);
-        ...
-        memcpy(mOutBuffer.raw, pInBuffer-&gt;raw, outFrames * mFrameSize);
-        ...
-        mClientProxy-&gt;releaseBuffer(&amp;buf);
-
-    }
-    ...
-}
-</code></pre><p>DuplicatingThread作用很明了，就是把一个output的流dup到其他output，这个一开始看名字就看出来了，就是不知道关联的是那个output，驱动其他两个thread的方式。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/27/蓝牙设备播放流程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
@@ -1294,7 +1136,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">life</a>
+                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1306,7 +1148,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动漫</a>
+                <a href="javascript:void(0)" class="js-tag color5">life</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1318,11 +1160,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">movie</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">movie</a>
               </li>
             
             <div class="clearfix"></div>

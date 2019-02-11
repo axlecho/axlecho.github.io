@@ -2,7 +2,10 @@
 title: 《玲音》（Serial Experiments Lain）
 date: 2019-01-22 11:33:06
 tags: acg
+cover: '/images/cover/serial experiments lain.jpg'
+
 ---
+
 网瘾少女的妄想
 
 三次元的乱入

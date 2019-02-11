@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="zh" class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>念念不忘 必有回响</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="axlecho,"> 
+    <meta name="description" content="身体变得很糟糕精神变得很糟糕
+很久没写博客了，转行穷3年，我才半年，加油，做写程序最吊的生意人
+"> 
+    <meta name="author" content="Axlecho"> 
+    <link rel="alternative" href="atom.xml" title="念念不忘 必有回响" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">原生分屏原理</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">原生分屏原理</h1>
+        <div class="stuff">
+            <span>一月 22, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/android-framework/">android_framework</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>分屏代码在AOSP其实老早就存在了，就一直没有开启而已，在6.0版本可以通过设置系统属性ro.build.type改为userdebug,并在开发者选项中开启多窗口模式,然后在最近任务上就会个按钮可以实现分屏。</p>
+<p>通过adb命令也可以实现分屏<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> am task resize 25 0 720 1080 1920</span><br></pre></td></tr></table></figure></p>
+<p>在最近任务的调用链<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RecentsActivity#onTaskResize -&gt;</span><br><span class="line">RecentsResizeTaskDialog#placeTasks -&gt;</span><br><span class="line">SystemServicesProxy#resizeTask -&gt; </span><br><span class="line">ActivityManagerNative#resizeTask -&gt; </span><br><span class="line">ActivityManagerService#resizeTask -&gt; </span><br><span class="line">ActivityStackSupervisor#resizeStackLocked</span><br></pre></td></tr></table></figure></p>
+<p>在am的调用链<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Am#runTaskResize-&gt; </span><br><span class="line">ActivityManagerNative#resizeTask -&gt; </span><br><span class="line">ActivityManagerService#resizeTask -&gt; </span><br><span class="line">ActivityStackSupervisor#resizeTaskLocked</span><br></pre></td></tr></table></figure></p>
+<p>ActivityStackSupervisor的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">foundStackWithBounds</span><br><span class="line">ActivityStackSupervisor#moveTaskToStackLocked -&gt;</span><br><span class="line">ActivityStackSupervisor#resizeStackLocked</span><br><span class="line"></span><br><span class="line">ActivityStackSupervisor#moveTaskToStackLocked - &gt; </span><br><span class="line">WindowManagerService#moveTaskToStack</span><br><span class="line"></span><br><span class="line">ActivityStackSupervisor#resizeStackLocked -&gt;</span><br><span class="line">WindowManagerService#resizeStack</span><br></pre></td></tr></table></figure></p>
+<p>WindowManagerService的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WindowManagerService#resizeStack -&gt;</span><br><span class="line">TaskStack#setBounds</span><br><span class="line">TaskStack#resizeWindows -&gt;</span><br><span class="line">updateLayout??</span><br></pre></td></tr></table></figure></p>
+<p>看来让人心情不好的乱七八糟源码分析<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt; frameworks/base/services/core/java/com/android/server/am/ActivityStackSupervisor.java</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">resizeTaskLocked</span><span class="params">(TaskRecord task, Rect bounds)</span> </span>&#123;</span><br><span class="line">	task.mResizeable = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">final</span> ActivityStack currentStack = task.stack;</span><br><span class="line">	<span class="keyword">if</span> (currentStack.isHomeStack()) &#123;</span><br><span class="line">		<span class="comment">// Can't move task off the home stack. Sorry!</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 找到给定区域相同的栈</span></span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">int</span> matchingStackId = mWindowManager.getStackIdWithBounds(bounds);</span><br><span class="line">	<span class="keyword">if</span> (matchingStackId != -<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">// There is already a stack with the right bounds!</span></span><br><span class="line">		<span class="keyword">if</span> (currentStack != <span class="keyword">null</span> &amp;&amp; </span><br><span class="line">                    currentStack.mStackId == matchingStackId) &#123;</span><br><span class="line">			<span class="comment">// Nothing to do here. Already in the right stack...</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Move task to stack with matching bounds.</span></span><br><span class="line">		moveTaskToStackLocked(task.taskId, matchingStackId, <span class="keyword">true</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 栈里只有一个task，直接resize栈</span></span><br><span class="line">	<span class="keyword">if</span> (currentStack != <span class="keyword">null</span> &amp;&amp; currentStack.numTasks() == <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">// Just resize the current stack since this is the task in it.</span></span><br><span class="line">		resizeStackLocked(currentStack.mStackId, bounds);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 挪动task到新的栈</span></span><br><span class="line">	<span class="comment">// Create new stack and move the task to it.</span></span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">int</span> displayId = </span><br><span class="line">            (currentStack != <span class="keyword">null</span> &amp;&amp; currentStack.mDisplayId != -<span class="number">1</span>)</span><br><span class="line">			? currentStack.mDisplayId : Display.DEFAULT_DISPLAY;</span><br><span class="line">	ActivityStack newStack = createStackOnDisplay(getNextStackId(), displayId);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (newStack == <span class="keyword">null</span>) &#123;</span><br><span class="line">		Slog.e(TAG, <span class="string">"resizeTaskLocked: Can't create stack for task="</span> + task);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	moveTaskToStackLocked(task.taskId, newStack.mStackId, <span class="keyword">true</span>);</span><br><span class="line">	resizeStackLocked(newStack.mStackId, bounds);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>分屏的核心是task跟bound，需要看一下task是怎么裂变的</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/22712173.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="false" data-ci="" data-cs="" data-r="" data-o="" data-a="" data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>

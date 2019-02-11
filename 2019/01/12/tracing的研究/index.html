@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="zh" class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>念念不忘 必有回响</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="axlecho,"> 
+    <meta name="description" content="身体变得很糟糕精神变得很糟糕
+很久没写博客了，转行穷3年，我才半年，加油，做写程序最吊的生意人
+"> 
+    <meta name="author" content="Axlecho"> 
+    <link rel="alternative" href="atom.xml" title="念念不忘 必有回响" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">google tracing的研究</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">google tracing的研究</h1>
+        <div class="stuff">
+            <span>一月 12, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/android-tools/">android_tools</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。<br>主要做法是修改chrome tracing的源码</p>
+<p>话说tracing这么好用，不出个cmdline真不合理。</p>
+<p><a href="https://github.com/catapult-project/catapult" target="_blank" rel="noopener">tracing on github</a></p>
+<p>幸运的看到了一段代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*./tracing/tracing/extras/android/android_auditor.html*/</span></span><br><span class="line">pushFramesAndJudgeJank_: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>一看就知道是在判断帧的状态<br>然后就加了统计代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> redFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> yellowFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> greenFrame = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">app.process.frames.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">frame</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * <span class="number">2</span>) &#123;    <span class="comment">// 红帧</span></span><br><span class="line">        badFramesObserved += <span class="number">2</span>;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.TERRIBLE</span><br><span class="line">        redFrame += <span class="number">1</span>;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS </span><br><span class="line">        || frameMissedDeadline(frame)) &#123;    <span class="comment">// 黄帧</span></span><br><span class="line">        badFramesObserved++;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.BAD;</span><br><span class="line">        yellowFrame += <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    <span class="comment">// 绿帧</span></span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.GOOD;</span><br><span class="line">        greenFrame += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>最后用log输出<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"%d %d %d"</span>,redFrame,yellowFrame,greenFrame);</span><br></pre></td></tr></table></figure></p>
+<p>后面又要搞自动化，就是吧js里面的东西打出来<br>有四个思路</p>
+<ul>
+<li>用nodejs运行，将结果写文件</li>
+<li>html5写文件</li>
+<li>重定向log</li>
+<li>建本地服务器，用post提交数据</li>
+</ul>
+<p>nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据</p>
+<p>html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪</p>
+<p>建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug</p>
+<p>重定向一开始以为没希望，到google查了一下还真有这个用法<br>用下面的命令可以将许多log包括控制台的log输出到错误输出流上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr</span><br></pre></td></tr></table></figure></p>
+<p>很奇葩的是错误输出流的重定向好像有点问题<br>象如下的代码就输出不了，以后还得研究下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot;  &gt; log</span><br></pre></td></tr></table></figure></p>
+<p>后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了.</p>
+<p>改代码时用到的一坨正则，匹配html中的js代码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \</span><br><span class="line">    -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \</span><br><span class="line">    -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js</span><br></pre></td></tr></table></figure></p>
+<p>trace抓下来的数据是压缩过的，用下面命令可解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib-flate -uncompress &lt; trace &gt;out</span><br></pre></td></tr></table></figure></p>
+<p>发现了一个极好多正则表达式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos;</span><br></pre></td></tr></table></figure></p>
+<p>开始port到windows上了,用的还是nodejs<br>因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -</span><br></pre></td></tr></table></figure></p>
+<p>自动化打包的功能，先了解先 <a href="http://stackoverflow.com/questions/15530435/node-js-zip-unzip-a-folder" target="_blank" rel="noopener">Node.js - Zip/Unzip a folder</a></p>
+<p>只能说windows的cmd去屎</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/22712173.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="false" data-ci="" data-cs="" data-r="" data-o="" data-a="" data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>

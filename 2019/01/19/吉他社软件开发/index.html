@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="zh" class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>念念不忘 必有回响</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="axlecho,"> 
+    <meta name="description" content="身体变得很糟糕精神变得很糟糕
+很久没写博客了，转行穷3年，我才半年，加油，做写程序最吊的生意人
+"> 
+    <meta name="author" content="Axlecho"> 
+    <link rel="alternative" href="atom.xml" title="念念不忘 必有回响" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">吉他社软件开发</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">吉他社软件开发</h1>
+        <div class="stuff">
+            <span>一月 19, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/android/">android</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>今天去做吉他社的志愿者，感觉应该会很有意义吧。<br>话说现在越来越懒了。</p>
+<p>######2016-6-11<br>md TuxGuitar这个鬼东西下了半天没下下来，估计很大，md我讨厌sf。。</p>
+<p>######2016-6-12<br>tuxguitar的app终于跑起来了，不过还是出错了，话说tuxguitar的代码写得真是好。跟那opl的那个鬼东西比起来简直了。。</p>
+<p>下面这段代码的意思是app的属性从在自身的attrs.xml定义，包括库文件<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xmlns:app="http://schemas.android.com/apk/res-auto"</span><br></pre></td></tr></table></figure></p>
+<p>######2016-6-15<br>环境变量搞错了应该用<code>export</code>而不是<code>=</code></p>
+<p>######2016-6-16<br>编出来之后还是不能用，是时候熟悉一波gradle和maven了</p>
+<p>######2016-6-18<br>貌似找到原因了，是配置文件找不到，配置文件没打包到apk里面，啊啊啊看起来好简单的东西为什么就这么难搞，果真是我太弱了么</p>
+<p>gradle package apk的实现:AndroidBuilder.java<br>手动打包apk:build apk from the command line<br>添加task:胡搞乱搞</p>
+<p>######2016-6-19<br>好难啊，还是搞不定，话说为什么在jar还会有android的东西啊</p>
+<p>手动打包jar:AndroidStudio导出jar包</p>
+<p>######2016-6-21<br>就差这个鬼错误了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rejecting re-init on previously-failed</span><br></pre></td></tr></table></figure>
+<p>######2016-6-24<br>最后还是放弃了插件化，手动加载插件并转为了本地的lib，最后搞定了，唉 动态加载这种高大上东西还是太难了</p>
+<p>又遇到网络请求这种东西，真是无所不在啊，第一步直接Robolectric,我就问问没有单元测试怎么搞</p>
+<p>######2016-6-27<br>Robolectric下载了好多东西，又下载不下来，之后手动下，下载后放在<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\axlecho\.m2\repository</span><br></pre></td></tr></table></figure></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/22712173.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="false" data-ci="" data-cs="" data-r="" data-o="" data-a="" data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>

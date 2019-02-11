@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="zh" class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>念念不忘 必有回响</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="axlecho,"> 
+    <meta name="description" content="身体变得很糟糕精神变得很糟糕
+很久没写博客了，转行穷3年，我才半年，加油，做写程序最吊的生意人
+"> 
+    <meta name="author" content="Axlecho"> 
+    <link rel="alternative" href="atom.xml" title="念念不忘 必有回响" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">蓝牙设备播放流程</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">蓝牙设备播放流程</h1>
+        <div class="stuff">
+            <span>一月 19, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/android-framework/">android_framework</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>因为蓝牙通路与其他设备不同（多了一个蓝牙设备），因此播放的流程也与其他设备略有不同。</p>
+<h2 id="蓝牙设备的连接"><a href="#蓝牙设备的连接" class="headerlink" title="蓝牙设备的连接"></a>蓝牙设备的连接</h2><p>从setDeviceConnectionState开始,AudioPolicyManager先注册Device后，再去打开设备对应的output，如果是duplicating类型的话，还要建一个DuplicateOutput，关联该output与<strong>mPrimaryOutput</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audiopolicy/managerdefault/AudioPolicyManager.cpp</span></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::setDeviceConnectionState(<span class="keyword">audio_devices_t</span> device,</span><br><span class="line">                                                      <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                      <span class="keyword">const</span> <span class="keyword">char</span> *device_address,</span><br><span class="line">                                                      <span class="keyword">const</span> <span class="keyword">char</span> *device_name)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> setDeviceConnectionStateInt(device, state, device_address, device_name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::setDeviceConnectionStateInt(<span class="keyword">audio_devices_t</span> device,</span><br><span class="line">                                                     <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                     <span class="keyword">const</span> <span class="keyword">char</span> *device_address,</span><br><span class="line">                                                     <span class="keyword">const</span> <span class="keyword">char</span> *device_name)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    sp&lt;DeviceDescriptor&gt; devDesc = mHwModules.getDeviceDescriptor(device, device_address, device_name);</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// handle output devices</span></span><br><span class="line">    ...</span><br><span class="line">    SortedVector &lt;<span class="keyword">audio_io_handle_t</span>&gt; outputs;</span><br><span class="line">    <span class="keyword">ssize_t</span> index = mAvailableOutputDevices.indexOf(devDesc);</span><br><span class="line">    mPreviousOutputs = mOutputs;</span><br><span class="line">    ...(注册设备)</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        sp&lt;HwModule&gt; <span class="keyword">module</span> = mHwModules.getModuleForDevice(device);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">module</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            mAvailableOutputDevices.remove(devDesc);</span><br><span class="line">            <span class="keyword">return</span> INVALID_OPERATION;</span><br><span class="line">        &#125;</span><br><span class="line">        mAvailableOutputDevices[index]-&gt;attach(<span class="keyword">module</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> NO_MEMORY;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (checkOutputsForDevice(devDesc, state, outputs, devDesc-&gt;mAddress) != NO_ERROR) &#123;</span><br><span class="line">        mAvailableOutputDevices.remove(devDesc);</span><br><span class="line">        <span class="keyword">return</span> INVALID_OPERATION;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::checkOutputsForDevice(<span class="keyword">const</span> sp&lt;DeviceDescriptor&gt; devDesc,</span><br><span class="line">                                                   <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                   SortedVector&lt;<span class="keyword">audio_io_handle_t</span>&gt;&amp; outputs,</span><br><span class="line">                                                   <span class="keyword">const</span> String8 address)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 打开设备所对应的output</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">ssize_t</span> profile_index = <span class="number">0</span>; profile_index &lt; (<span class="keyword">ssize_t</span>)profiles.size(); profile_index++) &#123;</span><br><span class="line">        sp&lt;IOProfile&gt; profile = profiles[profile_index];</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">status_t</span> status = mpClientInterface-&gt;openOutput(profile-&gt;getModuleHandle(),</span><br><span class="line">                                                        &amp;output,</span><br><span class="line">                                                        &amp;config,</span><br><span class="line">                                                        &amp;desc-&gt;mDevice,</span><br><span class="line">                                                        address,</span><br><span class="line">                                                        &amp;desc-&gt;mLatency,</span><br><span class="line">                                                        desc-&gt;mFlags);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 后续处理</span></span><br><span class="line">    <span class="keyword">if</span> (output != AUDIO_IO_HANDLE_NONE) &#123;</span><br><span class="line">        addOutput(output, desc);</span><br><span class="line">        ... </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (((desc-&gt;mFlags &amp; AUDIO_OUTPUT_FLAG_DIRECT) == <span class="number">0</span>) &amp;&amp;</span><br><span class="line">                        hasPrimaryOutput()) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="comment">// open a duplicating output thread for the new output and the primary output</span></span><br><span class="line">            duplicatedOutput =</span><br><span class="line">                    mpClientInterface-&gt;openDuplicateOutput(output,</span><br><span class="line">                                                           mPrimaryOutput-&gt;mIoHandle);</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>openOutput的流程跟其他Output的流程是一样的，最终在AudioFlinger建立了对应Output的Thread。DuplicateOutput使用openDuplicateOutput来打开，最终也是在AudioFlinger建立一个DuplicatingThread。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audiopolicy/service/AudioPolicyClientImpl.cpp</span></span><br><span class="line"><span class="comment">// AudioPolicyService的转发</span></span><br><span class="line"><span class="keyword">audio_io_handle_t</span> AudioPolicyService::AudioPolicyClient::openDuplicateOutput(</span><br><span class="line">                                                                <span class="keyword">audio_io_handle_t</span> output1,</span><br><span class="line">                                                                <span class="keyword">audio_io_handle_t</span> output2)</span><br><span class="line">&#123;</span><br><span class="line">    sp&lt;IAudioFlinger&gt; af = AudioSystem::get_audio_flinger();</span><br><span class="line">    <span class="keyword">if</span> (af == <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"%s: could not get AudioFlinger"</span>, __func__);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> af-&gt;openDuplicateOutput(output1, output2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/AudioFlinger.cpp</span></span><br><span class="line"><span class="keyword">audio_io_handle_t</span> AudioFlinger::openDuplicateOutput(<span class="keyword">audio_io_handle_t</span> output1,</span><br><span class="line">        <span class="keyword">audio_io_handle_t</span> output2)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 这里两个output对应的thread都是MixerThread，意味着DuplicatingThread对应的线程是MixerThread？？</span></span><br><span class="line">    Mutex::Autolock _l(mLock);</span><br><span class="line">    MixerThread *thread1 = checkMixerThread_l(output1);</span><br><span class="line">    MixerThread *thread2 = checkMixerThread_l(output2);</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">audio_io_handle_t</span> id = nextUniqueId();</span><br><span class="line">    DuplicatingThread *thread = <span class="keyword">new</span> DuplicatingThread(<span class="keyword">this</span>, thread1, id, mSystemReady);</span><br><span class="line">    thread-&gt;addOutputTrack(thread2);</span><br><span class="line">    mPlaybackThreads.add(id, thread);</span><br><span class="line">    thread-&gt;ioConfigChanged(AUDIO_OUTPUT_OPENED);</span><br><span class="line">    <span class="keyword">return</span> id;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/Threads.cpp    </span></span><br><span class="line">AudioFlinger::DuplicatingThread::DuplicatingThread(<span class="keyword">const</span> sp&lt;AudioFlinger&gt;&amp; audioFlinger,</span><br><span class="line">        AudioFlinger::MixerThread* mainThread, <span class="keyword">audio_io_handle_t</span> id, <span class="keyword">bool</span> systemReady)</span><br><span class="line">    :   MixerThread(audioFlinger, mainThread-&gt;getOutput(), id, mainThread-&gt;outDevice(),</span><br><span class="line">                    systemReady, DUPLICATING),</span><br><span class="line">        mWaitTimeMs(UINT_MAX)</span><br><span class="line">&#123;</span><br><span class="line">    addOutputTrack(mainThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DuplicatingThread的addOutputTrack会创建对应thread的track(也就是生产者啦)<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/Threads.cpp    </span></span><br><span class="line"><span class="keyword">void</span> AudioFlinger::DuplicatingThread::addOutputTrack(MixerThread *thread)</span><br><span class="line">&#123;</span><br><span class="line">    Mutex::Autolock _l(mLock);</span><br><span class="line">    <span class="comment">// The downstream MixerThread consumes thread-&gt;frameCount() amount of frames per mix pass.</span></span><br><span class="line">    <span class="comment">// Adjust for thread-&gt;sampleRate() to determine minimum buffer frame count.</span></span><br><span class="line">    <span class="comment">// Then triple buffer because Threads do not run synchronously and may not be clock locked.</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span> frameCount =</span><br><span class="line">            <span class="number">3</span> * sourceFramesNeeded(mSampleRate, thread-&gt;frameCount(), thread-&gt;sampleRate());</span><br><span class="line"></span><br><span class="line">    sp&lt;OutputTrack&gt; outputTrack = <span class="keyword">new</span> OutputTrack(thread,</span><br><span class="line">                                            <span class="keyword">this</span>,</span><br><span class="line">                                            mSampleRate,</span><br><span class="line">                                            mFormat,</span><br><span class="line">                                            mChannelMask,</span><br><span class="line">                                            frameCount,</span><br><span class="line">                                            IPCThreadState::self()-&gt;getCallingUid());</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="DuplicatingThread播放"><a href="#DuplicatingThread播放" class="headerlink" title="DuplicatingThread播放"></a>DuplicatingThread播放</h2><p>普通的连蓝牙播放（音乐，触屏音等）还不会用到DuplicatingThread，只有在需要双设备播放的情况下（如闹铃，来电等），才会用到DuplicatingThread。DuplicatingThread跟别的PlaybackThread一样，也有prepareTrack_l和mix，就是write的时候不大一样。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ssize_t</span> AudioFlinger::DuplicatingThread::threadLoop_write()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 对每个Tracks写数据 这里DuplicatingThread相当于生产者了</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; outputTracks.size(); i++) &#123;</span><br><span class="line">        outputTracks[i]-&gt;write(mSinkBuffer, writeFrames);</span><br><span class="line">    &#125;</span><br><span class="line">    mStandby = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">ssize_t</span>)mSinkBufferSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>OutputThrack与AudioTrack类似，也是用obtainBuffer与releaseBuffer来驱动PlaybackThread<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> AudioFlinger::PlaybackThread::OutputTrack::write(<span class="keyword">void</span>* data, <span class="keyword">uint32_t</span> frames)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">while</span> (waitTimeLeftMs) &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">status_t</span> status = obtainBuffer(&amp;mOutBuffer, waitTimeLeftMs);</span><br><span class="line">        ...</span><br><span class="line">        <span class="built_in">memcpy</span>(mOutBuffer.raw, pInBuffer-&gt;raw, outFrames * mFrameSize);</span><br><span class="line">        ...</span><br><span class="line">        mClientProxy-&gt;releaseBuffer(&amp;buf);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DuplicatingThread作用很明了，就是把一个output的流dup到其他output，这个一开始看名字就看出来了，就是不知道关联的是那个output，驱动其他两个thread的方式。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/22712173.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="false" data-ci="" data-cs="" data-r="" data-o="" data-a="" data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>

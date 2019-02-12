@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: diaspora
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -81,3 +81,9 @@ deploy:
   type: git
   repository: git@github.com:axlecho/axlecho.github.io.git
   branch: master
+  
+search:
+    path: search.xml
+    field: post
+    format: html
+    limit: 10000

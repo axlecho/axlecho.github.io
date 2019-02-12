@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="念念不忘 必有回响">
 <meta property="og:description" content="最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。e">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2019-02-11T04:36:32.885Z">
+<meta property="og:updated_time" content="2019-02-12T04:50:08.713Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NFC金融">
 <meta name="twitter:description" content="最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。e">
@@ -335,18 +335,18 @@
 <p>乱七八糟的卡<br>说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。<br>et.新的银行卡，工卡，公交卡等，基本都是这玩意了。</p>
 <p>另外的还有身份识别卡（Identification Card），比较老的只读卡。<br>et.老的门禁卡，停车卡</p>
 <p>还有一个很乱的概念**cpu卡,不清楚是什么的东西</p>
-<p>#####ic卡<br>ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。<br>接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。</p>
+<h5 id="ic卡"><a href="#ic卡" class="headerlink" title="ic卡"></a>ic卡</h5><p>ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。<br>接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。</p>
 <p>ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。</p>
-<p>#####nfc卡<br>nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。</p>
+<h5 id="nfc卡"><a href="#nfc卡" class="headerlink" title="nfc卡"></a>nfc卡</h5><p>nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。</p>
 <p>1<br>近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。<br>nfc卡的种类，其实就是各个公司基于标准的实现</p>
 <p>NfcA — ISO 14443-3A<br>NfcB — ISO 14443-3B<br>NfcF — JIS 6319-4<br>NfcV — ISO 15693<br>IsoDep — ISO 14443-4<br>M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。</p>
 <p>PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的<br>【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？</p>
 <p>卡模拟<br>卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。<br>这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。</p>
-<p>#####SE<br>安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。</p>
+<h5 id="SE"><a href="#SE" class="headerlink" title="SE"></a>SE</h5><p>安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。</p>
 <p>现在主要有三种形态</p>
 <p>内置SE模式（eSE）<br>UICC（SIM卡）<br>AdvancedSecurity SD card（ASSD SD卡）</p>
-<p>#####模拟的卡（APPLET)<br>模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet<br>概念还是很模糊 – 比如所APPLET是怎么加载到SE上的</p>
-<p>#####TSM<br>发卡服务器,APPLET由TSM来发送安装。。</p>
+<h5 id="模拟的卡（APPLET"><a href="#模拟的卡（APPLET" class="headerlink" title="模拟的卡（APPLET)"></a>模拟的卡（APPLET)</h5><p>模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet<br>概念还是很模糊 – 比如所APPLET是怎么加载到SE上的</p>
+<h5 id="TSM"><a href="#TSM" class="headerlink" title="TSM"></a>TSM</h5><p>发卡服务器,APPLET由TSM来发送安装。。</p>
 <p>SMARTCARD<br>EMV<br>PBOC</p>
 
       
@@ -452,8 +452,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -526,6 +535,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#ic卡"><span class="nav-number">1.</span> <span class="nav-text">ic卡</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#nfc卡"><span class="nav-number">2.</span> <span class="nav-text">nfc卡</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SE"><span class="nav-number">3.</span> <span class="nav-text">SE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#模拟的卡（APPLET"><span class="nav-number">4.</span> <span class="nav-text">模拟的卡（APPLET)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TSM"><span class="nav-number">5.</span> <span class="nav-text">TSM</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

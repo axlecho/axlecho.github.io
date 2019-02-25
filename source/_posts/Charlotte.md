@@ -1,7 +1,7 @@
 ---
 title: Charlotte
 date: 2019-01-19 21:56:56
-tags: ACG
+tags: acg
 cover: /images/Charlotte.jpg
 mp3:  http://link.hhtjim.com/163/34077762.mp3
 ---

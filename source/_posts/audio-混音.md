@@ -21,13 +21,13 @@ android的混音是通过AudioMixer来实现的，最近遇到了一个混音的
 
 前三个比较重要，具体去了解一下
 
-####采样率
+#### 采样率
 看到知乎上有一个回答，感觉挺形象的--[什么是音频的采样率？采样率和音质有没有关系？](http://www.zhihu.com/question/20351692?utm_campaign=rss&utm_medium=rss&utm_source=rss&utm_content=title)
 
 一般的采样率固定在`44100HZ`(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音。
 还有一个采样率`48000HZ`也比较常见
 
-####编码格式
+#### 编码格式
 指每次采样所用的bit数，比如8bit，16bit  
 从命名来看，android好像用来8bit，16bit跟32bit
 
@@ -39,7 +39,7 @@ android的混音是通过AudioMixer来实现的，最近遇到了一个混音的
 *   AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?
 *   AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?
 
-####通道
+#### 通道
 就是两个耳机有不同的声音？？
 一般有单通道(mono) 双通道(stereo)
 
@@ -47,7 +47,7 @@ AudioMixer混音过程
 ---
 参考博客园上的一篇博客[[Android] 混音器AudioMixer](http://www.tuicool.com/articles/2mqUjav)
 
-####AUDIOMIXER的创建
+#### AUDIOMIXER的创建
 mNormalFrameCount为输入buffer大小？？mSampleRate为输出采样率
 ```cpp
 AudioFlinger::MixerThread::MixerThread(...)
@@ -58,7 +58,7 @@ AudioFlinger::MixerThread::MixerThread(...)
 }
 ```
 
-####配置参数
+#### 配置参数
 在MixerThread的prepareTracks_l会对AudioMixer的参数进行配置，如音量，输入源，混音参数等。
 ```cpp
 AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTracks_l(...){
@@ -98,7 +98,7 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTrac
 }
 ```
 
-####混音函数选择
+#### 混音函数选择
 先计算track的flags，然后通过flags来判断要混音的函数
 ```cpp
 void AudioMixer::process__validate(state_t* state, int64_t pts)
@@ -143,7 +143,7 @@ void AudioMixer::process__validate(state_t* state, int64_t pts)
     }
 }
 ```
-####混音
+#### 混音
 就是像搓面把几根面搓成一团
 
 在android里使用process_xxx函数来实现，几个方法大同小异(不是我说的),举个process__genericResampling当例子。

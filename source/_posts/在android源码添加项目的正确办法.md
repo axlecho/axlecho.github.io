@@ -38,7 +38,7 @@ LOCAL_CERTIFICATE := platform
 include $(BUILD_PACKAGE)
 ```
 
-####路径问题
+#### 路径问题
 
 递归所有目录
 ```shell
@@ -55,5 +55,5 @@ LOCAL_SRC_FILES := $(call $(src_dirs))
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 ```
 
-####注册项目
+#### 注册项目
 具体看[google README.txt](https://android.googlesource.com/platform/vendor/sample/+/acd7c6b02a14e8694d0dced56ea37e79707fba1e/frameworks/PlatformLibrary/README.txt)

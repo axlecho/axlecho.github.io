@@ -1,7 +1,7 @@
 ---
 title: google tracing的研究
 date: 2019-01-12 20:44:14
-tags: android_tools
+tags: android_tool
 cover: /images/systrace.png
 ---
 

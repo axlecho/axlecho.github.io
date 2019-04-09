@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android_framework,">
+  <meta name="keywords" content="framework,graphics,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="看到老罗android之旅分析android源码简直逆天，跟代码都跟到驱动层去了，看了半天连个大概都看不懂，还有《深入理解Android》，跟一段代码跟着跟着都不知道自己在看啥。发现还是要对系统框架有个大概的了解，再去看这些东西比较好。 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  首先是">
-<meta name="keywords" content="android_framework">
+<meta name="description" content="要对系统框架有个大概的了解，再去看这些东西比较好，参考：《老罗android之旅分析android源码》《深入理解Android》 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android">
+<meta name="keywords" content="framework,graphics">
 <meta property="og:type" content="article">
 <meta property="og:title" content="surfaceflinger学习--Binder原理">
 <meta property="og:url" content="http://axlecho.com/2019/01/12/SurfaceFlinger学习-Binder原理/index.html">
 <meta property="og:site_name" content="念念不忘 必有回响">
-<meta property="og:description" content="看到老罗android之旅分析android源码简直逆天，跟代码都跟到驱动层去了，看了半天连个大概都看不懂，还有《深入理解Android》，跟一段代码跟着跟着都不知道自己在看啥。发现还是要对系统框架有个大概的了解，再去看这些东西比较好。 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  首先是">
+<meta property="og:description" content="要对系统框架有个大概的了解，再去看这些东西比较好，参考：《老罗android之旅分析android源码》《深入理解Android》 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2019-02-11T04:36:32.921Z">
+<meta property="og:updated_time" content="2019-03-07T13:11:50.496Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="surfaceflinger学习--Binder原理">
-<meta name="twitter:description" content="看到老罗android之旅分析android源码简直逆天，跟代码都跟到驱动层去了，看了半天连个大概都看不懂，还有《深入理解Android》，跟一段代码跟着跟着都不知道自己在看啥。发现还是要对系统框架有个大概的了解，再去看这些东西比较好。 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  首先是">
+<meta name="twitter:description" content="要对系统框架有个大概的了解，再去看这些东西比较好，参考：《老罗android之旅分析android源码》《深入理解Android》 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。  跨进程通信Binder机制 上层的View系统 下层的Display系统  Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android">
 
 
 
@@ -303,6 +303,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -330,14 +352,14 @@
       
 
       
-        <p>看到老罗android之旅分析android源码简直逆天，跟代码都跟到驱动层去了，看了半天连个大概都看不懂，还有《深入理解Android》，跟一段代码跟着跟着都不知道自己在看啥。发现还是要对系统框架有个大概的了解，再去看这些东西比较好。</p>
+        <p>要对系统框架有个大概的了解，再去看这些东西比较好，参考：<br>《老罗android之旅分析android源码》<br>《深入理解Android》</p>
 <p>SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。</p>
 <ul>
 <li>跨进程通信Binder机制</li>
 <li>上层的View系统</li>
 <li>下层的Display系统</li>
 </ul>
-<p>首先是Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。</p>
+<p>Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。</p>
 <p>先放一张IBinder的图<br><strong>BpBinder</strong>与<strong>BBinder</strong>是一对，用于传输层的通信<br><strong>BpSerivce</strong>与<strong>BnSerivce</strong>是一对，用于业务层的通信<br><strong>ISerivce</strong>是客户端使用的Serivce接口<br><strong>Serivce</strong>是具体的实现</p>
 <p>最终的通信发生在IPCThreadState，具体实现使用/dev/binder这个设备文件及使用ioctl来与驱动通信。</p>
 <hr>
@@ -386,7 +408,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/android-framework/" rel="tag"># android_framework</a>
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+            <a href="/tags/graphics/" rel="tag"># graphics</a>
           
         </div>
       
@@ -488,7 +512,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -499,7 +523,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -510,7 +534,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[java面试题]]></title>
+    <url>%2F2019%2F04%2F11%2Fjava%E9%9D%A2%E8%AF%95%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[准备个底在去受虐 Java 基础JDK和JRE有什么区别？jdk是开发包，jre是运行环境JDK是Java的开发工具，它不仅提供了Java程序运行所需的JRE，还提供了一系列的编译，运行等工具，如javac，java，javaw等。JRE只是Java程序的运行环境，它最核心的内容就是JVM（Java虚拟机）及核心类库。 ==和equals的区别是什么？==比较的是对象，equals比较多是对象的内容从原理来讲，Object的equals是由 == 实现的，讨论的比较多的String是重载了Object的equals改变了比较的方式 两个对象的hashCode()相同，则equal()也一定为true，对吗？equal相等的 hashcode一定相等 反过来hashcode不相等的equal一定不相等hashcode相等的不一定equal相等(md5) final在Java中有什么作用？对象修饰，一旦赋值不可修改类修饰，不可继承方法修饰，不可重载 Java中的Math.round(-1.5)等于多少？a + 1/2 向下取整-1.5 + 0.5 = -1.0a + 1/2是用位操作完成的 String属于基础的数据类型吗？不是，final类stort long int double float byte char boolean Java中操作字符串都有哪些类？他们之间有什么区别？正则表达式 String str=”i” 与 String str = new String(“i”)一样吗？否，”i”在常量池，new String(“i”)在堆上 如何将字符串反转？StringBuffer reverse 中间对调 &gt;&gt; String类的常用方法都有哪些？length()charAt()substring()replace()indexOf()trim()split() 抽象类必须要有抽象方法吗？可以没有抽象方法 普通类和抽象类有哪些区别？抽象类不能直接使用，只能通过子类实现其所有抽象方法后才能使用 抽象类能使用final修饰吗？不能 内部可以为private 接口和抽象类有什么区别？方法均为public abstract成员均为public static final接口不可有构造方法 抽象类可以有实现方法，接口的不能有实现类只能继承一个父类，但可以实现多个接口 Java中IO流分为几种流向： input output类型：字节流 字符流节点流 处理流 缓冲流 BIO、NIO、AIO有什么区别Block IO、Non-Blocking IO、Ansyc IO Files的常用方法都有哪些new FilemkdirmkdirsrenameTo deleteexistsisFileisDirectory getNamegetAbsolutePathlength listlistFiles 容器java容器都有哪些？Collection List ArrayList (数组) LinkedList(双向链表) Set HashSet(HashMap实现) TreeSet(TreeMap实现) LinkedHashSet(LinkedHashMap实现) Queue PriorityQueue Map HashMap(单链表数组) LinkedHashMap(有序Map HashMap + 双向链表) TreeMap Iterator ListIterator Comparable &amp; Comparator Utilities Collections Arrays Collection和Collections有什么区别Collections为工具类Collection为集合接口 List、Set、Map之间的区别是什么列表有序，Set为Value唯一，Map为key索引 HashMap和Hashtable有什么区别线程安全 null-key &amp; null-value迭代器 如何决定使用HashMap还是TreeMapHashMap 查询TreeMap 增加、快速创建 说下HashMap的实现原理数组加列表，拉链法，加载因子、扩容 说下HashSet的实现原理使用HashMap实现 ArrayList和LinkedList的区别？ArrayList使用数组实现，查询O(1),增加O(1)，删除O(n)LinkedList使用链表实现，查询O(n)，增加O(1)，删除O(1） 如何实现数组和List之间的转换？toArray()new Array() == Arrays.asList();new List() + addlist ArrrayList和Vector的区别？Vector是线程安全 Queue中poll() 和remove()有什么区别当Queue为空的处理方式不一样 哪些集合类是线程安全的HashTable Vector 迭代器Iterator是什么？一个接口 hasNext next remove Iterator怎么使用，有什么特点统一了遍历方式 Iterator和ListIterator有什么区别索引，add，逆向遍历，set 怎么确保一个集合不能被修改Collections.unmodifiableMap 多线程]]></content>
+      <categories>
+        <category>andriod</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[初到杭州]]></title>
     <url>%2F2019%2F04%2F09%2F%E5%88%9D%E5%88%B0%E6%9D%AD%E5%B7%9E%2F</url>
     <content type="text"><![CDATA[2019年3月26日 终于鼓起勇气跑路了，其实在去年双12的时候就放弃了电商这条路，但想着要等过年吧，想着要等二十六吧，想着要等老二安顿好了再走，拖着拖着就到3月末咯 在7天酒店住了三天，天天下雨，找房子，结果58上大多数都是骗子，打电话问，结果说要到中介总部去才能带去看房，我信你个鬼哦，有一次一个中介离酒店比较近，就顺路去看什么情况，结果要先交钱，还要签协议，这不明摆骗人么 过滤了下安选房源，倒是都是真的，不过又么就是老旧破，又么就是隔断的，跑了两天决定换个网上推荐的贝壳网只看了两处，感觉都还不错，特别是现在住的地方，主要是够明亮 过来后，就去买了各种东西，感觉还好没买到糟心的东西，特别是这张圆脚桌子，超级喜欢，就是物流慢 之后就颓，花了三天把王者荣耀上来王者段位，然后还是各种颓每天3点后睡觉，第二天下午2点起床，还好感觉身体还没问题，慢慢改变吧唉 好好找工作，让家里人别太担心了]]></content>

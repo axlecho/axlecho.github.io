@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="面试,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="准备个底在去受虐 Java 基础JDK和JRE有什么区别？jdk是开发包，jre是运行环境JDK是Java的开发工具，它不仅提供了Java程序运行所需的JRE，还提供了一系列的编译，运行等工具，如javac，java，javaw等。JRE只是Java程序的运行环境，它最核心的内容就是JVM（Java虚拟机）及核心类库。 ==和equals的区别是什么？==比较的是对象，equals比较多是对象的内">
+<meta name="keywords" content="面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java面试题">
+<meta property="og:url" content="http://axlecho.com/2019/04/11/java面试题/index.html">
+<meta property="og:site_name" content="念念不忘 必有回响">
+<meta property="og:description" content="准备个底在去受虐 Java 基础JDK和JRE有什么区别？jdk是开发包，jre是运行环境JDK是Java的开发工具，它不仅提供了Java程序运行所需的JRE，还提供了一系列的编译，运行等工具，如javac，java，javaw等。JRE只是Java程序的运行环境，它最核心的内容就是JVM（Java虚拟机）及核心类库。 ==和equals的区别是什么？==比较的是对象，equals比较多是对象的内">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-04-15T14:18:12.420Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java面试题">
+<meta name="twitter:description" content="准备个底在去受虐 Java 基础JDK和JRE有什么区别？jdk是开发包，jre是运行环境JDK是Java的开发工具，它不仅提供了Java程序运行所需的JRE，还提供了一系列的编译，运行等工具，如javac，java，javaw等。JRE只是Java程序的运行环境，它最核心的内容就是JVM（Java虚拟机）及核心类库。 ==和equals的区别是什么？==比较的是对象，equals比较多是对象的内">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://axlecho.com/2019/04/11/java面试题/">
+
+
+
+
+
+  <title>java面试题 | 念念不忘 必有回响</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">念念不忘 必有回响</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/04/11/java面试题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="念念不忘 必有回响">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java面试题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T14:51:14+08:00">
+                2019-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/andriod/" itemprop="url" rel="index">
+                    <span itemprop="name">andriod</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>准备个底在去受虐</p>
+<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h4 id="JDK和JRE有什么区别？"><a href="#JDK和JRE有什么区别？" class="headerlink" title="JDK和JRE有什么区别？"></a>JDK和JRE有什么区别？</h4><p>jdk是开发包，jre是运行环境<br>JDK是Java的开发工具，它不仅提供了Java程序运行所需的JRE，还提供了一系列的编译，运行等工具，如javac，java，javaw等。<br>JRE只是Java程序的运行环境，它最核心的内容就是JVM（Java虚拟机）及核心类库。</p>
+<h4 id="和equals的区别是什么？"><a href="#和equals的区别是什么？" class="headerlink" title="==和equals的区别是什么？"></a>==和equals的区别是什么？</h4><p>==比较的是对象，equals比较多是对象的内容<br>从原理来讲，Object的equals是由 == 实现的，讨论的比较多的String是重载了Object的equals改变了比较的方式</p>
+<h4 id="两个对象的hashCode-相同，则equal-也一定为true，对吗？"><a href="#两个对象的hashCode-相同，则equal-也一定为true，对吗？" class="headerlink" title="两个对象的hashCode()相同，则equal()也一定为true，对吗？"></a>两个对象的hashCode()相同，则equal()也一定为true，对吗？</h4><p>equal相等的 hashcode一定相等 反过来hashcode不相等的equal一定不相等<br>hashcode相等的不一定equal相等<br>(md5)</p>
+<h4 id="final在Java中有什么作用？"><a href="#final在Java中有什么作用？" class="headerlink" title="final在Java中有什么作用？"></a>final在Java中有什么作用？</h4><p>对象修饰，一旦赋值不可修改<br>类修饰，不可继承<br>方法修饰，不可重载</p>
+<h4 id="Java中的Math-round-1-5-等于多少？"><a href="#Java中的Math-round-1-5-等于多少？" class="headerlink" title="Java中的Math.round(-1.5)等于多少？"></a>Java中的Math.round(-1.5)等于多少？</h4><p>a + 1/2 向下取整<br>-1.5 + 0.5 = -1.0<br>a + 1/2是用位操作完成的</p>
+<h4 id="String属于基础的数据类型吗？"><a href="#String属于基础的数据类型吗？" class="headerlink" title="String属于基础的数据类型吗？"></a>String属于基础的数据类型吗？</h4><p>不是，final类<br>stort long int double float byte char boolean </p>
+<h4 id="Java中操作字符串都有哪些类？他们之间有什么区别？"><a href="#Java中操作字符串都有哪些类？他们之间有什么区别？" class="headerlink" title="Java中操作字符串都有哪些类？他们之间有什么区别？"></a>Java中操作字符串都有哪些类？他们之间有什么区别？</h4><p>正则表达式 </p>
+<h4 id="String-str-”i”-与-String-str-new-String-“i”-一样吗？"><a href="#String-str-”i”-与-String-str-new-String-“i”-一样吗？" class="headerlink" title="String str=”i” 与 String str = new String(“i”)一样吗？"></a>String str=”i” 与 String str = new String(“i”)一样吗？</h4><p>否，”i”在常量池，new String(“i”)在堆上</p>
+<h4 id="如何将字符串反转？"><a href="#如何将字符串反转？" class="headerlink" title="如何将字符串反转？"></a>如何将字符串反转？</h4><p>StringBuffer reverse  中间对调 &gt;&gt;</p>
+<h4 id="String类的常用方法都有哪些？"><a href="#String类的常用方法都有哪些？" class="headerlink" title="String类的常用方法都有哪些？"></a>String类的常用方法都有哪些？</h4><p>length()<br>charAt()<br>substring()<br>replace()<br>indexOf()<br>trim()<br>split()</p>
+<h4 id="抽象类必须要有抽象方法吗？"><a href="#抽象类必须要有抽象方法吗？" class="headerlink" title="抽象类必须要有抽象方法吗？"></a>抽象类必须要有抽象方法吗？</h4><p>可以没有抽象方法</p>
+<h4 id="普通类和抽象类有哪些区别？"><a href="#普通类和抽象类有哪些区别？" class="headerlink" title="普通类和抽象类有哪些区别？"></a>普通类和抽象类有哪些区别？</h4><p>抽象类不能直接使用，只能通过子类实现其所有抽象方法后才能使用</p>
+<h4 id="抽象类能使用final修饰吗？"><a href="#抽象类能使用final修饰吗？" class="headerlink" title="抽象类能使用final修饰吗？"></a>抽象类能使用final修饰吗？</h4><p>不能 内部可以为private</p>
+<h4 id="接口和抽象类有什么区别？"><a href="#接口和抽象类有什么区别？" class="headerlink" title="接口和抽象类有什么区别？"></a>接口和抽象类有什么区别？</h4><p>方法均为public abstract<br>成员均为public static final<br>接口不可有构造方法</p>
+<p>抽象类可以有实现方法，接口的不能有实现<br>类只能继承一个父类，但可以实现多个接口</p>
+<h4 id="Java中IO流分为几种"><a href="#Java中IO流分为几种" class="headerlink" title="Java中IO流分为几种"></a>Java中IO流分为几种</h4><p>流向： input output<br>类型：字节流 字符流<br>节点流 处理流 缓冲流</p>
+<h4 id="BIO、NIO、AIO有什么区别"><a href="#BIO、NIO、AIO有什么区别" class="headerlink" title="BIO、NIO、AIO有什么区别"></a>BIO、NIO、AIO有什么区别</h4><p>Block IO、Non-Blocking IO、Ansyc IO</p>
+<h4 id="Files的常用方法都有哪些"><a href="#Files的常用方法都有哪些" class="headerlink" title="Files的常用方法都有哪些"></a>Files的常用方法都有哪些</h4><p>new File<br>mkdir<br>mkdirs<br>renameTo</p>
+<p>delete<br>exists<br>isFile<br>isDirectory</p>
+<p>getName<br>getAbsolutePath<br>length</p>
+<p>list<br>listFiles</p>
+<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><h4 id="java容器都有哪些？"><a href="#java容器都有哪些？" class="headerlink" title="java容器都有哪些？"></a>java容器都有哪些？</h4><p>Collection</p>
+<ul>
+<li>List  </li>
+<li><ul>
+<li>ArrayList (数组)</li>
+</ul>
+</li>
+<li><ul>
+<li>LinkedList(双向链表)</li>
+</ul>
+</li>
+<li>Set </li>
+<li><ul>
+<li>HashSet(HashMap实现)</li>
+</ul>
+</li>
+<li><ul>
+<li>TreeSet(TreeMap实现)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>LinkedHashSet(LinkedHashMap实现)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Queue</li>
+<li><ul>
+<li>PriorityQueue</li>
+</ul>
+</li>
+</ul>
+<p>Map</p>
+<ul>
+<li>HashMap(单链表数组)</li>
+<li><ul>
+<li>LinkedHashMap(有序Map HashMap + 双向链表)</li>
+</ul>
+</li>
+<li>TreeMap</li>
+</ul>
+<p>Iterator</p>
+<ul>
+<li>ListIterator</li>
+</ul>
+<p>Comparable &amp; Comparator</p>
+<p>Utilities</p>
+<ul>
+<li>Collections</li>
+<li>Arrays</li>
+</ul>
+<h4 id="Collection和Collections有什么区别"><a href="#Collection和Collections有什么区别" class="headerlink" title="Collection和Collections有什么区别"></a>Collection和Collections有什么区别</h4><p>Collections为工具类<br>Collection为集合接口</p>
+<h4 id="List、Set、Map之间的区别是什么"><a href="#List、Set、Map之间的区别是什么" class="headerlink" title="List、Set、Map之间的区别是什么"></a>List、Set、Map之间的区别是什么</h4><p>列表有序，Set为Value唯一，Map为key索引</p>
+<h4 id="HashMap和Hashtable有什么区别"><a href="#HashMap和Hashtable有什么区别" class="headerlink" title="HashMap和Hashtable有什么区别"></a>HashMap和Hashtable有什么区别</h4><p>线程安全 null-key &amp; null-value<br>迭代器</p>
+<h4 id="如何决定使用HashMap还是TreeMap"><a href="#如何决定使用HashMap还是TreeMap" class="headerlink" title="如何决定使用HashMap还是TreeMap"></a>如何决定使用HashMap还是TreeMap</h4><p>HashMap 查询<br>TreeMap 增加、快速创建</p>
+<h4 id="说下HashMap的实现原理"><a href="#说下HashMap的实现原理" class="headerlink" title="说下HashMap的实现原理"></a>说下HashMap的实现原理</h4><p>数组加列表，拉链法，加载因子、扩容</p>
+<h4 id="说下HashSet的实现原理"><a href="#说下HashSet的实现原理" class="headerlink" title="说下HashSet的实现原理"></a>说下HashSet的实现原理</h4><p>使用HashMap实现</p>
+<h4 id="ArrayList和LinkedList的区别？"><a href="#ArrayList和LinkedList的区别？" class="headerlink" title="ArrayList和LinkedList的区别？"></a>ArrayList和LinkedList的区别？</h4><p>ArrayList使用数组实现，查询O(1),增加O(1)，删除O(n)<br>LinkedList使用链表实现，查询O(n)，增加O(1)，删除O(1）</p>
+<h4 id="如何实现数组和List之间的转换？"><a href="#如何实现数组和List之间的转换？" class="headerlink" title="如何实现数组和List之间的转换？"></a>如何实现数组和List之间的转换？</h4><p>toArray()<br>new Array() == Arrays.asList();<br>new List() + addlist</p>
+<h4 id="ArrrayList和Vector的区别？"><a href="#ArrrayList和Vector的区别？" class="headerlink" title="ArrrayList和Vector的区别？"></a>ArrrayList和Vector的区别？</h4><p>Vector是线程安全</p>
+<h4 id="Queue中poll-和remove-有什么区别"><a href="#Queue中poll-和remove-有什么区别" class="headerlink" title="Queue中poll() 和remove()有什么区别"></a>Queue中poll() 和remove()有什么区别</h4><p>当Queue为空的处理方式不一样 </p>
+<h4 id="哪些集合类是线程安全的"><a href="#哪些集合类是线程安全的" class="headerlink" title="哪些集合类是线程安全的"></a>哪些集合类是线程安全的</h4><p>HashTable Vector </p>
+<h4 id="迭代器Iterator是什么？"><a href="#迭代器Iterator是什么？" class="headerlink" title="迭代器Iterator是什么？"></a>迭代器Iterator是什么？</h4><p>一个接口 hasNext next remove</p>
+<h4 id="Iterator怎么使用，有什么特点"><a href="#Iterator怎么使用，有什么特点" class="headerlink" title="Iterator怎么使用，有什么特点"></a>Iterator怎么使用，有什么特点</h4><p>统一了遍历方式</p>
+<h4 id="Iterator和ListIterator有什么区别"><a href="#Iterator和ListIterator有什么区别" class="headerlink" title="Iterator和ListIterator有什么区别"></a>Iterator和ListIterator有什么区别</h4><p>索引，add，逆向遍历，set</p>
+<h4 id="怎么确保一个集合不能被修改"><a href="#怎么确保一个集合不能被修改" class="headerlink" title="怎么确保一个集合不能被修改"></a>怎么确保一个集合不能被修改</h4><p>Collections.unmodifiableMap</p>
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/09/初到杭州/" rel="next" title="初到杭州">
+                <i class="fa fa-chevron-left"></i> 初到杭州
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Axlecho</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/axlecho" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:axlecho@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/axlecho" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-基础"><span class="nav-number">1.</span> <span class="nav-text">Java 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK和JRE有什么区别？"><span class="nav-number">1.0.1.</span> <span class="nav-text">JDK和JRE有什么区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#和equals的区别是什么？"><span class="nav-number">1.0.2.</span> <span class="nav-text">==和equals的区别是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#两个对象的hashCode-相同，则equal-也一定为true，对吗？"><span class="nav-number">1.0.3.</span> <span class="nav-text">两个对象的hashCode()相同，则equal()也一定为true，对吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#final在Java中有什么作用？"><span class="nav-number">1.0.4.</span> <span class="nav-text">final在Java中有什么作用？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java中的Math-round-1-5-等于多少？"><span class="nav-number">1.0.5.</span> <span class="nav-text">Java中的Math.round(-1.5)等于多少？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String属于基础的数据类型吗？"><span class="nav-number">1.0.6.</span> <span class="nav-text">String属于基础的数据类型吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java中操作字符串都有哪些类？他们之间有什么区别？"><span class="nav-number">1.0.7.</span> <span class="nav-text">Java中操作字符串都有哪些类？他们之间有什么区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String-str-”i”-与-String-str-new-String-“i”-一样吗？"><span class="nav-number">1.0.8.</span> <span class="nav-text">String str=”i” 与 String str = new String(“i”)一样吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何将字符串反转？"><span class="nav-number">1.0.9.</span> <span class="nav-text">如何将字符串反转？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String类的常用方法都有哪些？"><span class="nav-number">1.0.10.</span> <span class="nav-text">String类的常用方法都有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象类必须要有抽象方法吗？"><span class="nav-number">1.0.11.</span> <span class="nav-text">抽象类必须要有抽象方法吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#普通类和抽象类有哪些区别？"><span class="nav-number">1.0.12.</span> <span class="nav-text">普通类和抽象类有哪些区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象类能使用final修饰吗？"><span class="nav-number">1.0.13.</span> <span class="nav-text">抽象类能使用final修饰吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接口和抽象类有什么区别？"><span class="nav-number">1.0.14.</span> <span class="nav-text">接口和抽象类有什么区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java中IO流分为几种"><span class="nav-number">1.0.15.</span> <span class="nav-text">Java中IO流分为几种</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BIO、NIO、AIO有什么区别"><span class="nav-number">1.0.16.</span> <span class="nav-text">BIO、NIO、AIO有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Files的常用方法都有哪些"><span class="nav-number">1.0.17.</span> <span class="nav-text">Files的常用方法都有哪些</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">2.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#java容器都有哪些？"><span class="nav-number">2.0.1.</span> <span class="nav-text">java容器都有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collection和Collections有什么区别"><span class="nav-number">2.0.2.</span> <span class="nav-text">Collection和Collections有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List、Set、Map之间的区别是什么"><span class="nav-number">2.0.3.</span> <span class="nav-text">List、Set、Map之间的区别是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashMap和Hashtable有什么区别"><span class="nav-number">2.0.4.</span> <span class="nav-text">HashMap和Hashtable有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何决定使用HashMap还是TreeMap"><span class="nav-number">2.0.5.</span> <span class="nav-text">如何决定使用HashMap还是TreeMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#说下HashMap的实现原理"><span class="nav-number">2.0.6.</span> <span class="nav-text">说下HashMap的实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#说下HashSet的实现原理"><span class="nav-number">2.0.7.</span> <span class="nav-text">说下HashSet的实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrayList和LinkedList的区别？"><span class="nav-number">2.0.8.</span> <span class="nav-text">ArrayList和LinkedList的区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何实现数组和List之间的转换？"><span class="nav-number">2.0.9.</span> <span class="nav-text">如何实现数组和List之间的转换？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrrayList和Vector的区别？"><span class="nav-number">2.0.10.</span> <span class="nav-text">ArrrayList和Vector的区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Queue中poll-和remove-有什么区别"><span class="nav-number">2.0.11.</span> <span class="nav-text">Queue中poll() 和remove()有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#哪些集合类是线程安全的"><span class="nav-number">2.0.12.</span> <span class="nav-text">哪些集合类是线程安全的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#迭代器Iterator是什么？"><span class="nav-number">2.0.13.</span> <span class="nav-text">迭代器Iterator是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Iterator怎么使用，有什么特点"><span class="nav-number">2.0.14.</span> <span class="nav-text">Iterator怎么使用，有什么特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Iterator和ListIterator有什么区别"><span class="nav-number">2.0.15.</span> <span class="nav-text">Iterator和ListIterator有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#怎么确保一个集合不能被修改"><span class="nav-number">2.0.16.</span> <span class="nav-text">怎么确保一个集合不能被修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">3.</span> <span class="nav-text">多线程</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Axlecho</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android_framework,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。 音频的基本知识很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）音轨有很多属性如  采样率(sampleRate) 编码格式(format) 通道(channel">
+<meta name="keywords" content="android_framework">
+<meta property="og:type" content="article">
+<meta property="og:title" content="audio 混音">
+<meta property="og:url" content="http://axlecho.com/2019/01/19/Android_Audio/audio-混音/index.html">
+<meta property="og:site_name" content="念念不忘 必有回响">
+<meta property="og:description" content="android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。 音频的基本知识很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）音轨有很多属性如  采样率(sampleRate) 编码格式(format) 通道(channel">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-02-12T04:50:08.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="audio 混音">
+<meta name="twitter:description" content="android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。 音频的基本知识很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）音轨有很多属性如  采样率(sampleRate) 编码格式(format) 通道(channel">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://axlecho.com/2019/01/19/Android_Audio/audio-混音/">
+
+
+
+
+
+  <title>audio 混音 | 念念不忘 必有回响</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">念念不忘 必有回响</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/19/Android_Audio/audio-混音/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="念念不忘 必有回响">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">audio 混音</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-19T22:09:41+08:00">
+                2019-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。</p>
+<h2 id="音频的基本知识"><a href="#音频的基本知识" class="headerlink" title="音频的基本知识"></a>音频的基本知识</h2><p>很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）<br>音轨有很多属性如</p>
+<ul>
+<li>采样率(sampleRate)</li>
+<li>编码格式(format)</li>
+<li>通道(channelCount)</li>
+<li>总帧数(frameCount) ?</li>
+<li>音量(volume) ?</li>
+<li>播放速率(playbackRate) ?</li>
+</ul>
+<p>前三个比较重要，具体去了解一下</p>
+<h4 id="采样率"><a href="#采样率" class="headerlink" title="采样率"></a>采样率</h4><p>看到知乎上有一个回答，感觉挺形象的–<a href="http://www.zhihu.com/question/20351692?utm_campaign=rss&amp;utm_medium=rss&amp;utm_source=rss&amp;utm_content=title" target="_blank" rel="noopener">什么是音频的采样率？采样率和音质有没有关系？</a></p>
+<p>一般的采样率固定在<code>44100HZ</code>(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音。<br>还有一个采样率<code>48000HZ</code>也比较常见</p>
+<h4 id="编码格式"><a href="#编码格式" class="headerlink" title="编码格式"></a>编码格式</h4><p>指每次采样所用的bit数，比如8bit，16bit<br>从命名来看，android好像用来8bit，16bit跟32bit</p>
+<ul>
+<li>AUDIO_FORMAT_PCM_16_BIT</li>
+<li>AUDIO_FORMAT_PCM_8_BIT</li>
+<li>AUDIO_FORMAT_PCM_32_BIT</li>
+<li>AUDIO_FORMAT_PCM_8_24_BIT</li>
+<li>AUDIO_FORMAT_PCM_FLOAT</li>
+<li>AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?</li>
+<li>AUDIO_FORMAT_PCM_16_BIT_OFFLOAD ?</li>
+</ul>
+<h4 id="通道"><a href="#通道" class="headerlink" title="通道"></a>通道</h4><p>就是两个耳机有不同的声音？？<br>一般有单通道(mono) 双通道(stereo)</p>
+<h2 id="AudioMixer混音过程"><a href="#AudioMixer混音过程" class="headerlink" title="AudioMixer混音过程"></a>AudioMixer混音过程</h2><p>参考博客园上的一篇博客<a href="http://www.tuicool.com/articles/2mqUjav" target="_blank" rel="noopener">[Android] 混音器AudioMixer</a></p>
+<h4 id="AUDIOMIXER的创建"><a href="#AUDIOMIXER的创建" class="headerlink" title="AUDIOMIXER的创建"></a>AUDIOMIXER的创建</h4><p>mNormalFrameCount为输入buffer大小？？mSampleRate为输出采样率<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">AudioFlinger::MixerThread::MixerThread(...)</span><br><span class="line">    : ...&#123;</span><br><span class="line">    ...</span><br><span class="line">    mAudioMixer = <span class="keyword">new</span> AudioMixer(mNormalFrameCount, mSampleRate);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h4><p>在MixerThread的prepareTracks_l会对AudioMixer的参数进行配置，如音量，输入源，混音参数等。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTracks_l(...)&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 设置输入源  name是引索集合，track是mActiveTracks？？</span></span><br><span class="line">    mAudioMixer-&gt;setBufferProvider(name, track);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启用该启用的音轨并更新状态</span></span><br><span class="line">    mAudioMixer-&gt;enable(name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置左右音量</span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name, param, AudioMixer::VOLUME0, &amp;vlf);</span><br><span class="line">    mAudioMixer-&gt;setParameter(name, param, AudioMixer::VOLUME1, &amp;vrf);</span><br><span class="line">    mAudioMixer-&gt;setParameter(name, param, AudioMixer::AUXLEVEL, &amp;vaf);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置混音格式</span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::FORMAT, (<span class="keyword">void</span> *)track-&gt;format());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置通道数</span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::CHANNEL_MASK, (<span class="keyword">void</span> *)(<span class="keyword">uintptr_t</span>)track-&gt;channelMask());</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 设置采样率</span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name,AudioMixer::RESAMPLE,AudioMixer::SAMPLE_RATE,(<span class="keyword">void</span> *)(<span class="keyword">uintptr_t</span>)reqSampleRate);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置播放速率  </span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name,AudioMixer::TIMESTRETCH,AudioMixer::PLAYBACK_RATE,&amp;playbackRate);</span><br><span class="line"></span><br><span class="line">    ... <span class="comment">// mark一下</span></span><br><span class="line">    <span class="keyword">if</span> (mMixerBufferEnabled &amp;&amp; (track-&gt;mainBuffer() == mSinkBuffer || track-&gt;mainBuffer() == mMixerBuffer)) &#123;</span><br><span class="line">         mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::MIXER_FORMAT, (<span class="keyword">void</span> *)mMixerBufferFormat);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置输出</span></span><br><span class="line">    mAudioMixer-&gt;setParameter(name,AudioMixer::TRACK,AudioMixer::MAIN_BUFFER, (<span class="keyword">void</span> *)mMixerBuffer);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="混音函数选择"><a href="#混音函数选择" class="headerlink" title="混音函数选择"></a>混音函数选择</h4><p>先计算track的flags，然后通过flags来判断要混音的函数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> AudioMixer::process__validate(<span class="keyword">state_t</span>* state, <span class="keyword">int64_t</span> pts)</span><br><span class="line">&#123;</span><br><span class="line">    ...(计算需要invalidate的track)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主要通过下列几个参数去判断</span></span><br><span class="line">    <span class="keyword">bool</span> all16BitsStereoNoResample = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">bool</span> resampling = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">bool</span> volumeRamp = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">uint32_t</span> en = state-&gt;enabledTracks;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (en) &#123;    <span class="comment">//对所有需要进行混音的track</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> i = <span class="number">31</span> - __builtin_clz(en); <span class="comment">//取出最高位为1的bit</span></span><br><span class="line">        en &amp;= ~(<span class="number">1</span>&lt;&lt;i);  <span class="comment">//把这一位置为0</span></span><br><span class="line"></span><br><span class="line">        countActiveTracks++;</span><br><span class="line">        <span class="keyword">track_t</span>&amp; t = state-&gt;tracks[i];  <span class="comment">//取出来track</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算flags</span></span><br><span class="line">        <span class="keyword">uint32_t</span> n = <span class="number">0</span>;</span><br><span class="line">        n |= NEEDS_CHANNEL_1 + t.channelCount - <span class="number">1</span>;    <span class="comment">//至少有一个channel需要混音</span></span><br><span class="line">        n |= NEEDS_FORMAT_16;          <span class="comment">//必须为16bit PCM</span></span><br><span class="line">        n |= t.doesResample() ? NEEDS_RESAMPLE_ENABLED : NEEDS_RESAMPLE_DISABLED; <span class="comment">//是否需要重采样</span></span><br><span class="line">        <span class="keyword">if</span> (t.auxLevel != <span class="number">0</span> &amp;&amp; t.auxBuffer != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            n |= NEEDS_AUX_ENABLED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (t.volumeInc[<span class="number">0</span>]|t.volumeInc[<span class="number">1</span>]) &#123;</span><br><span class="line">            volumeRamp = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!t.doesResample() &amp;&amp; t.volumeRL == <span class="number">0</span>) &#123;</span><br><span class="line">            n |= NEEDS_MUTE_ENABLED;</span><br><span class="line">        &#125;</span><br><span class="line">        t.needs = n;    <span class="comment">//更新track flag</span></span><br><span class="line"></span><br><span class="line">        ...(通过flags选择混音函数)</span><br><span class="line"></span><br><span class="line">        <span class="comment">//这里调用一次进行混音，后续会在MixerThread的threadLoop_mix内调用</span></span><br><span class="line">        state-&gt;hook(state, pts);  </span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="混音"><a href="#混音" class="headerlink" title="混音"></a>混音</h4><p>就是像搓面把几根面搓成一团</p>
+<p>在android里使用process_xxx函数来实现，几个方法大同小异(不是我说的),举个process__genericResampling当例子。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// generic code with resampling</span></span><br><span class="line"><span class="keyword">void</span> AudioMixer::process__genericResampling(<span class="keyword">state_t</span>* state, <span class="keyword">int64_t</span> pts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int32_t</span>* <span class="keyword">const</span> outTemp = state-&gt;outputTemp;</span><br><span class="line">    <span class="keyword">size_t</span> numFrames = state-&gt;frameCount;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint32_t</span> e0 = state-&gt;enabledTracks;</span><br><span class="line">    <span class="keyword">while</span> (e0) &#123;</span><br><span class="line">        ...(选出有相同mainBuffer的track集合e1)</span><br><span class="line">        <span class="keyword">int32_t</span> *out = t1.mainBuffer;</span><br><span class="line">        <span class="built_in">memset</span>(outTemp, <span class="number">0</span>, size);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 搓面</span></span><br><span class="line">        <span class="keyword">while</span> (e1) &#123;</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">int</span> i = <span class="number">31</span> - __builtin_clz(e1);</span><br><span class="line">            e1 &amp;= ~(<span class="number">1</span>&lt;&lt;i);</span><br><span class="line">            <span class="keyword">track_t</span>&amp; t = state-&gt;tracks[i];</span><br><span class="line">            <span class="keyword">int32_t</span> *aux = <span class="literal">NULL</span>;</span><br><span class="line">            <span class="keyword">if</span> (CC_UNLIKELY(t.needs &amp; NEEDS_AUX)) &#123;</span><br><span class="line">                aux = t.auxBuffer;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// this is a little goofy, on the resampling case we don't</span></span><br><span class="line">            <span class="comment">// acquire/release the buffers because it's done by</span></span><br><span class="line">            <span class="comment">// the resampler.</span></span><br><span class="line">            <span class="keyword">if</span> (t.needs &amp; NEEDS_RESAMPLE) &#123;</span><br><span class="line">                t.resampler-&gt;setPTS(pts);</span><br><span class="line">                t.hook(&amp;t, outTemp, numFrames, state-&gt;resampleTemp, aux);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;...&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>真正的采样在这(最终的采样在resample)<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> AudioMixer::track__genericResample(<span class="keyword">track_t</span>* t, <span class="keyword">int32_t</span>* out, <span class="keyword">size_t</span> outFrameCount,</span><br><span class="line">        <span class="keyword">int32_t</span>* temp, <span class="keyword">int32_t</span>* aux)</span><br><span class="line">&#123;</span><br><span class="line">    ALOGVV(<span class="string">"track__genericResample\n"</span>);</span><br><span class="line">    t-&gt;resampler-&gt;setSampleRate(t-&gt;sampleRate);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ramp gain - resample to temp buffer and scale/mix in 2nd step</span></span><br><span class="line">    <span class="keyword">if</span> (aux != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ...(设置ramp音量)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (CC_UNLIKELY(t-&gt;volumeInc[<span class="number">0</span>]|t-&gt;volumeInc[<span class="number">1</span>])) &#123;</span><br><span class="line">            t-&gt;resampler-&gt;setVolume(UNITY_GAIN_FLOAT, UNITY_GAIN_FLOAT);</span><br><span class="line">            <span class="built_in">memset</span>(temp, <span class="number">0</span>, outFrameCount * MAX_NUM_CHANNELS * <span class="keyword">sizeof</span>(<span class="keyword">int32_t</span>));</span><br><span class="line">            t-&gt;resampler-&gt;resample(temp, outFrameCount, t-&gt;bufferProvider);</span><br><span class="line">            volumeRampStereo(t, out, outFrameCount, temp, aux);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// constant gain</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            t-&gt;resampler-&gt;setVolume(t-&gt;mVolume[<span class="number">0</span>], t-&gt;mVolume[<span class="number">1</span>]);</span><br><span class="line">            t-&gt;resampler-&gt;resample(out, outFrameCount, t-&gt;bufferProvider);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android-framework/" rel="tag"># android_framework</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/19/Android_Audio/蓝牙设备播放流程/" rel="next" title="蓝牙设备播放流程">
+                <i class="fa fa-chevron-left"></i> 蓝牙设备播放流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/19/记事/公司年会/" rel="prev" title="公司年会">
+                公司年会 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Axlecho</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/axlecho" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:axlecho@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/axlecho" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#音频的基本知识"><span class="nav-number">1.</span> <span class="nav-text">音频的基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#采样率"><span class="nav-number">1.0.1.</span> <span class="nav-text">采样率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编码格式"><span class="nav-number">1.0.2.</span> <span class="nav-text">编码格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通道"><span class="nav-number">1.0.3.</span> <span class="nav-text">通道</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#AudioMixer混音过程"><span class="nav-number">2.</span> <span class="nav-text">AudioMixer混音过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AUDIOMIXER的创建"><span class="nav-number">2.0.1.</span> <span class="nav-text">AUDIOMIXER的创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置参数"><span class="nav-number">2.0.2.</span> <span class="nav-text">配置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#混音函数选择"><span class="nav-number">2.0.3.</span> <span class="nav-text">混音函数选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#混音"><span class="nav-number">2.0.4.</span> <span class="nav-text">混音</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Axlecho</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

@@ -1,12 +1,15 @@
 ---
 title: surfaceflinger学习--Binder原理
 date: 2019-01-12 20:34:49
+categories: android
 tags: 
-- android_framework
-cover: /images/ape_fwk_graphics.png
+  - framework
+  - graphics
 ---
 
-看到老罗android之旅分析android源码简直逆天，跟代码都跟到驱动层去了，看了半天连个大概都看不懂，还有《深入理解Android》，跟一段代码跟着跟着都不知道自己在看啥。发现还是要对系统框架有个大概的了解，再去看这些东西比较好。
+要对系统框架有个大概的了解，再去看这些东西比较好，参考：
+《老罗android之旅分析android源码》
+《深入理解Android》
 
 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。
 
@@ -14,7 +17,7 @@ SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。
 *   上层的View系统
 *   下层的Display系统
 
-首先是Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。
+Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。
 
 先放一张IBinder的图
 **BpBinder**与**BBinder**是一对，用于传输层的通信

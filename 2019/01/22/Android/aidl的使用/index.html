@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh">
+<html class="theme-next pisces use-motion" lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android,">
+  <meta name="keywords" content="android,framework,">
 
 
 
@@ -80,14 +80,14 @@
 
 
 <meta name="description" content="接口文件aidl123456package com.zst.xposed.halo.floatingwindow3.services;interface IActivityManagerService &amp;#123;    void snapActivityTop(int id);    void snapActivityBottom(int id);&amp;#125; manager1234567891">
-<meta name="keywords" content="android">
+<meta name="keywords" content="android,framework">
 <meta property="og:type" content="article">
 <meta property="og:title" content="aidl的使用">
 <meta property="og:url" content="http://axlecho.com/2019/01/22/Android/aidl的使用/index.html">
 <meta property="og:site_name" content="念念不忘 必有回响">
 <meta property="og:description" content="接口文件aidl123456package com.zst.xposed.halo.floatingwindow3.services;interface IActivityManagerService &amp;#123;    void snapActivityTop(int id);    void snapActivityBottom(int id);&amp;#125; manager1234567891">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2019-07-07T11:04:16.048Z">
+<meta property="og:updated_time" content="2019-07-08T13:20:12.814Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="aidl的使用">
 <meta name="twitter:description" content="接口文件aidl123456package com.zst.xposed.halo.floatingwindow3.services;interface IActivityManagerService &amp;#123;    void snapActivityTop(int id);    void snapActivityBottom(int id);&amp;#125; manager1234567891">
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -303,6 +303,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -331,8 +353,9 @@
 
       
         <p>接口文件aidl<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IActivityManagerService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">snapActivityTop</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">snapActivityBottom</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>manager<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"><span class="keyword">import</span> com.zst.xposed.halo.floatingwindow3.IActivityManagerService;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivitManager</span> <span class="keyword">extends</span> <span class="title">IActivityManagerService</span>.<span class="title">Stub</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ActivityManagerService mService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ActivitManager</span><span class="params">(ActivityManagerService service)</span> </span>&#123;</span><br><span class="line">        mService = service;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityTop</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityBottom</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>manager<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"><span class="keyword">import</span> com.zst.xposed.halo.floatingwindow3.IActivityManagerService;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManager</span> <span class="keyword">extends</span> <span class="title">IActivityManagerService</span>.<span class="title">Stub</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ActivityManagerService mService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ActivitManager</span><span class="params">(ActivityManagerService service)</span> </span>&#123;</span><br><span class="line">        mService = service;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityTop</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityBottom</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>service<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.app.Service;</span><br><span class="line"><span class="keyword">import</span> android.content.Intent;</span><br><span class="line"><span class="keyword">import</span> android.os.IBinder;</span><br><span class="line"><span class="keyword">import</span> android.support.annotation.Nullable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ActivitManager(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>client<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager manager = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">private</span> ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">        manager = (ActivityManager)MyAIDLService.Stub.asInterface(service);</span><br><span class="line">        manager.snapActivityTop(TOP)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</span><br><span class="line">        manager = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -351,6 +374,8 @@
         <div class="post-tags">
           
             <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/framework/" rel="tag"># framework</a>
           
         </div>
       
@@ -454,7 +479,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -465,7 +490,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -488,12 +513,6 @@
                     <a href="mailto:axlecho@gmail.com" target="_blank" title="E-Mail">
                       
                         <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://plus.google.com/axlecho" target="_blank" title="Google">
-                      
-                        <i class="fa fa-fw fa-google"></i>Google</a>
                   </span>
                 
             </div>
@@ -542,7 +561,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
 
 
 
@@ -641,6 +660,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

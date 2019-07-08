@@ -557,7 +557,7 @@
   <entry>
     <title><![CDATA[Charlotte]]></title>
     <url>%2F2019%2F01%2F19%2F%E5%8A%A8%E6%BC%AB%2FCharlotte%2F</url>
-    <content type="text"><![CDATA[console.error("Error: [hexo-tag-aplayer] Unrecognized tag argument(2): autoplay=false"); 好久没看到好一点的动漫了，感觉自己是要渐渐脱宅的节奏啊。昨天看完后有好多感想，老想写个post出来，到今天就基本上情节都忘光了，唉~不过总体来讲还是很不错的，主要是没什么讨厌的角色，也没什么虐心的剧情，结局也挺happy，看完没什么感觉但就觉得还可以的动漫（感觉跟凉宫一样类型的）]]></content>
+    <content type="text"><![CDATA[var ap = new APlayer({ element: document.getElementById("aplayer-ckUuoGtp"), narrow: false, autoplay: false, showlrc: false, music: { title: "她的睫毛", author: "周杰伦", url: "http://link.hhtjim.com/163/34077762.mp3", pic: "http://home.ustc.edu.cn/~mmmwhy/jay.jpg", lrc: "" } }); window.aplayers || (window.aplayers = []); window.aplayers.push(ap); 好久没看到好一点的动漫了，感觉自己是要渐渐脱宅的节奏啊。昨天看完后有好多感想，老想写个post出来，到今天就基本上情节都忘光了，唉~不过总体来讲还是很不错的，主要是没什么讨厌的角色，也没什么虐心的剧情，结局也挺happy，看完没什么感觉但就觉得还可以的动漫（感觉跟凉宫一样类型的）]]></content>
       <categories>
         <category>动漫</category>
       </categories>

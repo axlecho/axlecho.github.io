@@ -330,15 +330,16 @@
       
         
           
-          以前打log喜欢用toString，然后自己重写toString的方法 比如有个类1234567Diamond class Diamod &#123;      String color;      String size;      @Override public String toString
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/通过反射去获取类的属性/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>以前打log喜欢用toString，然后自己重写toString的方法 比如有个类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Diamond <span class="class"><span class="keyword">class</span> <span class="title">Diamod</span> </span>&#123;  </span><br><span class="line">    String color;  </span><br><span class="line">    String size;  </span><br><span class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="string">"color:"</span> + color + <span class="string">" size:"</span> + size; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>后来发现属性一多特别麻烦<br>想到反射可以查对于的属性名跟属性值，刚好可以用在这里(没处理异常)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 获取该类的所有属性值域 </span></span><br><span class="line">    Field[] fields = <span class="keyword">this</span>.getClass().getFields(); </span><br><span class="line">    <span class="keyword">for</span>(Field field : fields) &#123; </span><br><span class="line">        <span class="comment">// 获取该属性名称与值 </span></span><br><span class="line">        log += filed.getName() + filed.get(<span class="keyword">this</span>); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> log; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getFields public Field[] getFields() throws SecurityException</span><br></pre></td></tr></table></figure>
+<p>返回该类或接口所有访问权限为public的属性</p>
+<p>但getFields()会把父类的域也打印出来，有时候还是希望父类子类分开 发现有另外一个方法getDeclaredFields()<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getDeclaredFields：</span><br><span class="line"><span class="keyword">public</span> Field[] getDeclaredFields() <span class="keyword">throws</span> SecurityException</span><br></pre></td></tr></table></figure></p>
+<p>返回接口或类定义的所有属性的<code>Fileld</code>对象数组，包括public,protected,default(package),private访问权限的属性，但不包括继承的属性。数组里的元素没有经过排序，也没有特殊的顺序。假如类或接口没有声明属性，或该类代表一个原始的类型(Long等),array class或void，该方法返回一个长度为0的数组。</p>
+<p>反射的跟权限访问有关系，跟final，static修饰符有关，具体关系以后在去探究。反射跟继承也有很多问题。有空测一下这东西。</p>
+
+          
         
       
     </div>
@@ -456,18 +457,20 @@
       
         
           
-          Chrome Custom Tabs 哈哈，听到一个印度银在讲Android开发的东西，印度英语真有趣 一个加强版的webview，可以自动填充，共享cookies，更友好的界面，以及提前加载。
+            <p><a href="https://www.youtube.com/watch?v=QOxIdbNwpx0" target="_blank" rel="noopener">Chrome Custom Tabs </a><br>哈哈，听到一个印度银在讲Android开发的东西，印度英语真有趣 一个加强版的webview，可以自动填充，共享cookies，更友好的界面，以及提前加载。</p>
+<hr>
+<p>靠，几千年没更新了。。 又是这货Colt McAnlis 传送门</p>
+<p>ComponentCallbacks</p>
+<p>后台进程在低内存的情况下的自救手段 自己手动指定释放内存的控件</p>
+<hr>
+<p>依然Colt McAnlis <a href="https://www.youtube.com/watch?v=BkbHeFHn8JY" target="_blank" rel="noopener">referenced objects</a></p>
+<p>referenced objects可能到导致内存泄漏，</p>
+<p>不要在异步回调中使用资源(view)<br>不要在静态对象中使用资源(view)<br>不要在WeekHashmap中使用(view)<br>内存泄漏工具–Allocation Tracker</p>
+<hr>
+<p>又是几千年的没更新。。<br><a href="https://www.youtube.com/watch?v=NJsq0TU0qeg" target="_blank" rel="noopener">正确使用service</a><br>还是这货Colt McAnlis</p>
+<p>成对使用startservice,stopservice &amp;&amp; bindservice,unbindservice</p>
 
-靠，几千年没更新了。。 又是这货Colt McAnlis 传送门
-ComponentCallbacks
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/每天一youtube/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -585,17 +588,10 @@ ComponentCallbacks
       
         
           
-          repo是git仓库管理工具，一般用repo sync去更新代码，实质上是在每个仓库下执行git pull,这样就比较蛋疼了，当你本地有提交的话它会自动帮你merge进去，还装做一切都ok的样子。在被坑了数遍之后，终于发现了这个问题。
-彻底的同步服务器代码
-12345$ repo sync -d# 
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/repo的强制更新/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>repo是git仓库管理工具，一般用<code>repo sync</code>去更新代码，实质上是在每个仓库下执行<code>git pull</code>,这样就比较蛋疼了，当你本地有提交的话它会自动帮你merge进去，还装做一切都ok的样子。在被坑了数遍之后，终于发现了这个问题。</p>
+<p>彻底的同步服务器代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> repo sync -d</span><br><span class="line"><span class="meta">#</span> Remove all working directory (and staged) changes.</span><br><span class="line"><span class="meta">$</span> repo forall -c 'git reset --hard'   </span><br><span class="line"><span class="meta">#</span> Clean untracked files</span><br><span class="line"><span class="meta">$</span> repo forall -c 'git clean -f -d'</span><br></pre></td></tr></table></figure>
+          
         
       
     </div>

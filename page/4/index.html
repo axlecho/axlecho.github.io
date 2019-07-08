@@ -330,17 +330,26 @@
       
         
           
-          最近两天研究了下移动金融的东西，水是相当的深。
-NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。
-乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/Android_Nfc/NFC金融/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>最近两天研究了下移动金融的东西，水是相当的深。</p>
+<p>NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。</p>
+<p>乱七八糟的卡<br>说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。<br>et.新的银行卡，工卡，公交卡等，基本都是这玩意了。</p>
+<p>另外的还有身份识别卡（Identification Card），比较老的只读卡。<br>et.老的门禁卡，停车卡</p>
+<p>还有一个很乱的概念**cpu卡,不清楚是什么的东西</p>
+<h5 id="ic卡"><a href="#ic卡" class="headerlink" title="ic卡"></a>ic卡</h5><p>ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。<br>接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。</p>
+<p>ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。</p>
+<h5 id="nfc卡"><a href="#nfc卡" class="headerlink" title="nfc卡"></a>nfc卡</h5><p>nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。</p>
+<p>1<br>近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。<br>nfc卡的种类，其实就是各个公司基于标准的实现</p>
+<p>NfcA — ISO 14443-3A<br>NfcB — ISO 14443-3B<br>NfcF — JIS 6319-4<br>NfcV — ISO 15693<br>IsoDep — ISO 14443-4<br>M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。</p>
+<p>PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的<br>【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？</p>
+<p>卡模拟<br>卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。<br>这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。</p>
+<h5 id="SE"><a href="#SE" class="headerlink" title="SE"></a>SE</h5><p>安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。</p>
+<p>现在主要有三种形态</p>
+<p>内置SE模式（eSE）<br>UICC（SIM卡）<br>AdvancedSecurity SD card（ASSD SD卡）</p>
+<h5 id="模拟的卡（APPLET"><a href="#模拟的卡（APPLET" class="headerlink" title="模拟的卡（APPLET)"></a>模拟的卡（APPLET)</h5><p>模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet<br>概念还是很模糊 – 比如所APPLET是怎么加载到SE上的</p>
+<h5 id="TSM"><a href="#TSM" class="headerlink" title="TSM"></a>TSM</h5><p>发卡服务器,APPLET由TSM来发送安装。。</p>
+<p>SMARTCARD<br>EMV<br>PBOC</p>
+
+          
         
       
     </div>
@@ -480,20 +489,13 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          避免自己对自己的言而无信，会把目标写在这里，当作对某猪头的诚偌。以上
-（后续补充）
-团子千本樱
-吉他社app
-准备后路
+            <p>避免自己对自己的言而无信，会把目标写在这里，当作对某猪头的诚偌。<br>以上</p>
+<p>（后续补充）</p>
+<p>团子<br>千本樱</p>
+<p>吉他社app</p>
+<p>准备后路</p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/目标/目标/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -633,16 +635,18 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          国庆放假，不出乎自己所料的又宅了7天，各种时间的颠倒，待在小屋子里，白天也要开着灯，感觉莫名的安心，想想明天要去坐地铁上班就害怕。。(应该是今天早上）
-上班什么的其实没什么，相反的倒是十分喜欢写代码，只是对出门产生了恐惧，害怕去接触各种各样的人，每天走得很近，却不知道他们在想什么，只得小心翼翼地说话
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/记事/近日/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>国庆放假，不出乎自己所料的又宅了7天，各种时间的颠倒，待在小屋子里，白天也要开着灯，感觉莫名的安心，想想明天要去坐地铁上班就害怕。。(应该是今天早上）</p>
+<p>上班什么的其实没什么，相反的倒是十分喜欢写代码，只是对出门产生了恐惧，害怕去接触各种各样的人，每天走得很近，却不知道他们在想什么，只得小心翼翼地说话，小心翼翼地做事。之前想找个小的创业公司，也是因为人少的话或许会简单点吧。（可以理解动漫里那些宅么了，不过老子是有锻炼的好么）</p>
+<p>国庆过后就是一年了，之前的计划的一年半也只剩半年，也是该想想以后的路要怎么走了，离开的想法占了很大一部分，但是去哪还不是很确定，但确定的是如果离开深圳，下一个城市也必须是靠海的地方。</p>
+<p>总之，先给自己定些小目标，不过想做的事情太多了，接下来的一个星期要理一理，看看什么是自己真正想要的</p>
+<p>老爸说，可能20年后还是在老家干着同样的事情，叫我不要学他，其实那种生活才能让人安心下来，我很羡慕那种生活，不过要是真是有这种生活，我应该会是受不了的吧，所以人贱就是贱，当得到了自己想要的东西时，却发现自己根本不知道自己想要什么。</p>
+<p>不过另外一方面，虽然不是全部，以前想要的东西基本都有了，比如小时候经常想要的电脑，吉他，自行车，还有之前对一加也頗有期待的，也是各种巧合。。这就是大姐说的念念不忘，冥冥之中，必有回响吧。所以，对那些多么不切实际的想法，只要肯坚持，必定能实现的。</p>
+<p>最近对自杀的幻想次数貌似有所增加，人生的意义这个问题老是困扰着我，但这个问题老早就有了答案，那就是(c + d + e + f + g + a + b + …) * 0 = 0; 人生是没有意义的，但是仍在想假设境第还在会是怎样的，他的人生会是彩色的还是灰白的，虽然这个假设半毛钱意义都没有，每次回到家，特别害怕碰到，他奶奶，看到我，就开始流泪，说当初如何如何，所以相应的，我也开始害怕起回家了。。</p>
+<p>外面在下雨，一场秋雨一场凉，估计就要开始冷下来了吧，每天听着地铁的尖啸声，听着时雨的moment A rhythm，有时候都怀疑自己是否活着，不管怎么怎么说，开始厌倦了这样的生活</p>
+<p>想要改变，希望自己改变，先祝自己改变顺利。。<br>对了，二姐的生日快到了，想想要送什么吧</p>
+<p>一年之后，仍旧迷茫</p>
+
+          
         
       
     </div>
@@ -782,16 +786,9 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          没有结局真令人不爽啊距交大樱花祭还有半年，好怀念呐看着一群高中生 唉真的老了～
+            <p>没有结局真令人不爽啊<br>距交大樱花祭还有半年，好怀念呐<br>看着一群高中生 唉真的老了～</p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/动漫/樱花庄的宠物女孩/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -931,17 +928,10 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          一口气看完 额 25集，感觉还可以，不过感觉又是一个天坑，还是去看漫画好了。
-一开始感觉脸怪怪的，不过习惯了还好，想想要是能晒晒阳光就不用吃饭的话。。看了网上的评论，貌似还挺高的，但感觉没什么深度。看那外星人还是肉肉的。。唉 难道外星人一定就是肉肉的么。。
+            <p>一口气看完 额 25集，感觉还可以，不过感觉又是一个天坑，还是去看漫画好了。</p>
+<p>一开始感觉脸怪怪的，不过习惯了还好，想想要是能晒晒阳光就不用吃饭的话。。<br>看了网上的评论，貌似还挺高的，但感觉没什么深度。看那外星人还是肉肉的。。唉 难道外星人一定就是肉肉的么。。</p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/动漫/希德尼娅的骑士/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1059,16 +1049,9 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          证书相关12$ openssl x509 -in platform.x509.pem -outform der -out platform.x509.der$ xxd -c 10000 -ps platform.x509.der
+            <p>证书相关<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> openssl x509 -in platform.x509.pem -outform der -out platform.x509.der</span><br><span class="line"><span class="meta">$</span> xxd -c 10000 -ps platform.x509.der</span><br></pre></td></tr></table></figure></p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/Android_Nfc/Nfc学习/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1208,22 +1191,15 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          网瘾少女的妄想
-三次元的乱入
-怀疑人生系列
-程序的暴走
-音乐都不错
-特别喜欢其中的一个场景 既视感
-
+            <p><img src="/images/serial_experiments_lain.jpg" alt="cover"><br>网瘾少女的妄想</p>
+<p>三次元的乱入</p>
+<p>怀疑人生系列</p>
+<p>程序的暴走</p>
+<p>音乐都不错</p>
+<p>特别喜欢其中的一个场景 既视感</p>
+<p><img src="/images/Lain.png" alt="Lain"></p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/动漫/玲音Serial-Experiments-Lain/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1363,21 +1339,15 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          老久没看动漫了，感觉是要脱宅的节奏啊。。。
-机战的动漫很少看，除了鲁鲁跟翠星，不过感觉革命机比前两部差远了。。
-看贴吧把翔子称为智商翔真是贴切（笑死）。。
-第一季的各种展开感觉智商有点跟不上。。
-感觉就白毛撑起了整个革命机valvrave。。
-后面越来越腐了，基佬退散！！！
-不过好在结局还不错的（妹
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/动漫/革命机valvrave/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>老久没看动漫了，感觉是要脱宅的节奏啊。。。</p>
+<p>机战的动漫很少看，除了鲁鲁跟翠星，不过感觉革命机比前两部差远了。。</p>
+<p>看贴吧把翔子称为智商翔真是贴切（笑死）。。</p>
+<p>第一季的各种展开感觉智商有点跟不上。。</p>
+<p>感觉就白毛撑起了整个革命机valvrave。。</p>
+<p>后面越来越腐了，基佬退散！！！</p>
+<p>不过好在结局还不错的（妹妹跟妹控都没领便当，可喜可贺）。。。<br><img src="/images/valvrave.jpg" alt="连坊小路アキラ"></p>
+
+          
         
       
     </div>
@@ -1495,16 +1465,16 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          分屏代码在AOSP其实老早就存在了，就一直没有开启而已，在6.0版本可以通过设置系统属性ro.build.type改为userdebug,并在开发者选项中开启多窗口模式,然后在最近任务上就会个按钮可以实现分屏。
-通过adb命令也可以实现分屏1$ am task resize 25 0 720 108
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/Android/原生分屏原理/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>分屏代码在AOSP其实老早就存在了，就一直没有开启而已，在6.0版本可以通过设置系统属性ro.build.type改为userdebug,并在开发者选项中开启多窗口模式,然后在最近任务上就会个按钮可以实现分屏。</p>
+<p>通过adb命令也可以实现分屏<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> am task resize 25 0 720 1080 1920</span><br></pre></td></tr></table></figure></p>
+<p>在最近任务的调用链<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RecentsActivity#onTaskResize -&gt;</span><br><span class="line">RecentsResizeTaskDialog#placeTasks -&gt;</span><br><span class="line">SystemServicesProxy#resizeTask -&gt; </span><br><span class="line">ActivityManagerNative#resizeTask -&gt; </span><br><span class="line">ActivityManagerService#resizeTask -&gt; </span><br><span class="line">ActivityStackSupervisor#resizeStackLocked</span><br></pre></td></tr></table></figure></p>
+<p>在am的调用链<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Am#runTaskResize-&gt; </span><br><span class="line">ActivityManagerNative#resizeTask -&gt; </span><br><span class="line">ActivityManagerService#resizeTask -&gt; </span><br><span class="line">ActivityStackSupervisor#resizeTaskLocked</span><br></pre></td></tr></table></figure></p>
+<p>ActivityStackSupervisor的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">foundStackWithBounds</span><br><span class="line">ActivityStackSupervisor#moveTaskToStackLocked -&gt;</span><br><span class="line">ActivityStackSupervisor#resizeStackLocked</span><br><span class="line"></span><br><span class="line">ActivityStackSupervisor#moveTaskToStackLocked - &gt; </span><br><span class="line">WindowManagerService#moveTaskToStack</span><br><span class="line"></span><br><span class="line">ActivityStackSupervisor#resizeStackLocked -&gt;</span><br><span class="line">WindowManagerService#resizeStack</span><br></pre></td></tr></table></figure></p>
+<p>WindowManagerService的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WindowManagerService#resizeStack -&gt;</span><br><span class="line">TaskStack#setBounds</span><br><span class="line">TaskStack#resizeWindows -&gt;</span><br><span class="line">updateLayout??</span><br></pre></td></tr></table></figure></p>
+<p>看来让人心情不好的乱七八糟源码分析<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt; frameworks/base/services/core/java/com/android/server/am/ActivityStackSupervisor.java</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">resizeTaskLocked</span><span class="params">(TaskRecord task, Rect bounds)</span> </span>&#123;</span><br><span class="line">	task.mResizeable = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">final</span> ActivityStack currentStack = task.stack;</span><br><span class="line">	<span class="keyword">if</span> (currentStack.isHomeStack()) &#123;</span><br><span class="line">		<span class="comment">// Can't move task off the home stack. Sorry!</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 找到给定区域相同的栈</span></span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">int</span> matchingStackId = mWindowManager.getStackIdWithBounds(bounds);</span><br><span class="line">	<span class="keyword">if</span> (matchingStackId != -<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">// There is already a stack with the right bounds!</span></span><br><span class="line">		<span class="keyword">if</span> (currentStack != <span class="keyword">null</span> &amp;&amp; </span><br><span class="line">                    currentStack.mStackId == matchingStackId) &#123;</span><br><span class="line">			<span class="comment">// Nothing to do here. Already in the right stack...</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Move task to stack with matching bounds.</span></span><br><span class="line">		moveTaskToStackLocked(task.taskId, matchingStackId, <span class="keyword">true</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 栈里只有一个task，直接resize栈</span></span><br><span class="line">	<span class="keyword">if</span> (currentStack != <span class="keyword">null</span> &amp;&amp; currentStack.numTasks() == <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">// Just resize the current stack since this is the task in it.</span></span><br><span class="line">		resizeStackLocked(currentStack.mStackId, bounds);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 挪动task到新的栈</span></span><br><span class="line">	<span class="comment">// Create new stack and move the task to it.</span></span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">int</span> displayId = </span><br><span class="line">            (currentStack != <span class="keyword">null</span> &amp;&amp; currentStack.mDisplayId != -<span class="number">1</span>)</span><br><span class="line">			? currentStack.mDisplayId : Display.DEFAULT_DISPLAY;</span><br><span class="line">	ActivityStack newStack = createStackOnDisplay(getNextStackId(), displayId);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (newStack == <span class="keyword">null</span>) &#123;</span><br><span class="line">		Slog.e(TAG, <span class="string">"resizeTaskLocked: Can't create stack for task="</span> + task);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	moveTaskToStackLocked(task.taskId, newStack.mStackId, <span class="keyword">true</span>);</span><br><span class="line">	resizeStackLocked(newStack.mStackId, bounds);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>分屏的核心是task跟bound，需要看一下task是怎么裂变的</p>
+
+          
         
       
     </div>
@@ -1644,15 +1614,12 @@ NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card
       
         
           
-          接口文件aidl123456package com.zst.xposed.halo.floatingwindow3.services;interface IActivityManagerService &#123;    void snapActivityTop(int id);    void s
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/22/Android/aidl的使用/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>接口文件aidl<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IActivityManagerService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">snapActivityTop</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">snapActivityBottom</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>manager<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"><span class="keyword">import</span> com.zst.xposed.halo.floatingwindow3.IActivityManagerService;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManager</span> <span class="keyword">extends</span> <span class="title">IActivityManagerService</span>.<span class="title">Stub</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ActivityManagerService mService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ActivitManager</span><span class="params">(ActivityManagerService service)</span> </span>&#123;</span><br><span class="line">        mService = service;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityTop</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapActivityBottom</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>service<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zst.xposed.halo.floatingwindow3.services;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.app.Service;</span><br><span class="line"><span class="keyword">import</span> android.content.Intent;</span><br><span class="line"><span class="keyword">import</span> android.os.IBinder;</span><br><span class="line"><span class="keyword">import</span> android.support.annotation.Nullable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ActivitManager(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>client<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager manager = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">private</span> ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">        manager = (ActivityManager)MyAIDLService.Stub.asInterface(service);</span><br><span class="line">        manager.snapActivityTop(TOP)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</span><br><span class="line">        manager = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+
+          
         
       
     </div>

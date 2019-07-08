@@ -330,18 +330,33 @@
       
         
           
-          最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。主要做法是修改chrome tracing的源码
-话说tracing这么好用，不出个cmdline真不合理。
-tracing on github
-幸运的看到了一段代码12/*./tracing
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/tracing的研究/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。<br>主要做法是修改chrome tracing的源码</p>
+<p>话说tracing这么好用，不出个cmdline真不合理。</p>
+<p><a href="https://github.com/catapult-project/catapult" target="_blank" rel="noopener">tracing on github</a></p>
+<p>幸运的看到了一段代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*./tracing/tracing/extras/android/android_auditor.html*/</span></span><br><span class="line">pushFramesAndJudgeJank_: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>一看就知道是在判断帧的状态<br>然后就加了统计代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> redFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> yellowFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> greenFrame = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">app.process.frames.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">frame</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * <span class="number">2</span>) &#123;    <span class="comment">// 红帧</span></span><br><span class="line">        badFramesObserved += <span class="number">2</span>;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.TERRIBLE</span><br><span class="line">        redFrame += <span class="number">1</span>;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS </span><br><span class="line">        || frameMissedDeadline(frame)) &#123;    <span class="comment">// 黄帧</span></span><br><span class="line">        badFramesObserved++;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.BAD;</span><br><span class="line">        yellowFrame += <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    <span class="comment">// 绿帧</span></span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.GOOD;</span><br><span class="line">        greenFrame += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>最后用log输出<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"%d %d %d"</span>,redFrame,yellowFrame,greenFrame);</span><br></pre></td></tr></table></figure></p>
+<p>后面又要搞自动化，就是吧js里面的东西打出来<br>有四个思路</p>
+<ul>
+<li>用nodejs运行，将结果写文件</li>
+<li>html5写文件</li>
+<li>重定向log</li>
+<li>建本地服务器，用post提交数据</li>
+</ul>
+<p>nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据</p>
+<p>html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪</p>
+<p>建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug</p>
+<p>重定向一开始以为没希望，到google查了一下还真有这个用法<br>用下面的命令可以将许多log包括控制台的log输出到错误输出流上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr</span><br></pre></td></tr></table></figure></p>
+<p>很奇葩的是错误输出流的重定向好像有点问题<br>象如下的代码就输出不了，以后还得研究下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot;  &gt; log</span><br></pre></td></tr></table></figure></p>
+<p>后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了.</p>
+<p>改代码时用到的一坨正则，匹配html中的js代码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \</span><br><span class="line">    -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \</span><br><span class="line">    -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js</span><br></pre></td></tr></table></figure></p>
+<p>trace抓下来的数据是压缩过的，用下面命令可解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib-flate -uncompress &lt; trace &gt;out</span><br></pre></td></tr></table></figure></p>
+<p>发现了一个极好多正则表达式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos;</span><br></pre></td></tr></table></figure></p>
+<p>开始port到windows上了,用的还是nodejs<br>因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -</span><br></pre></td></tr></table></figure></p>
+<p>自动化打包的功能，先了解先 <a href="http://stackoverflow.com/questions/15530435/node-js-zip-unzip-a-folder" target="_blank" rel="noopener">Node.js - Zip/Unzip a folder</a></p>
+<p>只能说windows的cmd去屎</p>
+
+          
         
       
     </div>
@@ -481,22 +496,47 @@ tracing on github
       
         
           
-          要对系统框架有个大概的了解，再去看这些东西比较好，参考：《老罗android之旅分析android源码》《深入理解Android》
-SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。
+            <p>要对系统框架有个大概的了解，再去看这些东西比较好，参考：<br>《老罗android之旅分析android源码》<br>《深入理解Android》</p>
+<p>SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。</p>
+<ul>
+<li>跨进程通信Binder机制</li>
+<li>上层的View系统</li>
+<li>下层的Display系统</li>
+</ul>
+<p>Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。</p>
+<p>先放一张IBinder的图<br><strong>BpBinder</strong>与<strong>BBinder</strong>是一对，用于传输层的通信<br><strong>BpSerivce</strong>与<strong>BnSerivce</strong>是一对，用于业务层的通信<br><strong>ISerivce</strong>是客户端使用的Serivce接口<br><strong>Serivce</strong>是具体的实现</p>
+<p>最终的通信发生在IPCThreadState，具体实现使用/dev/binder这个设备文件及使用ioctl来与驱动通信。</p>
+<hr>
+<p>举个荔枝</p>
+<p>SurfaceFlinger与Ap通信是通过Binder来通信的，而且还不仅仅是一种，反正先关注ISurfaceComposerClient</p>
+<p>除了个别名称不一致，其他都与之前分析的IBinder架构是一致的</p>
+<hr>
+<p>分别来看一下其中每个类</p>
+<h3 id="ISurfaceComposerClient"><a href="#ISurfaceComposerClient" class="headerlink" title="ISurfaceComposerClient"></a>ISurfaceComposerClient</h3><p>ISurfaceComposerClient在ISurfaceComposerClient.h中定义<br>具体内容就是几个接口的声明</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class ISurfaceComposerClient : public IInterface</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DECLARE_META_INTERFACE(SurfaceComposerClient);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">virtual status_t <span class="title">createSurface</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> String8&amp; name, uint32_t w, uint32_t h,</span></span></span><br><span class="line"><span class="function"><span class="params">        PixelFormat format, uint32_t flags,</span></span></span><br><span class="line"><span class="function"><span class="params">        sp&lt;IBinder&gt;* handle,</span></span></span><br><span class="line"><span class="function"><span class="params">        sp&lt;IGraphicBufferProducer&gt;* gbp)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function">virtual status_t <span class="title">destroySurface</span><span class="params">(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; handle)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function">virtual status_t <span class="title">clearLayerFrameStats</span><span class="params">(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; handle)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function">virtual status_t <span class="title">getLayerFrameStats</span><span class="params">(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; handle, FrameStats* outStats)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="BpSurfaceComposerClient"><a href="#BpSurfaceComposerClient" class="headerlink" title="BpSurfaceComposerClient"></a>BpSurfaceComposerClient</h3><p>BpSurfaceComposerClinet在ISurfaceComposerClient.cpp定义与实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BpSurfaceComposerClient</span> :</span> <span class="keyword">public</span> BpInterface&lt;ISurfaceComposerClient&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    BpSurfaceComposerClient(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; impl)</span><br><span class="line">        : BpInterface&lt;ISurfaceComposerClient&gt;(impl) &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> status_t <span class="title">createSurface</span><span class="params">(<span class="keyword">const</span> String8&amp; name, <span class="keyword">uint32_t</span> w,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">uint32_t</span> h, PixelFormat format, <span class="keyword">uint32_t</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">            sp&lt;IBinder&gt;* handle,</span></span></span><br><span class="line"><span class="function"><span class="params">            sp&lt;IGraphicBufferProducer&gt;* gbp)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 打包参数</span></span><br><span class="line">        Parcel data, reply;</span><br><span class="line">        data.writeInterfaceToken(ISurfaceComposerClient::getInterfaceDescriptor());</span><br><span class="line">        data.writeString8(name);</span><br><span class="line">        data.writeInt32(w);</span><br><span class="line">        data.writeInt32(h);</span><br><span class="line">        data.writeInt32(format);</span><br><span class="line">        data.writeInt32(flags);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用IBinder的transact，开始通信层的通信</span></span><br><span class="line">        remote()-&gt;transact(CREATE_SURFACE, data, &amp;reply);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接收结果</span></span><br><span class="line">        *handle = reply.readStrongBinder();</span><br><span class="line">        *gbp = interface_cast&lt;IGraphicBufferProducer&gt;(reply.readStrongBinder());</span><br><span class="line">        <span class="keyword">return</span> reply.readInt32();</span><br><span class="line">    &#125;</span><br><span class="line">    ...(其他在ISurfaceComposerClient定义的借口)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="BnSurfaceComposerClient"><a href="#BnSurfaceComposerClient" class="headerlink" title="BnSurfaceComposerClient"></a>BnSurfaceComposerClient</h3><p>BnSurfaceComposerClient分别在ISurfaceComposerClient.h和ISurfaceComposerClient.cpp定义，因为服务端的Client类需要继承自BnSurfaceComposerClient，BnSurfaceComposerClient需要被导出。</p>
+<p>BnSurfaceComposerClient的定义，只有一个onTransact函数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BnSurfaceComposerClient</span>:</span> <span class="keyword">public</span> BnInterface&lt;ISurfaceComposerClient&gt; </span><br><span class="line">&#123; </span><br><span class="line">     <span class="keyword">public</span>: <span class="function"><span class="keyword">virtual</span> status_t <span class="title">onTransact</span><span class="params">(<span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags = <span class="number">0</span>)</span></span>; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>BnSurfaceComposerClient的实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> BnSurfaceComposerClient::onTransact(</span><br><span class="line">    <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">switch</span>(code) &#123;</span><br><span class="line">        <span class="keyword">case</span> CREATE_SURFACE: &#123;</span><br><span class="line">            CHECK_INTERFACE(ISurfaceComposerClient, data, reply);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 读取参数</span></span><br><span class="line">            String8 name = data.readString8();</span><br><span class="line">            <span class="keyword">uint32_t</span> w = data.readInt32();</span><br><span class="line">            <span class="keyword">uint32_t</span> h = data.readInt32();</span><br><span class="line">            PixelFormat format = data.readInt32();</span><br><span class="line">            <span class="keyword">uint32_t</span> flags = data.readInt32();</span><br><span class="line">            sp&lt;IBinder&gt; handle;</span><br><span class="line">            sp&lt;IGraphicBufferProducer&gt; gbp;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 这个是虚函数，运行时会调用子类具体实现的函数</span></span><br><span class="line">            <span class="keyword">status_t</span> result = createSurface(name, w, h, format, flags,</span><br><span class="line">                    &amp;handle, &amp;gbp);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 打包返回值</span></span><br><span class="line">            reply-&gt;writeStrongBinder(handle);</span><br><span class="line">            reply-&gt;writeStrongBinder(gbp-&gt;asBinder());</span><br><span class="line">            reply-&gt;writeInt32(result);</span><br><span class="line">            <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">        &#125; <span class="keyword">break</span>;</span><br><span class="line">        ...（其他ISurfaceComposerClient中接口对应的信息处理)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>再看通信层的</p>
+<h3 id="BpBinder"><a href="#BpBinder" class="headerlink" title="BpBinder"></a>BpBinder</h3><p>BpBinder在BpBinder.h与BpBinder.cpp 定义与实现 由于通信关键只跟transact有关，这里先只贴transact相关的代码</p>
+<p>BpBinder的定义<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BpBinder</span> :</span> <span class="keyword">public</span> IBinder </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">public</span>: </span><br><span class="line">    ...(一些binder状态查询函数) </span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> status_t <span class="title">transact</span><span class="params">( <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags = <span class="number">0</span>)</span></span>;</span><br><span class="line">    ...(一些binder连接管理函数)</span><br><span class="line">    ...(一些锁机制)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>BpBinder的实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> BpBinder::transact( <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags) </span><br><span class="line">&#123; </span><br><span class="line">    <span class="comment">// Once a binder has died, it will never come back to life. </span></span><br><span class="line">    <span class="keyword">if</span> (mAlive) &#123; </span><br><span class="line">        <span class="comment">// 这里可以看到将工作委托给了IPCThreadState </span></span><br><span class="line">        <span class="keyword">status_t</span> status = IPCThreadState::self()-&gt;transact( mHandle, code, data, reply, flags);</span><br><span class="line">        <span class="keyword">if</span> (status == DEAD_OBJECT) mAlive = <span class="number">0</span>; </span><br><span class="line">        <span class="keyword">return</span> status; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> DEAD_OBJECT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="BBinder"><a href="#BBinder" class="headerlink" title="BBinder"></a>BBinder</h3><p>BBinder定义<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class BBinder : public IBinder</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...(一些binder状态查询函数) </span><br><span class="line">    <span class="comment">// 这个函数会被IPCThreadState所调用，并调用onTransact函数</span></span><br><span class="line">    <span class="function">virtual status_t    <span class="title">transact</span><span class="params">(   uint32_t code,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">const</span> Parcel&amp; data,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Parcel* reply,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    uint32_t flags = <span class="number">0</span>)</span></span>;</span><br><span class="line">    ...(一些binder的操作)</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="comment">// 会被子类实现所覆盖</span></span><br><span class="line">    <span class="function">virtual status_t    <span class="title">onTransact</span><span class="params">( uint32_t code,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">const</span> Parcel&amp; data,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Parcel* reply,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    uint32_t flags = <span class="number">0</span>)</span></span>;</span><br><span class="line">    ...(一些乱七八糟的东西)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>BBinder实现，主要是transact函数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">status_t BBinder::transact(</span><br><span class="line">    uint32_t code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, uint32_t flags)</span><br><span class="line">&#123;</span><br><span class="line">    data.setDataPosition(<span class="number">0</span>);</span><br><span class="line">    status_t err = NO_ERROR;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">        ...（其他情况)</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// 将会调用子类的onTransact</span></span><br><span class="line">            err = onTransact(code, data, reply, flags);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Binder层的通信差不多就这样，按这种思路的话下层应该有一个类似listener的东西，当BpBinder做transact的时候，会通知并调用到BBinder的onTransact函数。</p>
+<hr>
+<p>IPCThreadState这一层应该是通信层的真正的实现，涉及到线程与驱动</p>
+<p>简单起见，只分析跟transact有关的代码</p>
+<h3 id="IPCThreadState—客户端"><a href="#IPCThreadState—客户端" class="headerlink" title="IPCThreadState—客户端"></a>IPCThreadState—客户端</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::transact(<span class="keyword">int32_t</span> handle,</span><br><span class="line">                                  <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data,</span><br><span class="line">                                  Parcel* reply, <span class="keyword">uint32_t</span> flags)</span><br><span class="line">&#123;</span><br><span class="line">        ...(参数检查及打印日志)</span><br><span class="line">        err = writeTransactionData(BC_TRANSACTION, flags, handle, code, data, <span class="literal">NULL</span>);</span><br><span class="line">        ...(各种乱七八糟的东西)</span><br><span class="line">        err = waitForResponse(reply);</span><br><span class="line">        ...(参数检查及打印日志)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>writeTransactionData仅仅是填充数据到mOut<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::writeTransactionData(<span class="keyword">int32_t</span> cmd, <span class="keyword">uint32_t</span> binderFlags,</span><br><span class="line">    <span class="keyword">int32_t</span> handle, <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, <span class="keyword">status_t</span>* statusBuffer)</span><br><span class="line">&#123;</span><br><span class="line">    binder_transaction_data tr;</span><br><span class="line">    ...(初始化tr)</span><br><span class="line">    ...(根据data填充tr)</span><br><span class="line">    mOut.writeInt32(cmd);</span><br><span class="line">    mOut.write(&amp;tr, <span class="keyword">sizeof</span>(tr));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>waitForResponse发起了请求并等待驱动返回<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::waitForResponse(Parcel *reply, <span class="keyword">status_t</span> *acquireResult)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int32_t</span> cmd;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        talkWithDriver();</span><br><span class="line">        ...(检查返回)</span><br><span class="line">        cmd = mIn.readInt32();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">        ...(各种错误情况处理处理)</span><br><span class="line">        <span class="keyword">case</span> BR_REPLY:</span><br><span class="line">        ...(各种对reply的处理)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            err = executeCommand(cmd);  <span class="comment">// ！！这里是服务端使用的</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...(错误处理）</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>talkWithDriver与驱动通信<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::talkWithDriver(<span class="keyword">bool</span> doReceive)</span><br><span class="line">&#123;</span><br><span class="line">    ...(初始化bwr)</span><br><span class="line">    ioctl(mProcess-&gt;mDriverFD, BINDER_WRITE_READ, &amp;bwr);</span><br><span class="line">    ...(错误处理)</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="IPCThreadState—-服务端"><a href="#IPCThreadState—-服务端" class="headerlink" title="IPCThreadState—-服务端"></a>IPCThreadState—-服务端</h3><p>服务端在注册服务的时候会调用IPCThreadState的两个函数—-startThreadPool与joinThreadPool,应该就是listener的角色吧<br>startThreadPool调到最后还是会调joinThreadPool，所以直接看joinThreadPool<br>joinThreadPool在IPCThreadState中实现，相当于时刻等待驱动的消息<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> IPCThreadState::joinThreadPool(<span class="keyword">bool</span> isMain)</span><br><span class="line">&#123;</span><br><span class="line">    ...(处理一些东西）</span><br><span class="line">    <span class="keyword">status_t</span> result;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        ...(处理一些东西）</span><br><span class="line">        result = getAndExecuteCommand();</span><br><span class="line">        ...(处理一些东西）</span><br><span class="line">    &#125; <span class="keyword">while</span> (result != -ECONNREFUSED &amp;&amp; result != -EBADF);</span><br><span class="line">    ...(处理一些东西）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>getAndExecuteCommand获取从驱动过来的消息并执行相应的命令<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::getAndExecuteCommand()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">status_t</span> result;</span><br><span class="line">    <span class="keyword">int32_t</span> cmd;</span><br><span class="line">    result = talkWithDriver();</span><br><span class="line">    ...(各种判断)</span><br><span class="line">    result = executeCommand(cmd);</span><br><span class="line">    ...(各种处理)</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>executeCommand用于执行从客户端过来的命令<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> IPCThreadState::executeCommand(<span class="keyword">int32_t</span> cmd)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">    ...(各种其他操作)</span><br><span class="line">    <span class="keyword">case</span> BR_TRANSACTION:</span><br><span class="line">        &#123;</span><br><span class="line">            ...(各种对tr的操作)              </span><br><span class="line">            Parcel reply;</span><br><span class="line">            sp&lt;BBinder&gt; b((BBinder*)tr.cookie);</span><br><span class="line">            b-&gt;transact(tr.code, buffer, &amp;reply, tr.flags);</span><br><span class="line"></span><br><span class="line">            ...(设置reply)</span><br><span class="line">            sendReply(reply, <span class="number">0</span>);</span><br><span class="line">            ...(各种其他操作) </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    ...(各种其他操作)</span><br><span class="line">    &#125;</span><br><span class="line">    ...(各种错误处理)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
-跨进程通信Binder机制
-上层的View系统
-下层的Display系统
-
-Binder
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android_Graphics/SurfaceFlinger学习-Binder原理/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -614,16 +654,22 @@ Binder
       
         
           
-          上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh
-123456789101112voi
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android_Graphics/SurfaceFlinger学习-Surface的绘制过程（续）/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::handleMessageRefresh() &#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    preComposition();</span><br><span class="line">    rebuildLayerStacks();</span><br><span class="line">    setUpHWComposer();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> QCOM_BSP</span></span><br><span class="line">    setUpTiledDr();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    doDebugFlashRegions();</span><br><span class="line">    doComposition();</span><br><span class="line">    postComposition();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要工作就是合成layer与显示</p>
+<p>一个一个来仔细看- -</p>
+<hr>
+<p>preComposition 判断是否有未完成的绘制<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::preComposition()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">bool</span> needExtraInvalidate = <span class="literal">false</span>;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> LayerVector&amp; <span class="title">layers</span><span class="params">(mDrawingState.layersSortedByZ)</span></span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span> count = layers.size();</span><br><span class="line">    <span class="comment">// 调用每个layer的onPreComposition 判读是否有未完成的绘制。</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i=<span class="number">0</span> ; i&lt;count ; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (layers[i]-&gt;onPreComposition()) &#123;</span><br><span class="line">            needExtraInvalidate = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 没看懂啦~</span></span><br><span class="line">    <span class="keyword">if</span> (needExtraInvalidate) &#123;</span><br><span class="line">        signalLayerUpdate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>rebuildLayerStacks 重新计算layer需要重绘的区域<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::rebuildLayerStacks() &#123;</span><br><span class="line">    ...(奇怪的宏定义)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// rebuild the visible layer list per screen</span></span><br><span class="line">    <span class="comment">// 对每个屏幕可见的layer进行rebuild</span></span><br><span class="line">    ...(循环每个屏幕)</span><br><span class="line">    ...(定义各种变量)</span><br><span class="line">    <span class="comment">// 计算每一个layer的可见区域</span></span><br><span class="line">    SurfaceFlinger::computeVisibleRegions(dpyId, layers,hw-&gt;getLayerStack(), dirtyRegion, opaqueRegion);</span><br><span class="line">    ...(设置计算结果)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>setUpHWComposer 设置HWComposer<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::setUpHWComposer() &#123;</span><br><span class="line">    ...(循环所有屏幕)</span><br><span class="line">    <span class="keyword">bool</span> dirty = !mDisplays[dpy]-&gt;getDirtyRegion(<span class="literal">false</span>).isEmpty();</span><br><span class="line">    <span class="keyword">bool</span> empty = mDisplays[dpy]-&gt;getVisibleLayersSortedByZ().size() == <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">bool</span> wasEmpty = !mDisplays[dpy]-&gt;lastCompositionHadVisibleLayers;</span><br><span class="line">    <span class="keyword">bool</span> mustRecompose = dirty &amp;&amp; !(empty &amp;&amp; wasEmpty);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// new hwc</span></span><br><span class="line">    <span class="function">HWComposer&amp; <span class="title">hwc</span><span class="params">(getHwComposer())</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (hwc.initCheck() == NO_ERROR) &#123;</span><br><span class="line">        <span class="comment">// build the h/w work list</span></span><br><span class="line">        ...(不知道在干啥)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// set the per-frame data</span></span><br><span class="line">        ...(各种种种)</span><br><span class="line">        ...(奇怪的宏定义)</span><br><span class="line">        ...(各种获取layer)</span><br><span class="line">        <span class="comment">// 做了一些变换</span></span><br><span class="line">        layer-&gt;setPerFrameData(hw, *cur);</span><br><span class="line">        ...（奇怪的宏定义)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If possible, attempt to use the cursor overlay on each display.</span></span><br><span class="line">        ...(不知道在干啥)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">status_t</span> err = hwc.prepare();</span><br><span class="line">        ALOGE_IF(err, <span class="string">"HWComposer::prepare failed (%s)"</span>, strerror(-err));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">size_t</span> dpy=<span class="number">0</span> ; dpy&lt;mDisplays.size() ; dpy++) &#123;</span><br><span class="line">            sp&lt;<span class="keyword">const</span> DisplayDevice&gt; hw(mDisplays[dpy]);</span><br><span class="line">            hw-&gt;prepareFrame(hwc);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>doDebugFlashRegions 绘制调试区域，就是开发者选项–显示surface更新那一闪一闪的东西，可以学习渲染的原理<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::doDebugFlashRegions()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// is debugging enabled</span></span><br><span class="line">    <span class="keyword">if</span> (CC_LIKELY(!mDebugRegion)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">bool</span> repaintEverything = mRepaintEverything;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> dpy=<span class="number">0</span> ; dpy&lt;mDisplays.size() ; dpy++) &#123;</span><br><span class="line">        <span class="keyword">const</span> sp&lt;DisplayDevice&gt;&amp; hw(mDisplays[dpy]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (hw-&gt;isDisplayOn()) &#123;</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">int32_t</span> height = hw-&gt;getHeight();</span><br><span class="line">            <span class="function">RenderEngine&amp; <span class="title">engine</span><span class="params">(getRenderEngine())</span></span>;</span><br><span class="line">            ...(又是奇怪的宏，直接无视)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// transform the dirty region into this screen's coordinate space</span></span><br><span class="line">                <span class="function"><span class="keyword">const</span> Region <span class="title">dirtyRegion</span><span class="params">(hw-&gt;getDirtyRegion(repaintEverything))</span></span>;</span><br><span class="line">                <span class="keyword">if</span> (!dirtyRegion.isEmpty()) &#123;</span><br><span class="line">                   <span class="comment">// redraw the whole screen</span></span><br><span class="line">                   doComposeSurfaces(hw, Region(hw-&gt;bounds()));</span><br><span class="line">                   <span class="comment">// and draw the dirty region</span></span><br><span class="line">                   ...（继续无视)</span><br><span class="line">                   <span class="comment">// 注意这里，类似与绘图了 一个Layer有两片buffer，一片用于绘制，一片用于显示，绘制完交换</span></span><br><span class="line">                   engine.fillRegionWithColor(dirtyRegion, height, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">                   hw-&gt;compositionComplete();</span><br><span class="line">                   hw-&gt;swapBuffers(getHwComposer());</span><br><span class="line">               &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 留意下这个，好像也很重要</span></span><br><span class="line">    postFramebuffer();</span><br><span class="line">    ...(延时??)</span><br><span class="line">    <span class="function">HWComposer&amp; <span class="title">hwc</span><span class="params">(getHwComposer())</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (hwc.initCheck() == NO_ERROR) &#123;</span><br><span class="line">        <span class="keyword">status_t</span> err = hwc.prepare();</span><br><span class="line">        ALOGE_IF(err, <span class="string">"HWComposer::prepare failed (%s)"</span>, strerror(-err));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>感觉自己越来越懒啦</p>
+
+          
         
       
     </div>
@@ -741,16 +787,32 @@ Binder
       
         
           
-          今天看到一篇很不错的的关于SurfaceFlinger的文章，主要是看到android源码中有一个简单明了的test，而且还被我编译过了，都不知道的前几个星期看的都是些什么东西- -http://blog.csdn.net/jinzhuojun/article/details/17427491
-还是
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android_Graphics/SurfaceFlinger学习-Surface的绘制过程/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>今天看到一篇很不错的的关于SurfaceFlinger的文章，主要是看到android源码中有一个简单明了的test，而且还被我编译过了，都不知道的前几个星期看的都是些什么东西- -<br><a href="http://blog.csdn.net/jinzhuojun/article/details/17427491" target="_blank" rel="noopener">http://blog.csdn.net/jinzhuojun/article/details/17427491</a></p>
+<p>还是从test开始看起吧<br>test的在工程中的位置:frameworks/native/services/surfaceflinger/tests/resize,用于在屏幕上显示一块色块</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// set up the thread-pool</span></span><br><span class="line">    sp&lt;ProcessState&gt; proc(ProcessState::self());</span><br><span class="line">    ProcessState::self()-&gt;startThreadPool();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 连接到surfaceflinger</span></span><br><span class="line">    sp&lt;SurfaceComposerClient&gt; client = <span class="keyword">new</span> SurfaceComposerClient();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建surface</span></span><br><span class="line">    sp&lt;SurfaceControl&gt; surfaceControl = client-&gt;createSurface(String8(<span class="string">"resize"</span>),<span class="number">600</span>, <span class="number">800</span>, PIXEL_FORMAT_RGB_565, <span class="number">0</span>);</span><br><span class="line">    sp&lt;Surface&gt; surface = surfaceControl-&gt;getSurface();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置Layer的z轴</span></span><br><span class="line">    SurfaceComposerClient::openGlobalTransaction();</span><br><span class="line">    surfaceControl-&gt;setLayer(<span class="number">100000</span>);</span><br><span class="line">    SurfaceComposerClient::closeGlobalTransaction();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 操纵Buffer中内容</span></span><br><span class="line">    ANativeWindow_Buffer outBuffer;</span><br><span class="line">    surface-&gt;lock(&amp;outBuffer, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ssize_t</span> bpr = outBuffer.stride * bytesPerPixel(outBuffer.format);</span><br><span class="line">    android_memset16((<span class="keyword">uint16_t</span>*)outBuffer.bits, <span class="number">0xffff</span>, bpr*outBuffer.height);</span><br><span class="line">    surface-&gt;unlockAndPost();</span><br><span class="line"></span><br><span class="line">    IPCThreadState::self()-&gt;joinThreadPool();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="连接到surfaceflinger"><a href="#连接到surfaceflinger" class="headerlink" title="连接到surfaceflinger"></a>连接到surfaceflinger</h2><p>补充一点，ComposerSerivce创建时会调用getSerivce函数，然后再调用defaultServiceManager获取ServiceManager接口IServiceManager，再通过IServiceManager的getService获取到SurfaceFlinger服务的接口，ISurfaceComposer其实就是SurfaceFlinger的代理接口。</p>
+<h2 id="创建surface"><a href="#创建surface" class="headerlink" title="创建surface"></a>创建surface</h2><p>补充：Layer继承至SurfaceFlingerConsumer::ContentsChangedListener,实现了Listener的几个处理函数</p>
+<ul>
+<li>onFrameAvailable(const BufferItem&amp; item)</li>
+<li>onFrameReplaced(const BufferItem&amp; item)</li>
+<li>onSidebandStreamChanged()</li>
+</ul>
+<h2 id="设置Layer的z轴"><a href="#设置Layer的z轴" class="headerlink" title="设置Layer的z轴"></a>设置Layer的z轴</h2><p>使用openGlobaleTransaction可以将几个事务合并成一个提交,而且是必须的:</p>
+<p><em>All composer parameters must be changed within a transaction<br>several surfaces can be updated in one transaction, all changes are<br>committed at once when the transaction is closed.<br>closeGlobalTransaction() requires an IPC with the server.</em></p>
+<p>setLayer调用了SurfaceComposer的setLayer,与SurfaceFlinger的<strong>连接有点问题</strong></p>
+<h2 id="操纵Buffer中的内容"><a href="#操纵Buffer中的内容" class="headerlink" title="操纵Buffer中的内容"></a>操纵Buffer中的内容</h2><p>其中BufferQueueProducer在queuebuffer中调用了BufferQueueCore的frameAvailableListener的onFrameAvailable方法，经过了一长串的调用最终会调用到Layer的onFrameAvailable。</p>
+<p>下面是分析:<br>看了半天的surface post后消息的传递，重重的继承，各种set，（╯－＿－）╯╧╧<br>先写个大概流程，免得待会忘了<br>首先是consumer的创建 在Layer::onFirstRef()<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sp&lt;IGraphicBufferConsumer&gt; consumer;</span><br><span class="line">BufferQueue::createBufferQueue(&amp;producer, &amp;consumer);</span><br></pre></td></tr></table></figure></p>
+<p>listener的创建 没错，mSurfaceFlingerConsumer就是个listener<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mSurfaceFlingerConsumer = <span class="keyword">new</span> SurfaceFlingerConsumer(consumer, mTextureName);</span><br></pre></td></tr></table></figure></p>
+<p>SuffaceFlingerComsumer的构造函数 call call call到了… ConsumerBase::ConsumerBase proxy是ConsumerBase自身的代理<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> err = mConsumer-&gt;consumerConnect(proxy, controlledByApp);</span><br></pre></td></tr></table></figure></p>
+<p>Bp端的调用，Bn端的实现 在BufferQueueConsumer::consumerConnect,在这里做了个转发，而且还在h文件里，搞得cpp文件都没有consumerConnect，我&amp;*&amp;^%!(@<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> status_t <span class="title">consumerConnect</span><span class="params">(<span class="keyword">const</span> sp&lt;IConsumerListener&gt;&amp; consumer,<span class="keyword">bool</span> controlledByApp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> connect(consumer, controlledByApp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>connect的实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mCore-&gt;mConsumerListener = consumerListener;</span><br></pre></td></tr></table></figure></p>
+<p>也就是说<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consumerListener == ConsumerBase == SuffaceFlingerComsumer</span><br></pre></td></tr></table></figure></p>
+<p>而下面又有<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mSurfaceFlingerConsumer-&gt;setContentsChangedListener(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure></p>
+<p>相当于<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mCore-&gt;mConsumerListener == layer</span><br></pre></td></tr></table></figure></p>
+<p>所以queue的时候<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listener.xxx == layer.onXXX;</span><br></pre></td></tr></table></figure></p>
+<p>从这以后，渲染工作就交给了SurfaceFlinger服务了</p>
+
+          
         
       
     </div>
@@ -868,26 +930,58 @@ Binder
       
         
           
-          在很久以前就有好多人问我app的优化问题，现在看到坑爹的12306的app，才明白那帮人都是吃屎的。
+            <p>在很久以前就有好多人问我app的优化问题，现在看到坑爹的12306的app，才明白那帮人都是吃屎的。</p>
+<hr>
+<p>应用优化的话打算用一个星期来学习吧，感觉应该是没有什么成果，但做一做规划终归是极好的</p>
+<ul>
+<li>应用层的话花个两天</li>
+<li>系统层的话再花两天</li>
+<li>其他的话花个两天</li>
+<li>一天休息</li>
+</ul>
+<p>好，就先这样吧</p>
+<hr>
+<p>应用的性能问题跟多问题有关</p>
+<ul>
+<li>cpu</li>
+<li>gpu</li>
+<li>内存</li>
+<li>系统绘图</li>
+<li>系统事件处理</li>
+<li>网络</li>
+</ul>
+<p>网络跟太底层的东西不理，着重在系统绘图这一块</p>
+<h3 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h3><p>android绘图相关机制:</p>
+<ul>
+<li><a href="https://source.android.com/devices/graphics/architecture.html" target="_blank" rel="noopener">Graphics</a> </li>
+<li><a href="https://source.android.com/devices/graphics/architecture.html" target="_blank" rel="noopener">architecture</a> </li>
+<li><a href="http://stackoverflow.com/questions/27947848/understanding-necessity-of-android-vsync-signals" target="_blank" rel="noopener">stackoverflow</a></li>
+</ul>
+<p>腾讯技术沙龙分享:</p>
+<ul>
+<li><a href="http://imgtec.eetrend.com/blog/5680" target="_blank" rel="noopener">Android应用性能评测调优</a></li>
+</ul>
+<p>丧心病狂的专利:</p>
+<ul>
+<li><a href="http://www.google.com/patents/CN104375912A?cl=zh" target="_blank" rel="noopener">动终端卡顿的测量方法与装置</a></li>
+</ul>
+<hr>
+<p>视频：</p>
+<ul>
+<li><a href="http://club.alibabatech.org/salon_detail.htm?salonId=63" target="_blank" rel="noopener">阿里技术沙龙</a></li>
+</ul>
+<p>工具什么的:</p>
+<ul>
+<li>Performance Profiling Tools</li>
+</ul>
+<p>深层探究：</p>
+<ul>
+<li>探索Webkit内核(<a href="http://blog.csdn.net/cutesource/article/details/8731841" target="_blank" rel="noopener">http://blog.csdn.net/cutesource/article/details/8731841</a>)</li>
+<li>理解WebKit和Chromium(<a href="http://blog.csdn.net/cutesource/article/details/8731841" target="_blank" rel="noopener">http://blog.csdn.net/cutesource/article/details/8731841</a>)</li>
+<li>老罗的android之旅(<a href="http://blog.csdn.net/cutesource/article/details/8731841" target="_blank" rel="noopener">http://blog.csdn.net/cutesource/article/details/8731841</a>)</li>
+</ul>
 
-应用优化的话打算用一个星期来学习吧，感觉应该是没有什么成果，但做一做规划终归是极好的
-
-应用层的话花个两天
-系统层的话再花两天
-其他的话花个两天
-一天休息
-
-好，就先这样吧
-
-应用的性能问题跟多问
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/关于应用的优化/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -1005,19 +1099,21 @@ Binder
       
         
           
-          平时都弹吉他都是看这六线谱弹，感觉就像练武掌握了招式，却没理解精髓，为了达到手里有剑，心中无剑的境界，还是要学习点五线谱啊。
-基础从最简单的开始do re mi fa sol la si
-就是平时说的1 2 3 4 5 6 7
-然后就是开始C大调的C D E F G A B
-然后是五线谱五线谱音阶好
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/音乐/乐理的学习/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>平时都弹吉他都是看这六线谱弹，感觉就像练武掌握了招式，却没理解精髓，为了达到手里有剑，心中无剑的境界，还是要学习点五线谱啊。</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>从最简单的开始<br>do re mi fa sol la si</p>
+<p>就是平时说的<br>1 2 3 4 5 6 7</p>
+<p>然后就是开始C大调的<br>C D E F G A B</p>
+<p>然后是五线谱<br>五线谱音阶<br>好啦今天就这样，改变要一步一步来</p>
+<h2 id="12平均率"><a href="#12平均率" class="headerlink" title="12平均率"></a>12平均率</h2><p>一个纯8度分为平均12份 原理请看：<a href="http://www.cnblogs.com/devymex/p/3387054.html" target="_blank" rel="noopener">写给理工科人看的乐理</a></p>
+<h2 id="音程"><a href="#音程" class="headerlink" title="音程"></a>音程</h2><p>纯8度每两个音之间都是有距离的，每个距离都有名称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0.5   小二度</span><br><span class="line">1     大二度</span><br><span class="line">1.5   小三度</span><br><span class="line">2     大三度</span><br><span class="line">2.5   纯四度</span><br><span class="line">3     三全音</span><br><span class="line">3.5   纯五度</span><br><span class="line">4     小六度</span><br><span class="line">4.5   大六度</span><br><span class="line">5     小七度</span><br><span class="line">5.5   大七度</span><br><span class="line">6     纯八度</span><br></pre></td></tr></table></figure>
+<h2 id="五线谱"><a href="#五线谱" class="headerlink" title="五线谱"></a>五线谱</h2><p>五线谱就是五条线的谱子，从下往上叫作第一线、第二线、第三线、第四线、第五线，其间的空隙也有名称，从下往上叫作第一间，第二间，第三间，第四间（这命名起得太没创意了，应该叫什么世界线，生命线，叫个毛线都比这好记）</p>
+<p>算了今天就到这了，明天继续学习五线谱吧，感觉写这个都没时间练琴了</p>
+<h2 id="音调"><a href="#音调" class="headerlink" title="音调"></a>音调</h2><p>五线谱有4个音调，高音G2，中音C3，中音C4，低音F4（- -我也不知道G2 C3是什么东西）</p>
+<p>然后是<code>b</code>跟<code>#</code>,分别是降调号跟升调号</p>
+<p>还有一堆类似于节拍，休止符，附点符，小节什么的，以后再补上吧</p>
+
+          
         
       
     </div>
@@ -1157,16 +1253,9 @@ Binder
       
         
           
-          昨天一天上午挂个号，下午去看了一下，明天再来 今天早八点去挂号，没号了，我…￥%……&amp;
+            <p>昨天一天上午挂个号，下午去看了一下，明天再来 今天早八点去挂号，没号了，我…￥%……&amp;</p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/记事/看病难啊/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1306,15 +1395,10 @@ Binder
       
         
           
-          好久以前老是会想，仰望天空的时候，随着目光的延伸，会不会延伸到宇宙的尽头，也偶尔会想活着的意义是什么，死后人往哪去。主要是小时候怕死，也没叫过人死过，就是本能的怕。后来渐渐长大了，这种问题考虑得也少了，第一知道这种问题想了也没有答案，第二自己也开始忙起来(学业啊什么的)，还有就怕想多了会精神病(本来
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/无病呻吟/关于哲学/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>好久以前老是会想，仰望天空的时候，随着目光的延伸，会不会延伸到宇宙的尽头，也偶尔会想活着的意义是什么，死后人往哪去。主要是小时候怕死，也没叫过人死过，就是本能的怕。后来渐渐长大了，这种问题考虑得也少了，第一知道这种问题想了也没有答案，第二自己也开始忙起来(学业啊什么的)，还有就怕想多了会精神病(本来就觉得自己有些想法挺怪的)。</p>
+<p>不过最近看了疯子在左 天才在右，发现里面见解挺有趣的。决定还是去补充一些哲学的知识</p>
+
+          
         
       
     </div>
@@ -1454,19 +1538,19 @@ Binder
       
         
           
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="430" height="86" src="//music.163.com/outchain/player?type=2&id=31081074&auto=1&height=66"></iframe>
+
+<p><img src="/images/PSYCHO-PASS.jpg" alt="cover"></p>
+<p>今天早上花了5个多小时看老虚的心里测量者，好久没熬夜看动漫了。<br>剧情啊人物啊深度啊都很好，就是设定依然扯淡，妈的一个国家级别的中央机构弄来弄去就那几个人，还有大boss居然被一个头盔扫晕了，躲子弹却躲得那么溜。。</p>
+<p>不过还是半神作，讲了一些哲学的东西，突然意识动漫这东西也可以像音乐，绘画一样在于传达一些自己对世界的一些看法。<br>话说老虚的几部动漫的op都很好听</p>
+<ul>
+<li>小圆脸:ClariS-Connect(コネクト)</li>
+<li>fate ubw:aimer-brave shine</li>
+<li>心理测量者:凛として时雨-abnormalize</li>
+</ul>
+<p>(发现ubw并不是老虚的…)</p>
+
           
-
-
-今天早上花了5个多小时看老虚的心里测量者，好久没熬夜看动漫了。剧情啊人物啊深度啊都很好，就是设定依然扯淡，妈的一个国家级别的中央机构弄来弄去就那几个人，还有大boss居然被一个头盔扫晕了，躲子弹却躲得那么溜。。
-不过还是半神作，讲了一些哲学的东西，突然意识动漫这东西也可以像音乐，绘画一样在于传
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/动漫/心理测量者/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1584,16 +1668,9 @@ Binder
       
         
           
-          日志输出:1ShadowLog.stream = System.out; // 日志输出
+            <p>日志输出:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ShadowLog.stream = System.out; <span class="comment">// 日志输出</span></span><br></pre></td></tr></table></figure></p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/12/Android/Robolectric使用记录/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="虚拟机对象创建 new常量池 解析class（加载，解析，初始化 classloader）分配内存内存布局 对象头实例数据对齐访问 句柄池 （类型指针，实例指针）内存区域 方法区 （类信息，常量，静态常量）堆（实例对象）虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）本地方法栈（Native方法）线程计数器（线程当前执行的字节码行号指示器）Java内存模型 目的：兼容各种平台目标：java的所">
+<meta name="description" content="Java底层机制总结">
 <meta name="keywords" content="java,技术总结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java">
 <meta property="og:url" content="http://axlecho.com/2019/01/22/Java/java/index.html">
 <meta property="og:site_name" content="飞翔的鸭崽">
-<meta property="og:description" content="虚拟机对象创建 new常量池 解析class（加载，解析，初始化 classloader）分配内存内存布局 对象头实例数据对齐访问 句柄池 （类型指针，实例指针）内存区域 方法区 （类信息，常量，静态常量）堆（实例对象）虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）本地方法栈（Native方法）线程计数器（线程当前执行的字节码行号指示器）Java内存模型 目的：兼容各种平台目标：java的所">
+<meta property="og:description" content="Java底层机制总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-08T13:32:11.630Z">
+<meta property="og:updated_time" content="2019-07-09T06:52:29.639Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java">
-<meta name="twitter:description" content="虚拟机对象创建 new常量池 解析class（加载，解析，初始化 classloader）分配内存内存布局 对象头实例数据对齐访问 句柄池 （类型指针，实例指针）内存区域 方法区 （类信息，常量，静态常量）堆（实例对象）虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）本地方法栈（Native方法）线程计数器（线程当前执行的字节码行号指示器）Java内存模型 目的：兼容各种平台目标：java的所">
+<meta name="twitter:description" content="Java底层机制总结">
 
 
 
@@ -384,7 +384,9 @@
       
 
       
-        <h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>对象创建 <code>new</code><br>常量池</p>
+        <p>Java底层机制总结</p>
+<a id="more"></a>
+<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>对象创建 <code>new</code><br>常量池</p>
 <p>解析class（加载，解析，初始化 classloader）<br>分配内存<br>内存布局</p>
 <p>对象头<br>实例数据<br>对齐<br>访问</p>
 <p>句柄池 （类型指针，实例指针）<br>内存区域</p>

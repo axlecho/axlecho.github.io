@@ -81,7 +81,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="飞翔的鸭崽">
-<meta property="og:url" content="http://axlecho.com/categories/Java/index.html">
+<meta property="og:url" content="http://axlecho.com/categories/java/index.html">
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -115,13 +115,13 @@
 
 
 
-  <link rel="canonical" href="http://axlecho.com/categories/Java/">
+  <link rel="canonical" href="http://axlecho.com/categories/java/">
 
 
 
 
 
-  <title>分类: Java | 飞翔的鸭崽</title>
+  <title>分类: java | 飞翔的鸭崽</title>
   
 
 
@@ -283,7 +283,7 @@
 
     <div id="posts" class="posts-collapse">
       <div class="collection-title">
-        <h1>Java<small>分类</small>
+        <h1>java<small>分类</small>
         </h1>
       </div>
 
@@ -295,43 +295,17 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2019/01/22/Java/java/" itemprop="url">
+            <a class="post-title-link" href="/2019/04/11/Java/java面试题/" itemprop="url">
               
-                <span itemprop="name">java</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-22T12:09:59+08:00" content="2019-01-22">
-          01-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/01/22/Java/java里的坑/" itemprop="url">
-              
-                <span itemprop="name">java里的坑</span>
+                <span itemprop="name">java面试题</span>
               
             </a>
         
       </h2>
 
       <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-22T11:21:38+08:00" content="2019-01-22">
-          01-22
+        <time class="post-time" itemprop="dateCreated" datetime="2019-04-11T14:51:14+08:00" content="2019-04-11">
+          04-11
         </time>
       </div>
 
@@ -405,7 +379,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -946,6 +920,47 @@
         searchFunc(path, 'local-search-input', 'local-search-result');
       } else {
         proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>
+ proceedsearch();
       };
     });
 

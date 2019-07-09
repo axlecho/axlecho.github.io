@@ -280,8 +280,13 @@
     <title><![CDATA[Nfc年度总结]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid_Nfc%2FNfc%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93%2F</url>
     <content type="text"><![CDATA[NXP代码整合：NXPNFCProject framework: 定义Nfc数据类型等 – NXPNFCProject/NFC_NCIHAL_baseNfcNci: Nfc行为实现，开启关闭Nfc，Tag分发系统，beam等 – NXPNFCProject/NFC_NCIHAL_Nfclibnfc-nci: Hal层实现 – NXPNFCProject/NFC_NCIHAL_libnfc-ncifirmware: NFC固件 – NXPNFCProject/NXPNFCC_FWdriver: NFC驱动 – NXPNFCProject/NXPNFC_I2CDriver spi: framework，app，hal – NXPNFCProject/NXPNFC_P61_SPI_Servicesdriver – NXPNFCProject/NXPNFC_P61_SPI_Services]]></content>
+      <categories>
+        <category>Android_Nfc</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>framework</tag>
+        <tag>nfc</tag>
       </tags>
   </entry>
   <entry>
@@ -328,9 +333,13 @@
   <entry>
     <title><![CDATA[NFC金融]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid_Nfc%2FNFC%E9%87%91%E8%9E%8D%2F</url>
-    <content type="text"><![CDATA[最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。et.新的银行卡，工卡，公交卡等，基本都是这玩意了。 另外的还有身份识别卡（Identification Card），比较老的只读卡。et.老的门禁卡，停车卡 还有一个很乱的概念**cpu卡,不清楚是什么的东西 ic卡ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。 ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。 nfc卡nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。 1近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。nfc卡的种类，其实就是各个公司基于标准的实现 NfcA — ISO 14443-3ANfcB — ISO 14443-3BNfcF — JIS 6319-4NfcV — ISO 15693IsoDep — ISO 14443-4M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。 PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？ 卡模拟卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。 SE安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。 现在主要有三种形态 内置SE模式（eSE）UICC（SIM卡）AdvancedSecurity SD card（ASSD SD卡） 模拟的卡（APPLET)模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet概念还是很模糊 – 比如所APPLET是怎么加载到SE上的 TSM发卡服务器,APPLET由TSM来发送安装。。 SMARTCARDEMVPBOC]]></content>
+    <content type="text"><![CDATA[最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。et.新的银行卡，工卡，公交卡等，基本都是这玩意了。 另外的还有身份识别卡（Identification Card），比较老的只读卡。et.老的门禁卡，停车卡 还有一个很乱的概念cpu卡,不清楚是什么的东西 ic卡ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。 ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。 nfc卡nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。 1近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。nfc卡的种类，其实就是各个公司基于标准的实现 NfcA — ISO 14443-3ANfcB — ISO 14443-3BNfcF — JIS 6319-4NfcV — ISO 15693IsoDep — ISO 14443-4M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。 PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？ 卡模拟卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。 SE安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。 现在主要有三种形态 内置SE模式（eSE）UICC（SIM卡）AdvancedSecurity SD card（ASSD SD卡） 模拟的卡（APPLET)模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet概念还是很模糊 – 比如所APPLET是怎么加载到SE上的 TSM发卡服务器,APPLET由TSM来发送安装。。 SMARTCARDEMVPBOC]]></content>
+      <categories>
+        <category>Android_Nfc</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>nfc</tag>
       </tags>
   </entry>
   <entry>
@@ -381,8 +390,12 @@
     <title><![CDATA[Nfc学习]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid_Nfc%2FNfc%E5%AD%A6%E4%B9%A0%2F</url>
     <content type="text"><![CDATA[证书相关12$ openssl x509 -in platform.x509.pem -outform der -out platform.x509.der$ xxd -c 10000 -ps platform.x509.der]]></content>
+      <categories>
+        <category>Android_Nfc</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>nfc</tag>
       </tags>
   </entry>
   <entry>

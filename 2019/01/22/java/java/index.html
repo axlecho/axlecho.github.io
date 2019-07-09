@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Java底层机制总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T06:57:16.249Z">
+<meta property="og:updated_time" content="2019-07-09T07:12:37.038Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java">
 <meta name="twitter:description" content="Java底层机制总结">
@@ -386,14 +386,42 @@
       
         <p>Java底层机制总结</p>
 <a id="more"></a>
-<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>对象创建 <code>new</code><br>常量池</p>
-<p>解析class（加载，解析，初始化 classloader）<br>分配内存<br>内存布局</p>
-<p>对象头<br>实例数据<br>对齐<br>访问</p>
-<p>句柄池 （类型指针，实例指针）<br>内存区域</p>
-<p>方法区 （类信息，常量，静态常量）<br>堆（实例对象）<br>虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）<br>本地方法栈（Native方法）<br>线程计数器（线程当前执行的字节码行号指示器）<br>Java内存模型</p>
+<h2 id="JVM虚拟机"><a href="#JVM虚拟机" class="headerlink" title="JVM虚拟机"></a>JVM虚拟机</h2><p><em>A Java virtual machine (JVM) is a virtual machine that enables a computer to run Java programs as well as programs written in other languages that are also compiled to Java bytecode</em></p>
+<p>JVM主要功能模块包括类加载器、执行引擎和垃圾回收系统</p>
+<p>####内存区域<br>方法区 （类信息，常量，静态常量）<br>堆（实例对象）<br>虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）<br>本地方法栈（Native方法）<br>线程计数器（线程当前执行的字节码行号指示器）</p>
+<p>对象创建 <code>new</code><br>常量池</p>
+<p>解析class（加载，解析，初始化 classloader）</p>
+<p>分配内存<br>内存布局<br>对象头<br>实例数据<br>对齐<br>访问</p>
 <p>目的：兼容各种平台<br>目标：java的所有变量都存储在主内存中，线程拥有共享变量副本<br>8种操作：lock，unlock，read，load，use，assign，store，write<br>lock – unlock次数相同才能平衡<br>加载器</p>
-<p>生命周期 – 加载，验证，准备，解析，初始化，使用和卸载<br>触发时机<br>new，读取设置一个类的静态字段，调用一个类的静态方法<br>反射调用<br>父类<br>入口类<br>java.lang.invoke.MethodHandle<br>加载流程</p>
-<p>加载<br>全限定名获取二进制字节流<br>静态结构转换为运行时数据结构<br>生成内存代表类的java.lang.Class<br>验证<br>文件格式(class文件格式，版本）<br>元数据（语义）<br>字节码验证（数据流和控制流）<br>符号引用验证<br>准备<br>初始化变量<br>解析<br>将常量池符号替换为直接引用<br>初始化<br>对类变量进行赋值及执行静态代码块<br>类加载器<br>负责加载流程</p>
+<p>生命周期 – 加载，验证，准备，解析，初始化，使用和卸载</p>
+<p>触发时机<br>new，读取设置一个类的静态字段，调用一个类的静态方法<br>反射调用<br>父类<br>入口类<br>java.lang.invoke.MethodHandle</p>
+<p>####加载流程<br>加载</p>
+<ul>
+<li>全限定名获取二进制字节流</li>
+<li>静态结构转换为运行时数据结构</li>
+<li>生成内存代表类的java.lang.Class</li>
+</ul>
+<p>验证</p>
+<ul>
+<li>文件格式(class文件格式，版本）</li>
+<li>元数据（语义）</li>
+<li>字节码验证（数据流和控制流）</li>
+<li>符号引用验证</li>
+</ul>
+<p>准备</p>
+<ul>
+<li>初始化变量</li>
+</ul>
+<p>解析</p>
+<ul>
+<li>将常量池符号替换为直接引用</li>
+</ul>
+<p>初始化</p>
+<ul>
+<li>对类变量进行赋值及执行静态代码块</li>
+<li>类加载器</li>
+<li>负责加载流程</li>
+</ul>
 <p>启动类加载器（Bootstrap ClassLoader） 核心类<br>扩展类记载器（Extension ClassLoader） 扩展的核心类<br>应用程序类加载器（Application ClassLoader）用户classpath上指定的类 （可直接ClassLoader.getSystemClassLoader()获取）<br>双亲委派模型，优先级<br>GC算法</p>
 <p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor ：Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC<br>GC搜集器</p>
 <p>Serial收集器<br>ParNew收集器<br>Parallel Scavenge收集器<br>Serial Old收集器<br>Parallel Old收集器<br>CMS（Concurrent Mark Sweep）收集器 并发<br>G1收集器 并发 分代<br>判断可回收算法</p>
@@ -627,7 +655,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机"><span class="nav-number">1.</span> <span class="nav-text">虚拟机</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a></li></ol></div>
             
 
           </div>

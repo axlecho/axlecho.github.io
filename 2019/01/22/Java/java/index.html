@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Java底层机制总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T09:21:05.026Z">
+<meta property="og:updated_time" content="2019-07-09T09:22:59.292Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java">
 <meta name="twitter:description" content="Java底层机制总结">
@@ -390,16 +390,16 @@
 <p>JVM主要功能模块包括类加载器、执行引擎和垃圾回收系统</p>
 <h2 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h2><p>方法区 （类信息，常量，静态常量）<br>堆（实例对象）<br>虚拟机栈（局部变量表，操作数栈，动态连接，方法出口）<br>本地方法栈（Native方法）<br>线程计数器（线程当前执行的字节码行号指示器）</p>
 <p>java的所有变量都存储在主内存中，线程拥有共享变量副本<br>内存8种操作：lock，unlock，read，load，use，assign，store，write<br>lock – unlock次数相同才能平衡</p>
-<h4 id="类的内存结构"><a href="#类的内存结构" class="headerlink" title="类的内存结构"></a>类的内存结构</h4><p>对象头 <a href="https://www.jianshu.com/p/3d38cba67f8b" target="_blank" rel="noopener">Java对象头详解</a><br>实例数据<br>对齐填充字节</p>
+<h3 id="类的内存结构"><a href="#类的内存结构" class="headerlink" title="类的内存结构"></a>类的内存结构</h3><p>对象头 <a href="https://www.jianshu.com/p/3d38cba67f8b" target="_blank" rel="noopener">Java对象头详解</a><br>实例数据<br>对齐填充字节</p>
 <h2 id="类加载器的加载进程"><a href="#类加载器的加载进程" class="headerlink" title="类加载器的加载进程"></a>类加载器的加载进程</h2><p>类的生命周期 – 加载，验证，准备，解析，初始化，使用和卸载<br><a href="https://blog.csdn.net/u010805617/article/details/77802739" target="_blank" rel="noopener">Java虚拟机类加载的过程</a></p>
-<h4 id="触发时机"><a href="#触发时机" class="headerlink" title="触发时机"></a>触发时机</h4><ul>
+<h3 id="触发时机"><a href="#触发时机" class="headerlink" title="触发时机"></a>触发时机</h3><ul>
 <li>new，读取设置一个类的静态字段，调用一个类的静态方法</li>
 <li>反射调用</li>
 <li>父类</li>
 <li>入口类（包涵main的类）</li>
 <li>java.lang.invoke.MethodHandle</li>
 </ul>
-<h4 id="加载流程"><a href="#加载流程" class="headerlink" title="加载流程"></a>加载流程</h4><p>加载</p>
+<h3 id="加载流程"><a href="#加载流程" class="headerlink" title="加载流程"></a>加载流程</h3><p>加载</p>
 <ul>
 <li>全限定名获取二进制字节流</li>
 <li>静态结构转换为运行时数据结构</li>
@@ -424,13 +424,13 @@
 <ul>
 <li>对类变量进行赋值及执行静态代码块</li>
 </ul>
-<h4 id="加载器种类"><a href="#加载器种类" class="headerlink" title="加载器种类"></a>加载器种类</h4><p>启动类加载器（Bootstrap ClassLoader） 核心类<br>扩展类记载器（Extension ClassLoader） 扩展的核心类<br>应用程序类加载器（Application ClassLoader）用户classpath上指定的类 （可直接ClassLoader.getSystemClassLoader()获取）</p>
-<h4 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h4><p>加载优先级 启动类加载器 &gt; 扩展类记载器 &gt; 应用程序类加载器</p>
+<h3 id="加载器种类"><a href="#加载器种类" class="headerlink" title="加载器种类"></a>加载器种类</h3><p>启动类加载器（Bootstrap ClassLoader） 核心类<br>扩展类记载器（Extension ClassLoader） 扩展的核心类<br>应用程序类加载器（Application ClassLoader）用户classpath上指定的类 （可直接ClassLoader.getSystemClassLoader()获取）</p>
+<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>加载优先级 启动类加载器 &gt; 扩展类记载器 &gt; 应用程序类加载器</p>
 <h2 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h2><p><a href="https://www.cnblogs.com/smyhvae/p/4744233.html" target="_blank" rel="noopener">Java虚拟机详解04—-GC算法和种类【重要】</a><br>GC：Garbage Collection 垃圾收集<br>这里所谓的垃圾指的是在系统运行过程当中所产生的一些无用的对象，这些对象占据着一定的内存空间，如果长期不被释放，可能导致OOM<br>Java中，GC的对象是Java堆和方法区（即永久区）</p>
-<h4 id="判断回收算法"><a href="#判断回收算法" class="headerlink" title="判断回收算法"></a>判断回收算法</h4><p>引用计数算法<br>根搜索算法（栈帧的本地变量表，静态属性引用，常量引用，jni引用）</p>
-<h4 id="现代的GC算法"><a href="#现代的GC算法" class="headerlink" title="现代的GC算法"></a>现代的GC算法</h4><p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor:Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC</p>
-<h4 id="GC搜集器"><a href="#GC搜集器" class="headerlink" title="GC搜集器"></a>GC搜集器</h4><p>Serial收集器<br>ParNew收集器<br>Parallel Scavenge收集器<br>Serial Old收集器<br>Parallel Old收集器<br>CMS（Concurrent Mark Sweep）收集器 并发<br>G1收集器 并发 分代</p>
-<h4 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h4><p>强引用 有用，内存异常都不回收<br>软引用 有用但非必须 内存即将异常时回收<br>弱引用 不会阻止垃圾回收<br>虚引用 对象被收集器回收收到一个系统通知</p>
+<h3 id="判断回收算法"><a href="#判断回收算法" class="headerlink" title="判断回收算法"></a>判断回收算法</h3><p>引用计数算法<br>根搜索算法（栈帧的本地变量表，静态属性引用，常量引用，jni引用）</p>
+<h3 id="现代的GC算法"><a href="#现代的GC算法" class="headerlink" title="现代的GC算法"></a>现代的GC算法</h3><p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor:Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC</p>
+<h3 id="GC搜集器"><a href="#GC搜集器" class="headerlink" title="GC搜集器"></a>GC搜集器</h3><p>Serial收集器<br>ParNew收集器<br>Parallel Scavenge收集器<br>Serial Old收集器<br>Parallel Old收集器<br>CMS（Concurrent Mark Sweep）收集器 并发<br>G1收集器 并发 分代</p>
+<h3 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h3><p>强引用 有用，内存异常都不回收<br>软引用 有用但非必须 内存即将异常时回收<br>弱引用 不会阻止垃圾回收<br>虚引用 对象被收集器回收收到一个系统通知</p>
 <p>finalize()可以在标记后复活对象，重载了finalize()的对象在标记后会进入一个F-Queue</p>
 
       
@@ -626,7 +626,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类的内存结构"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">类的内存结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">加载器种类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#判断回收算法"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">判断回收算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#现代的GC算法"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">现代的GC算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC搜集器"><span class="nav-number">1.3.0.3.</span> <span class="nav-text">GC搜集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用类型"><span class="nav-number">1.3.0.4.</span> <span class="nav-text">引用类型</span></a></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类的内存结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">类的内存结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.3.</span> <span class="nav-text">加载器种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.2.4.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#判断回收算法"><span class="nav-number">1.3.1.</span> <span class="nav-text">判断回收算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#现代的GC算法"><span class="nav-number">1.3.2.</span> <span class="nav-text">现代的GC算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC搜集器"><span class="nav-number">1.3.3.</span> <span class="nav-text">GC搜集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用类型"><span class="nav-number">1.3.4.</span> <span class="nav-text">引用类型</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

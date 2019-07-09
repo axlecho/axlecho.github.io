@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Java底层机制总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T07:32:52.129Z">
+<meta property="og:updated_time" content="2019-07-09T07:39:18.816Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java">
 <meta name="twitter:description" content="Java底层机制总结">
@@ -423,9 +423,8 @@
 <li>对类变量进行赋值及执行静态代码块</li>
 </ul>
 <h4 id="加载器种类"><a href="#加载器种类" class="headerlink" title="加载器种类"></a>加载器种类</h4><p>启动类加载器（Bootstrap ClassLoader） 核心类<br>扩展类记载器（Extension ClassLoader） 扩展的核心类<br>应用程序类加载器（Application ClassLoader）用户classpath上指定的类 （可直接ClassLoader.getSystemClassLoader()获取）</p>
-<p>双亲委派模型，优先级</p>
+<h4 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h4><p>加载优先级 启动类加载器 &gt; 扩展类记载器 &gt; 应用程序类加载器</p>
 <p>对象创建 <code>new</code><br>常量池</p>
-<p>解析class（加载，解析，初始化 classloader）</p>
 <p>分配内存<br>内存布局<br>对象头<br>实例数据<br>对齐<br>访问</p>
 <p>目的：兼容各种平台<br>目标：java的所有变量都存储在主内存中，线程拥有共享变量副本<br>8种操作：lock，unlock，read，load，use，assign，store，write<br>lock – unlock次数相同才能平衡</p>
 <h2 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h2><p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor ：Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC<br>GC搜集器</p>
@@ -660,7 +659,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">加载器种类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">加载器种类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a></li></ol></div>
             
 
           </div>

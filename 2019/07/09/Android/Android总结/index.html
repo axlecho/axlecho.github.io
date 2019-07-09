@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="ActivityActivity的生命周期 onCreate -&amp;gt; onStart -&amp;gt; onResume -&amp;gt; onPause -&amp;gt; onStop -&amp;gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&amp;gt; onStart -&amp;gt; onResume打开新Activity onPause -&amp;gt; onS">
+<meta name="description" content="Android的一些基础总结">
 <meta name="keywords" content="android,技术总结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android总结">
 <meta property="og:url" content="http://axlecho.com/2019/07/09/Android/Android总结/index.html">
 <meta property="og:site_name" content="飞翔的鸭崽">
-<meta property="og:description" content="ActivityActivity的生命周期 onCreate -&amp;gt; onStart -&amp;gt; onResume -&amp;gt; onPause -&amp;gt; onStop -&amp;gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&amp;gt; onStart -&amp;gt; onResume打开新Activity onPause -&amp;gt; onS">
+<meta property="og:description" content="Android的一些基础总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T08:57:27.336Z">
+<meta property="og:updated_time" content="2019-07-09T09:57:15.781Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android总结">
-<meta name="twitter:description" content="ActivityActivity的生命周期 onCreate -&amp;gt; onStart -&amp;gt; onResume -&amp;gt; onPause -&amp;gt; onStop -&amp;gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&amp;gt; onStart -&amp;gt; onResume打开新Activity onPause -&amp;gt; onS">
+<meta name="twitter:description" content="Android的一些基础总结">
 
 
 
@@ -384,7 +384,8 @@
       
 
       
-        <p>Activity<br>Activity的生命周期</p>
+        <p>Android的一些基础总结<br><a id="more"></a></p>
+<p>Activity<br>Activity的生命周期</p>
 <p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
 <p>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
 <p>横竖屏切换<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume</p>
@@ -551,7 +552,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

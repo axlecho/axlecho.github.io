@@ -383,47 +383,17 @@
 
       
         
-          
-            <p>Activity<br>Activity的生命周期</p>
-<p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
-<p>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
-<p>横竖屏切换<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume</p>
-<p>android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>    public void onConfigurationChanged(Configuration newConfig) {<br>        super.onConfigurationChanged(newConfig);<br>    }<br>activity优先级<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
-<p>启动模式<br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
-<p>singleTop 防重复点击，通知栏</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>protected void onNewIntent(Intent intent) {<br>    super.onNewIntent(intent);<br>}<br>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
-<p>特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。</p>
-<p>Activity flags<br>FLAG_ACTIVITY_NEW_TASK<br>FLAG_ACTIVITY_SINGLE_TOP<br>FLAG_ACTIVITY_CLEAR_TOP</p>
-<p>BroadcastReceiver<br>模型：观察者模式</p>
-<p>订阅者<br>发布者<br>消息中心 AM<br>注册：</p>
-<p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏<br>广播种类</p>
-<p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)<br>ContentProvider<br>数据交互与共享</p>
-<p>ContentProvider的使用</p>
-<p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor</p>
-<p>ContentUris<br>UriMatcher<br>ContentObserver</p>
-<p>进程内通信<br>进程间通信</p>
-<p>1<br>2<br>3</p>
-<p><provider android:name="MyProvider" android:authorities="cn.scu.myprovider"><br>优点:安全、访问简单&amp;高效，(数据源的adapter)</provider></p>
-<p>消息机制<br>Message – MessageQueue – Handler –Looper</p>
-<p>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
-<p>流程</p>
-<p>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage<br>事件分发机制<br>分发MotionEvent<br>流程</p>
-<p>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super<br>默认情况</p>
-<p>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
-<p>View消费事件的条件</p>
-<p>enable<br>onTouch 返回true<br>onTouch 高于onClick<br>事件的连锁机制<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
-<p>异步<br>AsyncTask其实是个线程池</p>
-<p>实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler</p>
-<p>核心方法</p>
-<p>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
-<p>note:使用不当会引起不良后果</p>
-<p>生命周期 在onDestroy内调用cancel<br>内存泄漏<br>结果丢失</p>
-
-          
+          <p>Android的一些基础总结<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/09/Android/Android总结/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </p></div>
     
     
     
@@ -537,47 +507,15 @@
 
       
         
-          
-            <h2 id="Privacy-Policy"><a href="#Privacy-Policy" class="headerlink" title="Privacy Policy"></a>Privacy Policy</h2><p>Axlecho built the JtsViewer app as an Open Source app. This SERVICE is provided by Axlecho at no cost and is intended for use as is.</p>
+          <h2 id="Privacy-Policy"><a href="#Privacy-Policy" class="headerlink" title="Privacy Policy"></a>Privacy Policy</h2><p>Axlecho built the JtsViewer app as an Open Source app. This SERVICE is provided by Axlecho at no cost and is intended for use as is.</p>
 <p>This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.</p>
-<p>If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.</p>
-<p>The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at JtsViewer unless otherwise defined in this Privacy Policy.</p>
-<p><strong>Information Collection and Use</strong></p>
-<p>For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way.</p>
-<p>The app does use third party services that may collect information used to identify you.</p>
-<p>Link to privacy policy of third party service providers used by the app</p>
-<ul>
-<li><a href="https://www.google.com/policies/privacy/" target="_blank" rel="noopener">Google Play Services</a></li>
-</ul>
-<p><strong>Log Data</strong></p>
-<p>I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.</p>
-<p><strong>Cookies</strong></p>
-<p>Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device’s internal memory.</p>
-<p>This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.</p>
-<p><strong>Service Providers</strong></p>
-<p>I may employ third-party companies and individuals due to the following reasons:</p>
-<ul>
-<li>To facilitate our Service;</li>
-<li>To provide the Service on our behalf;</li>
-<li>To perform Service-related services; or</li>
-<li>To assist us in analyzing how our Service is used.</li>
-</ul>
-<p>I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.</p>
-<p><strong>Security</strong></p>
-<p>I value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security.</p>
-<p><strong>Links to Other Sites</strong></p>
-<p>This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.</p>
-<p><strong>Children’s Privacy</strong></p>
-<p>These Services do not address anyone under the age of 13. I do not knowingly collect personally identifiable information from children under 13. In the case I discover that a child under 13 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that I will be able to do necessary actions.</p>
-<p><strong>Changes to This Privacy Policy</strong></p>
-<p>I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page.</p>
-<p><strong>Microphone usage</strong></p>
-<p>This application records sound through the device on which it is installed microphone. Sound that is recorded is not collected or send through the internet. It is used only for the purpose of providing information to the user to help him tune his musical instrument.</p>
-<p><strong>Contact Us</strong></p>
-<p>If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at <a href="mailto:axlecho@gmail.com" target="_blank" rel="noopener">axlecho@gmail.com</a>.</p>
-<p>This privacy policy page was created at <a href="https://privacypolicytemplate.net" target="_blank" rel="noopener">privacypolicytemplate.net</a> and modified/generated by <a href="https://app-privacy-policy-generator.firebaseapp.com/" target="_blank" rel="noopener">App Privacy Policy Generator</a></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/09/Android/JtsViewer/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1838,7 +1776,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

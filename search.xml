@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[Android总结]]></title>
     <url>%2F2019%2F07%2F09%2FAndroid%2FAndroid%E6%80%BB%E7%BB%93%2F</url>
-    <content type="text"><![CDATA[ActivityActivity的生命周期 onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&gt; onStart -&gt; onResume打开新Activity onPause -&gt; onStop回到原来的Activity onRestart -&gt; onStart -&gt; onResume按back返回 onPause -&gt; onStop -&gt; onDestory按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResumefinish onDestory 横竖屏切换onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceStateonPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity 1234@Override public void onConfigurationChanged(Configuration newConfig) { super.onConfigurationChanged(newConfig); }activity优先级前台activity Resumed（活动状态）可见activity Paused（暂停状态）后台activity Stopped（停止状态） 启动模式标准模式（standard）栈顶复用模式（singleTop）栈内复用模式（singleTask）单例模式（singleInstance） singleTop 防重复点击，通知栏 1234@Overrideprotected void onNewIntent(Intent intent) { super.onNewIntent(intent);}singleTask 单例模式的activity 主界面singleInstance 单例模式的activity加强版 桌面启动，呼叫来电 特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。 Activity flagsFLAG_ACTIVITY_NEW_TASKFLAG_ACTIVITY_SINGLE_TOPFLAG_ACTIVITY_CLEAR_TOP BroadcastReceiver模型：观察者模式 订阅者发布者消息中心 AM注册： 静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统动态注册 使用Context的registerReceiver动态广播 注册必须注销，不然会有内存泄漏广播种类 普通广播系统广播有序广播应用内广播(exported = false，permission，setPackage)ContentProvider数据交互与共享 ContentProvider的使用 统一资源识别符 schema:authorith:path:idmime /表数据增、删、查、改ContentResolver - cursor ContentUrisUriMatcherContentObserver 进程内通信进程间通信 123 优点:安全、访问简单&amp;高效，(数据源的adapter) 消息机制Message – MessageQueue – Handler –Looper handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage 流程 looper – Looper.prepare – Looper.loophandler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage事件分发机制分发MotionEvent流程 驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; ViewdispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super默认情况 dispatchTouchEvent:activity -&gt; viewgroup -&gt; viewonTouchEvent:view -&gt; viewgroup -&gt; activityviewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view调用onTouch,activity不再处理事件 View消费事件的条件 enableonTouch 返回trueonTouch 高于onClick事件的连锁机制ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到onInterceptTouchEvent 异步AsyncTask其实是个线程池 实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler 核心方法 onPreExecute() // 主线程doInBackgroud() // 子线程onProgressUpdate(Progress…) // 主线程onPostExecute(Result) // 主线程onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()cancel 设置cancel标记位note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。 note:使用不当会引起不良后果 生命周期 在onDestroy内调用cancel内存泄漏结果丢失]]></content>
+    <content type="text"><![CDATA[Android的一些基础总结 ActivityActivity的生命周期 onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&gt; onStart -&gt; onResume打开新Activity onPause -&gt; onStop回到原来的Activity onRestart -&gt; onStart -&gt; onResume按back返回 onPause -&gt; onStop -&gt; onDestory按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResumefinish onDestory 横竖屏切换onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceStateonPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity 1234@Override public void onConfigurationChanged(Configuration newConfig) { super.onConfigurationChanged(newConfig); }activity优先级前台activity Resumed（活动状态）可见activity Paused（暂停状态）后台activity Stopped（停止状态） 启动模式标准模式（standard）栈顶复用模式（singleTop）栈内复用模式（singleTask）单例模式（singleInstance） singleTop 防重复点击，通知栏 1234@Overrideprotected void onNewIntent(Intent intent) { super.onNewIntent(intent);}singleTask 单例模式的activity 主界面singleInstance 单例模式的activity加强版 桌面启动，呼叫来电 特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。 Activity flagsFLAG_ACTIVITY_NEW_TASKFLAG_ACTIVITY_SINGLE_TOPFLAG_ACTIVITY_CLEAR_TOP BroadcastReceiver模型：观察者模式 订阅者发布者消息中心 AM注册： 静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统动态注册 使用Context的registerReceiver动态广播 注册必须注销，不然会有内存泄漏广播种类 普通广播系统广播有序广播应用内广播(exported = false，permission，setPackage)ContentProvider数据交互与共享 ContentProvider的使用 统一资源识别符 schema:authorith:path:idmime /表数据增、删、查、改ContentResolver - cursor ContentUrisUriMatcherContentObserver 进程内通信进程间通信 123 优点:安全、访问简单&amp;高效，(数据源的adapter) 消息机制Message – MessageQueue – Handler –Looper handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage 流程 looper – Looper.prepare – Looper.loophandler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage事件分发机制分发MotionEvent流程 驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; ViewdispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super默认情况 dispatchTouchEvent:activity -&gt; viewgroup -&gt; viewonTouchEvent:view -&gt; viewgroup -&gt; activityviewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view调用onTouch,activity不再处理事件 View消费事件的条件 enableonTouch 返回trueonTouch 高于onClick事件的连锁机制ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到onInterceptTouchEvent 异步AsyncTask其实是个线程池 实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler 核心方法 onPreExecute() // 主线程doInBackgroud() // 子线程onProgressUpdate(Progress…) // 主线程onPostExecute(Result) // 主线程onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()cancel 设置cancel标记位note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。 note:使用不当会引起不良后果 生命周期 在onDestroy内调用cancel内存泄漏结果丢失]]></content>
       <categories>
         <category>Android</category>
       </categories>
@@ -16,6 +16,9 @@
     <title><![CDATA[privacy_policy]]></title>
     <url>%2F2019%2F05%2F09%2FAndroid%2FJtsViewer%2F</url>
     <content type="text"><![CDATA[Privacy PolicyAxlecho built the JtsViewer app as an Open Source app. This SERVICE is provided by Axlecho at no cost and is intended for use as is. This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service. If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy. The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at JtsViewer unless otherwise defined in this Privacy Policy. Information Collection and Use For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way. The app does use third party services that may collect information used to identify you. Link to privacy policy of third party service providers used by the app Google Play Services Log Data I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics. Cookies Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device’s internal memory. This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service. Service Providers I may employ third-party companies and individuals due to the following reasons: To facilitate our Service; To provide the Service on our behalf; To perform Service-related services; or To assist us in analyzing how our Service is used. I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose. Security I value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security. Links to Other Sites This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services. Children’s Privacy These Services do not address anyone under the age of 13. I do not knowingly collect personally identifiable information from children under 13. In the case I discover that a child under 13 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that I will be able to do necessary actions. Changes to This Privacy Policy I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page. Microphone usage This application records sound through the device on which it is installed microphone. Sound that is recorded is not collected or send through the internet. It is used only for the purpose of providing information to the user to help him tune his musical instrument. Contact Us If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at axlecho@gmail.com. This privacy policy page was created at privacypolicytemplate.net and modified/generated by App Privacy Policy Generator]]></content>
+      <tags>
+        <tag>JtsViewer</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[java面试题]]></title>
@@ -333,7 +336,7 @@
   <entry>
     <title><![CDATA[NFC金融]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid_Nfc%2FNFC%E9%87%91%E8%9E%8D%2F</url>
-    <content type="text"><![CDATA[最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。et.新的银行卡，工卡，公交卡等，基本都是这玩意了。 另外的还有身份识别卡（Identification Card），比较老的只读卡。et.老的门禁卡，停车卡 还有一个很乱的概念cpu卡,不清楚是什么的东西 ic卡ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。 ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。 nfc卡nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。 1近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。nfc卡的种类，其实就是各个公司基于标准的实现 NfcA — ISO 14443-3ANfcB — ISO 14443-3BNfcF — JIS 6319-4NfcV — ISO 15693IsoDep — ISO 14443-4M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。 PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？ 卡模拟卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。 SE安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。 现在主要有三种形态 内置SE模式（eSE）UICC（SIM卡）AdvancedSecurity SD card（ASSD SD卡） 模拟的卡（APPLET)模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet概念还是很模糊 – 比如所APPLET是怎么加载到SE上的 TSM发卡服务器,APPLET由TSM来发送安装。。 SMARTCARDEMVPBOC]]></content>
+    <content type="text"><![CDATA[最近两天研究了下移动金融的东西，水是相当的深。 NFC有三种模式：点对点(p2p)，读/写卡(reader/writer)，卡模拟(card emulation),在移动金融领域中一般只有卡模拟模式。 乱七八糟的卡说到卡模拟，先要明白这里的卡指的是什么，这里的卡指的是集成电路卡(Integrated Circuit Card,IC卡),又称智能卡(Smart card),还有一些乱七八糟的叫法。et.新的银行卡，工卡，公交卡等，基本都是这玩意了。 另外的还有身份识别卡（Identification Card），比较老的只读卡。et.老的门禁卡，停车卡 还有一个很乱的概念cpu卡,不清楚是什么的东西 ic卡ic卡又分为接触式IC卡和非接触式IC卡，很形象。。没必要解释。。接触式IC卡常见的有银行卡，插入atm应该就是接触式的。。所以银行卡具有接触式IC卡和非接触式IC卡(pos机)的两种功能。 ISO14443协议是非接触式IC卡标准(Contactless card standards)协议。 nfc卡nfc卡，故名思意，就是基于nfc的ic卡，也就是作用距离在10厘米以内的ic卡。 近场通信（Near Field Communication,NFC）是一种短距高频的无线电技术，在13.56MHz频率运行于10厘米距离内。nfc卡的种类，其实就是各个公司基于标准的实现 NfcA — ISO 14443-3ANfcB — ISO 14443-3BNfcF — JIS 6319-4NfcV — ISO 15693IsoDep — ISO 14443-4M卡指的是Mifare卡，MIFARE Classic是NfcA ，MIFARE DESFire是IsoDep。 PS. 银行卡非接触式部分是基于IsoDep，接触式部分是基于ISO7816实现的【NFC】 NfcA/NfcB/NfcF/NfcV/IsoDep/Ndef/Mifare/Felica/Pboc/ISOxxxx 都是些什么鸟玩意？ 卡模拟卡模拟到现在有两种实现方案，一种是基于软件的，被称为主机卡模式（Host-based Card Emulation，HCE），另外一种是基于硬件的（不知道叫什么）。这里重点关注的是基于硬件的做法。既然是卡模拟，那么最大的问题就是安全的问题，所以有了SE出现。 SE安全元件（Secure Element，SE），通常以芯片形式提供。为防止外部恶意解析攻击，保护数据安全，在芯片中具有加密/解密逻辑电路。 现在主要有三种形态 内置SE模式（eSE）UICC（SIM卡）AdvancedSecurity SD card（ASSD SD卡） 模拟的卡（APPLET)模拟的卡是一种程序，运行于SE中，也是用java开发，叫做java card applet概念还是很模糊 – 比如所APPLET是怎么加载到SE上的 TSM发卡服务器,APPLET由TSM来发送安装。。 SMARTCARDEMVPBOC]]></content>
       <categories>
         <category>Android_Nfc</category>
       </categories>
@@ -424,8 +427,12 @@
     <title><![CDATA[原生分屏原理]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid%2F%E5%8E%9F%E7%94%9F%E5%88%86%E5%B1%8F%E5%8E%9F%E7%90%86%2F</url>
     <content type="text"><![CDATA[分屏代码在AOSP其实老早就存在了，就一直没有开启而已，在6.0版本可以通过设置系统属性ro.build.type改为userdebug,并在开发者选项中开启多窗口模式,然后在最近任务上就会个按钮可以实现分屏。 通过adb命令也可以实现分屏1$ am task resize 25 0 720 1080 1920 在最近任务的调用链123456RecentsActivity#onTaskResize -&gt;RecentsResizeTaskDialog#placeTasks -&gt;SystemServicesProxy#resizeTask -&gt; ActivityManagerNative#resizeTask -&gt; ActivityManagerService#resizeTask -&gt; ActivityStackSupervisor#resizeStackLocked 在am的调用链1234Am#runTaskResize-&gt; ActivityManagerNative#resizeTask -&gt; ActivityManagerService#resizeTask -&gt; ActivityStackSupervisor#resizeTaskLocked ActivityStackSupervisor的实现123456789foundStackWithBoundsActivityStackSupervisor#moveTaskToStackLocked -&gt;ActivityStackSupervisor#resizeStackLockedActivityStackSupervisor#moveTaskToStackLocked - &gt; WindowManagerService#moveTaskToStackActivityStackSupervisor#resizeStackLocked -&gt;WindowManagerService#resizeStack WindowManagerService的实现1234WindowManagerService#resizeStack -&gt;TaskStack#setBoundsTaskStack#resizeWindows -&gt;updateLayout?? 看来让人心情不好的乱七八糟源码分析1234567891011121314151617181920212223242526272829303132333435363738394041424344//---&gt; frameworks/base/services/core/java/com/android/server/am/ActivityStackSupervisor.javavoid resizeTaskLocked(TaskRecord task, Rect bounds) &#123; task.mResizeable = true; final ActivityStack currentStack = task.stack; if (currentStack.isHomeStack()) &#123; // Can't move task off the home stack. Sorry! return; &#125; // 找到给定区域相同的栈 final int matchingStackId = mWindowManager.getStackIdWithBounds(bounds); if (matchingStackId != -1) &#123; // There is already a stack with the right bounds! if (currentStack != null &amp;&amp; currentStack.mStackId == matchingStackId) &#123; // Nothing to do here. Already in the right stack... return; &#125; // Move task to stack with matching bounds. moveTaskToStackLocked(task.taskId, matchingStackId, true); return; &#125; // 栈里只有一个task，直接resize栈 if (currentStack != null &amp;&amp; currentStack.numTasks() == 1) &#123; // Just resize the current stack since this is the task in it. resizeStackLocked(currentStack.mStackId, bounds); return; &#125; // 挪动task到新的栈 // Create new stack and move the task to it. final int displayId = (currentStack != null &amp;&amp; currentStack.mDisplayId != -1) ? currentStack.mDisplayId : Display.DEFAULT_DISPLAY; ActivityStack newStack = createStackOnDisplay(getNextStackId(), displayId); if (newStack == null) &#123; Slog.e(TAG, "resizeTaskLocked: Can't create stack for task=" + task); return; &#125; moveTaskToStackLocked(task.taskId, newStack.mStackId, true); resizeStackLocked(newStack.mStackId, bounds);&#125; 分屏的核心是task跟bound，需要看一下task是怎么裂变的]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>framework</tag>
       </tags>
   </entry>
   <entry>
@@ -477,16 +484,24 @@
     <title><![CDATA[在framework添加system service]]></title>
     <url>%2F2019%2F01%2F22%2FAndroid%2F%E5%9C%A8framework%E6%B7%BB%E5%8A%A0system-service%2F</url>
     <content type="text"><![CDATA[在Context.java添加服务名称1234567//---&gt;frameworks/base/core/java/android/content/Context.javapublic static final String THREEKEY_SERVICE = "threekey";@StringDef &#123; ... THREEKEY_SERVICE&#125; 在ServiceServicer注册服务123456//---&gt;frameworks/base/services/java/com/android/server/SystemServer.javaprivate void startOtherServices() &#123; ... ServiceManager.addService("ThreeKeyService", new ThreeKeyService); ...&#125; 在ContextImpl.java添加获取服务管理接口12345678910//---&gt;frameworks/base/core/java/android/app/ContextImpl.javastatic &#123; .... registerService(Context.THREEKEY_SERVICE,ThreeKeyManager.class, new CachedServiceFetcher&lt;ThreeKeyManager&gt;() &#123; @Override public ThreeKeyManager createService(ContextImpl ctx) &#123; return new ThreeKeyManager(ctx); &#125;&#125;);&#125; Service的aidl123interface IThreeKeyExService &#123; &#125; Service 本体123public class ThreeKeyService extends IThreeKeyService.Stub &#123;&#125; Manager123456789101112public class ThreeKeyManager &#123; public ThreeKeyManager(Context context) &#123; &#125; static public IThreeKeyService getService() &#123; IBinder b = ServiceManager.getService("notification"); return IThreeKeyService.Stub.asInterface(b); &#125;&#125;]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>framework</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[吉他社软件开发]]></title>
     <url>%2F2019%2F01%2F19%2FAndroid%2F%E5%90%89%E4%BB%96%E7%A4%BE%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%2F</url>
     <content type="text"><![CDATA[今天去做吉他社的志愿者，感觉应该会很有意义吧。话说现在越来越懒了。 2016-6-11md TuxGuitar这个鬼东西下了半天没下下来，估计很大，md我讨厌sf。。 2016-6-12tuxguitar的app终于跑起来了，不过还是出错了，话说tuxguitar的代码写得真是好。跟那opl的那个鬼东西比起来简直了。。 下面这段代码的意思是app的属性从在自身的attrs.xml定义，包括库文件1xmlns:app="http://schemas.android.com/apk/res-auto" 2016-6-15环境变量搞错了应该用export而不是= 2016-6-16编出来之后还是不能用，是时候熟悉一波gradle和maven了 2016-6-18貌似找到原因了，是配置文件找不到，配置文件没打包到apk里面，啊啊啊看起来好简单的东西为什么就这么难搞，果真是我太弱了么 gradle package apk的实现:AndroidBuilder.java手动打包apk:build apk from the command line添加task:胡搞乱搞 2016-6-19好难啊，还是搞不定，话说为什么在jar还会有android的东西啊 手动打包jar:AndroidStudio导出jar包 2016-6-21就差这个鬼错误了 1Rejecting re-init on previously-failed 2016-6-24最后还是放弃了插件化，手动加载插件并转为了本地的lib，最后搞定了，唉 动态加载这种高大上东西还是太难了 又遇到网络请求这种东西，真是无所不在啊，第一步直接Robolectric,我就问问没有单元测试怎么搞 2016-6-27Robolectric下载了好多东西，又下载不下来，之后手动下，下载后放在1C:\Users\axlecho\.m2\repository]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
         <tag>android</tag>
+        <tag>JtsViewer</tag>
       </tags>
   </entry>
   <entry>
@@ -504,8 +519,12 @@
     <title><![CDATA[在android源码添加项目的正确办法]]></title>
     <url>%2F2019%2F01%2F19%2FAndroid%2F%E5%9C%A8android%E6%BA%90%E7%A0%81%E6%B7%BB%E5%8A%A0%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%8A%9E%E6%B3%95%2F</url>
     <content type="text"><![CDATA[源码添加项目的正确办法2018-04-27主要是Android.mk文件 lib版本 1234567891011LOCAL_PATH := $(call my-dir)include $(CLEAR_VARS)LOCAL_MODULE := your-module-nameLOCAL_MODULE_TAGS := optionalLOCAL_MODULE_CLASS := JAVA_LIBRARIESLOCAL_SRC_FILES := $(call all-subdir-java-files)LOCAL_JAVA_LIBRARIES := framework services#LOCAL_SDK_VERSION := current include $(BUILD_JAVA_LIBRARY) apk版本12345678910# Android threekeyLOCAL_PATH := $(call my-dir)include $(CLEAR_VARS)LOCAL_MODULE_TAGS := optionalLOCAL_SRC_FILES := $(call all-java-files-under, src)LOCAL_SDK_VERSION := currentLOCAL_PACKAGE_NAME := threekey-testLOCAL_CERTIFICATE := platforminclude $(BUILD_PACKAGE) 路径问题递归所有目录1LOCAL_SRC_FILES := $(call all-subdir-java-files) 指定目录1LOCAL_SRC_FILES := $(call $(src_dirs)) 当前目录1LOCAL_SRC_FILES := $(call all-java-files-under, src) 注册项目具体看google README.txt]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android_framework</tag>
+        <tag>android</tag>
+        <tag>framework</tag>
       </tags>
   </entry>
   <entry>
@@ -524,9 +543,9 @@
     <title><![CDATA[正则表达式]]></title>
     <url>%2F2019%2F01%2F19%2FAndroid%2F%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%2F</url>
     <content type="text"><![CDATA[| 或 (grep正则表达式要加 -E) 1$ adb logcat | grep -E "HeadsetStateMachine:| setForceUse"]]></content>
-      <tags>
-        <tag>android_tool</tag>
-      </tags>
+      <categories>
+        <category>Android</category>
+      </categories>
   </entry>
   <entry>
     <title><![CDATA[git应用补丁]]></title>
@@ -634,9 +653,13 @@
   <entry>
     <title><![CDATA[google tracing的研究]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2Ftracing%E7%9A%84%E7%A0%94%E7%A9%B6%2F</url>
-    <content type="text"><![CDATA[最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。主要做法是修改chrome tracing的源码 话说tracing这么好用，不出个cmdline真不合理。 tracing on github 幸运的看到了一段代码12/*./tracing/tracing/extras/android/android_auditor.html*/pushFramesAndJudgeJank_: function() 一看就知道是在判断帧的状态然后就加了统计代码12345678910111213141516171819var redFrame = 0;var yellowFrame = 0;var greenFrame = 0;app.process.frames.forEach(function(frame) &#123; if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * 2) &#123; // 红帧 badFramesObserved += 2; frame.perfClass = FRAME_PERF_CLASS.TERRIBLE redFrame += 1; &#125; else if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS || frameMissedDeadline(frame)) &#123; // 黄帧 badFramesObserved++; frame.perfClass = FRAME_PERF_CLASS.BAD; yellowFrame += 1; &#125; else &#123; // 绿帧 frame.perfClass = FRAME_PERF_CLASS.GOOD; greenFrame += 1; &#125;&#125;); 最后用log输出1console.log("%d %d %d",redFrame,yellowFrame,greenFrame); 后面又要搞自动化，就是吧js里面的东西打出来有四个思路 用nodejs运行，将结果写文件 html5写文件 重定向log 建本地服务器，用post提交数据 nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据 html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪 建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug 重定向一开始以为没希望，到google查了一下还真有这个用法用下面的命令可以将许多log包括控制台的log输出到错误输出流上1google-chrome --enable-logging=stderr 很奇葩的是错误输出流的重定向好像有点问题象如下的代码就输出不了，以后还得研究下，1google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot; &gt; log 后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了. 改代码时用到的一坨正则，匹配html中的js代码123sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \ -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \ -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js trace抓下来的数据是压缩过的，用下面命令可解压1zlib-flate -uncompress &lt; trace &gt;out 发现了一个极好多正则表达式1echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos; 开始port到windows上了,用的还是nodejs因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具1curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash - 自动化打包的功能，先了解先 Node.js - Zip/Unzip a folder 只能说windows的cmd去屎]]></content>
+    <content type="text"><![CDATA[最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。主要做法是修改chrome tracing的源码 话说tracing这么好用，不出个cmdline真不合理。 tracing on github 幸运的看到了一段代码12/*./tracing/tracing/extras/android/android_auditor.html*/pushFramesAndJudgeJank_: function() 一看就知道是在判断帧的状态然后就加了统计代码12345678910111213141516171819var redFrame = 0;var yellowFrame = 0;var greenFrame = 0;app.process.frames.forEach(function(frame) &#123; if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * 2) &#123; // 红帧 badFramesObserved += 2; frame.perfClass = FRAME_PERF_CLASS.TERRIBLE redFrame += 1; &#125; else if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS || frameMissedDeadline(frame)) &#123; // 黄帧 badFramesObserved++; frame.perfClass = FRAME_PERF_CLASS.BAD; yellowFrame += 1; &#125; else &#123; // 绿帧 frame.perfClass = FRAME_PERF_CLASS.GOOD; greenFrame += 1; &#125;&#125;); 最后用log输出1console.log("%d %d %d",redFrame,yellowFrame,greenFrame); 后面又要搞自动化，就是吧js里面的东西打出来有四个思路 用nodejs运行，将结果写文件 html5写文件 重定向log 建本地服务器，用post提交数据 nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据 html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪 建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug 重定向一开始以为没希望，到google查了一下还真有这个用法用下面的命令可以将许多log包括控制台的log输出到错误输出流上1google-chrome --enable-logging=stderr 很奇葩的是错误输出流的重定向好像有点问题象如下的代码就输出不了，以后还得研究下，1google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot; &gt; log 后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了. 改代码时用到的一坨正则，匹配html中的js代码123sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \ -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \ -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js trace抓下来的数据是压缩过的，用下面命令可解压1zlib-flate -uncompress &lt; trace &gt;out 发现了一个极好多正则表达式1echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos; 开始port到windows上了,用的还是nodejs因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具1curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash - 自动化打包的功能，先了解先 Node.js - Zip/Unzip a folder windows的cmd太难用了]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android_tool</tag>
+        <tag>android</tag>
+        <tag>test</tag>
       </tags>
   </entry>
   <entry>
@@ -671,8 +694,12 @@
     <title><![CDATA[关于应用的优化]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2F%E5%85%B3%E4%BA%8E%E5%BA%94%E7%94%A8%E7%9A%84%E4%BC%98%E5%8C%96%2F</url>
     <content type="text"><![CDATA[在很久以前就有好多人问我app的优化问题，现在看到坑爹的12306的app，才明白那帮人都是吃屎的。 应用优化的话打算用一个星期来学习吧，感觉应该是没有什么成果，但做一做规划终归是极好的 应用层的话花个两天 系统层的话再花两天 其他的话花个两天 一天休息 好，就先这样吧 应用的性能问题跟多问题有关 cpu gpu 内存 系统绘图 系统事件处理 网络 网络跟太底层的东西不理，着重在系统绘图这一块 相关文章android绘图相关机制: Graphics architecture stackoverflow 腾讯技术沙龙分享: Android应用性能评测调优 丧心病狂的专利: 动终端卡顿的测量方法与装置 视频： 阿里技术沙龙 工具什么的: Performance Profiling Tools 深层探究： 探索Webkit内核(http://blog.csdn.net/cutesource/article/details/8731841) 理解WebKit和Chromium(http://blog.csdn.net/cutesource/article/details/8731841) 老罗的android之旅(http://blog.csdn.net/cutesource/article/details/8731841)]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
         <tag>android</tag>
+        <tag>优化</tag>
       </tags>
   </entry>
   <entry>
@@ -721,32 +748,47 @@
     <title><![CDATA[Robolectric使用记录]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2FRobolectric%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95%2F</url>
     <content type="text"><![CDATA[日志输出:1ShadowLog.stream = System.out; // 日志输出]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
         <tag>android</tag>
+        <tag>test</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[通过反射去获取类的属性]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2F%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E5%8E%BB%E8%8E%B7%E5%8F%96%E7%B1%BB%E7%9A%84%E5%B1%9E%E6%80%A7%2F</url>
     <content type="text"><![CDATA[以前打log喜欢用toString，然后自己重写toString的方法 比如有个类1234567Diamond class Diamod &#123; String color; String size; @Override public String toString() &#123; return "color:" + color + " size:" + size; &#125; &#125; 后来发现属性一多特别麻烦想到反射可以查对于的属性名跟属性值，刚好可以用在这里(没处理异常) 123456789@Override public String toString() &#123; // 获取该类的所有属性值域 Field[] fields = this.getClass().getFields(); for(Field field : fields) &#123; // 获取该属性名称与值 log += filed.getName() + filed.get(this); &#125; return log; &#125; 1getFields public Field[] getFields() throws SecurityException 返回该类或接口所有访问权限为public的属性 但getFields()会把父类的域也打印出来，有时候还是希望父类子类分开 发现有另外一个方法getDeclaredFields()12getDeclaredFields：public Field[] getDeclaredFields() throws SecurityException 返回接口或类定义的所有属性的Fileld对象数组，包括public,protected,default(package),private访问权限的属性，但不包括继承的属性。数组里的元素没有经过排序，也没有特殊的顺序。假如类或接口没有声明属性，或该类代表一个原始的类型(Long等),array class或void，该方法返回一个长度为0的数组。 反射的跟权限访问有关系，跟final，static修饰符有关，具体关系以后在去探究。反射跟继承也有很多问题。有空测一下这东西。]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android java</tag>
+        <tag>java</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[每天一youtube]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2F%E6%AF%8F%E5%A4%A9%E4%B8%80youtube%2F</url>
     <content type="text"><![CDATA[Chrome Custom Tabs 哈哈，听到一个印度银在讲Android开发的东西，印度英语真有趣 一个加强版的webview，可以自动填充，共享cookies，更友好的界面，以及提前加载。 靠，几千年没更新了。。 又是这货Colt McAnlis 传送门 ComponentCallbacks 后台进程在低内存的情况下的自救手段 自己手动指定释放内存的控件 依然Colt McAnlis referenced objects referenced objects可能到导致内存泄漏， 不要在异步回调中使用资源(view)不要在静态对象中使用资源(view)不要在WeekHashmap中使用(view)内存泄漏工具–Allocation Tracker 又是几千年的没更新。。正确使用service还是这货Colt McAnlis 成对使用startservice,stopservice &amp;&amp; bindservice,unbindservice]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
         <tag>android</tag>
+        <tag>技术学习</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[repo的强制更新]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2Frepo%E7%9A%84%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%2F</url>
     <content type="text"><![CDATA[repo是git仓库管理工具，一般用repo sync去更新代码，实质上是在每个仓库下执行git pull,这样就比较蛋疼了，当你本地有提交的话它会自动帮你merge进去，还装做一切都ok的样子。在被坑了数遍之后，终于发现了这个问题。 彻底的同步服务器代码 12345$ repo sync -d# Remove all working directory (and staged) changes.$ repo forall -c 'git reset --hard' # Clean untracked files$ repo forall -c 'git clean -f -d']]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
       <tags>
-        <tag>android</tag>
+        <tag>git</tag>
+        <tag>repo</tag>
       </tags>
   </entry>
 </search>

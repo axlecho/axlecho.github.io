@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。 音频的基本知识很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）音轨有很多属性如  采样率(sampleRate) 编码格式(format) 通道(channel">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-12T04:50:08.678Z">
+<meta property="og:updated_time" content="2019-07-09T10:15:28.395Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="audio 混音">
 <meta name="twitter:description" content="android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。 音频的基本知识很早之前就知道音频存储是通过采样来实现的，就是所谓的A/D（Analog-to-Digital Converter与D/A（Digital Analog Converter）音轨有很多属性如  采样率(sampleRate) 编码格式(format) 通道(channel">
@@ -374,7 +374,7 @@
 </ul>
 <p>前三个比较重要，具体去了解一下</p>
 <h4 id="采样率"><a href="#采样率" class="headerlink" title="采样率"></a>采样率</h4><p>看到知乎上有一个回答，感觉挺形象的–<a href="http://www.zhihu.com/question/20351692?utm_campaign=rss&amp;utm_medium=rss&amp;utm_source=rss&amp;utm_content=title" target="_blank" rel="noopener">什么是音频的采样率？采样率和音质有没有关系？</a></p>
-<p>一般的采样率固定在<code>44100HZ</code>(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音。<br>还有一个采样率<code>48000HZ</code>也比较常见</p>
+<p>一般的采样率固定在<code>44100HZ</code>(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音<br>还有一个采样率 <code>48000HZ</code> 也比较常见</p>
 <h4 id="编码格式"><a href="#编码格式" class="headerlink" title="编码格式"></a>编码格式</h4><p>指每次采样所用的bit数，比如8bit，16bit<br>从命名来看，android好像用来8bit，16bit跟32bit</p>
 <ul>
 <li>AUDIO_FORMAT_PCM_16_BIT</li>
@@ -525,7 +525,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

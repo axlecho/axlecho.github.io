@@ -291,6 +291,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/07/09/Android/Android总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞翔的鸭崽">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/09/Android/Android总结/" itemprop="url">Android总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T16:57:30+08:00">
+                2019-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Activity<br>Activity的生命周期</p>
+<p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
+<p>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
+<p>横竖屏切换<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume</p>
+<p>android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity</p>
+<p>1<br>2<br>3<br>4<br>@Override<br>    public void onConfigurationChanged(Configuration newConfig) {<br>        super.onConfigurationChanged(newConfig);<br>    }<br>activity优先级<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
+<p>启动模式<br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
+<p>singleTop 防重复点击，通知栏</p>
+<p>1<br>2<br>3<br>4<br>@Override<br>protected void onNewIntent(Intent intent) {<br>    super.onNewIntent(intent);<br>}<br>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
+<p>特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。</p>
+<p>Activity flags<br>FLAG_ACTIVITY_NEW_TASK<br>FLAG_ACTIVITY_SINGLE_TOP<br>FLAG_ACTIVITY_CLEAR_TOP</p>
+<p>BroadcastReceiver<br>模型：观察者模式</p>
+<p>订阅者<br>发布者<br>消息中心 AM<br>注册：</p>
+<p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏<br>广播种类</p>
+<p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)<br>ContentProvider<br>数据交互与共享</p>
+<p>ContentProvider的使用</p>
+<p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor</p>
+<p>ContentUris<br>UriMatcher<br>ContentObserver</p>
+<p>进程内通信<br>进程间通信</p>
+<p>1<br>2<br>3</p>
+<p><provider android:name="MyProvider" android:authorities="cn.scu.myprovider"><br>优点:安全、访问简单&amp;高效，(数据源的adapter)</provider></p>
+<p>消息机制<br>Message – MessageQueue – Handler –Looper</p>
+<p>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
+<p>流程</p>
+<p>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage<br>事件分发机制<br>分发MotionEvent<br>流程</p>
+<p>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super<br>默认情况</p>
+<p>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
+<p>View消费事件的条件</p>
+<p>enable<br>onTouch 返回true<br>onTouch 高于onClick<br>事件的连锁机制<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
+<p>异步<br>AsyncTask其实是个线程池</p>
+<p>实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler</p>
+<p>核心方法</p>
+<p>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
+<p>note:使用不当会引起不良后果</p>
+<p>生命周期 在onDestroy内调用cancel<br>内存泄漏<br>结果丢失</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/05/09/Android/JtsViewer/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1732,153 +1908,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/02/11/无病呻吟/Monster/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Axlecho">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="飞翔的鸭崽">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/11/无病呻吟/Monster/" itemprop="url">Monster</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T11:41:17+08:00">
-                2019-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/无病呻吟/" itemprop="url" rel="index">
-                    <span itemprop="name">无病呻吟</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近刷牙老是干呕，烟确实得戒了。。</p>
-<p>回来后发现，小伙伴们都出去了，哎，那我回来干嘛</p>
-<p>感觉女朋友好麻烦（结婚也好麻烦。。）要能直接有个女儿就好了</p>
-<p>最讨厌冬天的雨，又冷又湿，这种天气快快过去吧</p>
-<p>还是习惯独自一人呆在密封呆空间里</p>
-<p>日光灯，去死吧。。。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1931,7 +1960,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Java底层机制总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T08:29:29.395Z">
+<meta property="og:updated_time" content="2019-07-09T08:55:59.183Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java">
 <meta name="twitter:description" content="Java底层机制总结">
@@ -426,44 +426,11 @@
 <h3 id="加载器种类"><a href="#加载器种类" class="headerlink" title="加载器种类"></a>加载器种类</h3><p>启动类加载器（Bootstrap ClassLoader） 核心类<br>扩展类记载器（Extension ClassLoader） 扩展的核心类<br>应用程序类加载器（Application ClassLoader）用户classpath上指定的类 （可直接ClassLoader.getSystemClassLoader()获取）</p>
 <h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>加载优先级 启动类加载器 &gt; 扩展类记载器 &gt; 应用程序类加载器</p>
 <p>目的：兼容各种平台<br>目标：java的所有变量都存储在主内存中，线程拥有共享变量副本<br>8种操作：lock，unlock，read，load，use，assign，store，write<br>lock – unlock次数相同才能平衡</p>
-<h2 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h2><p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor ：Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC<br>GC搜集器</p>
-<p>Serial收集器<br>ParNew收集器<br>Parallel Scavenge收集器<br>Serial Old收集器<br>Parallel Old收集器<br>CMS（Concurrent Mark Sweep）收集器 并发<br>G1收集器 并发 分代<br>判断可回收算法</p>
-<p>引用计数<br>可达性分析算法<br>计算gc roots（栈帧的本地变量表，静态属性引用，常量引用，jni引用）<br>F-Queue<br>引用类型</p>
-<p>强引用 有用，内存异常都不回收<br>软引用 有用但非必须 内存即将异常时回收<br>弱引用 不会阻止垃圾回收<br>虚引用 对象被收集器回收收到一个系统通知<br>Activity<br>Activity的生命周期</p>
-<p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
-<p>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
-<p>横竖屏切换<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume</p>
-<p>android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>    public void onConfigurationChanged(Configuration newConfig) {<br>        super.onConfigurationChanged(newConfig);<br>    }<br>activity优先级<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
-<p>启动模式<br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
-<p>singleTop 防重复点击，通知栏</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>protected void onNewIntent(Intent intent) {<br>    super.onNewIntent(intent);<br>}<br>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
-<p>特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。</p>
-<p>Activity flags<br>FLAG_ACTIVITY_NEW_TASK<br>FLAG_ACTIVITY_SINGLE_TOP<br>FLAG_ACTIVITY_CLEAR_TOP</p>
-<p>BroadcastReceiver<br>模型：观察者模式</p>
-<p>订阅者<br>发布者<br>消息中心 AM<br>注册：</p>
-<p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏<br>广播种类</p>
-<p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)<br>ContentProvider<br>数据交互与共享</p>
-<p>ContentProvider的使用</p>
-<p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor</p>
-<p>ContentUris<br>UriMatcher<br>ContentObserver</p>
-<p>进程内通信<br>进程间通信</p>
-<p>1<br>2<br>3</p>
-<p><provider android:name="MyProvider" android:authorities="cn.scu.myprovider"><br>优点:安全、访问简单&amp;高效，(数据源的adapter)</provider></p>
-<p>消息机制<br>Message – MessageQueue – Handler –Looper</p>
-<p>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
-<p>流程</p>
-<p>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage<br>事件分发机制<br>分发MotionEvent<br>流程</p>
-<p>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super<br>默认情况</p>
-<p>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
-<p>View消费事件的条件</p>
-<p>enable<br>onTouch 返回true<br>onTouch 高于onClick<br>事件的连锁机制<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
-<p>异步<br>AsyncTask其实是个线程池</p>
-<p>实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler</p>
-<p>核心方法</p>
-<p>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
-<p>note:使用不当会引起不良后果</p>
-<p>生命周期 在onDestroy内调用cancel<br>内存泄漏<br>结果丢失</p>
+<h2 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h2><p><a href="https://www.cnblogs.com/smyhvae/p/4744233.html" target="_blank" rel="noopener">Java虚拟机详解04—-GC算法和种类【重要】</a><br>GC：Garbage Collection 垃圾收集<br>这里所谓的垃圾指的是在系统运行过程当中所产生的一些无用的对象，这些对象占据着一定的内存空间，如果长期不被释放，可能导致OOM<br>Java中，GC的对象是Java堆和方法区（即永久区）</p>
+<h3 id="判断回收算法"><a href="#判断回收算法" class="headerlink" title="判断回收算法"></a>判断回收算法</h3><p>引用计数算法<br>根搜索算法（栈帧的本地变量表，静态属性引用，常量引用，jni引用）<br>F-Queue</p>
+<h3 id="常见的GC算法"><a href="#常见的GC算法" class="headerlink" title="常见的GC算法"></a>常见的GC算法</h3><p>标记-清除<br>复制算法<br>标记-整理<br>分代搜集 Enden - Survivor ：Survivor - 年老代 - 永久代<br>Minor GC &amp;&amp; Full GC/Major GC</p>
+<h3 id="GC搜集器"><a href="#GC搜集器" class="headerlink" title="GC搜集器"></a>GC搜集器</h3><p>Serial收集器<br>ParNew收集器<br>Parallel Scavenge收集器<br>Serial Old收集器<br>Parallel Old收集器<br>CMS（Concurrent Mark Sweep）收集器 并发<br>G1收集器 并发 分代</p>
+<h3 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h3><p>强引用 有用，内存异常都不回收<br>软引用 有用但非必须 内存即将异常时回收<br>弱引用 不会阻止垃圾回收<br>虚引用 对象被收集器回收收到一个系统通知</p>
 
       
     </div>
@@ -587,7 +554,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -658,7 +625,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类的内存结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">类的内存结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.3.</span> <span class="nav-text">加载器种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.2.4.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM虚拟机"><span class="nav-number">1.</span> <span class="nav-text">JVM虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存区域"><span class="nav-number">1.1.</span> <span class="nav-text">内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类的内存结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">类的内存结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器的加载进程"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的加载进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#触发时机"><span class="nav-number">1.2.1.</span> <span class="nav-text">触发时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载流程"><span class="nav-number">1.2.2.</span> <span class="nav-text">加载流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载器种类"><span class="nav-number">1.2.3.</span> <span class="nav-text">加载器种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.2.4.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC算法"><span class="nav-number">1.3.</span> <span class="nav-text">GC算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#判断回收算法"><span class="nav-number">1.3.1.</span> <span class="nav-text">判断回收算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的GC算法"><span class="nav-number">1.3.2.</span> <span class="nav-text">常见的GC算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC搜集器"><span class="nav-number">1.3.3.</span> <span class="nav-text">GC搜集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用类型"><span class="nav-number">1.3.4.</span> <span class="nav-text">引用类型</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

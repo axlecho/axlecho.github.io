@@ -402,8 +402,9 @@
 <p>建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug</p>
 <p>重定向一开始以为没希望，到google查了一下还真有这个用法<br>用下面的命令可以将许多log包括控制台的log输出到错误输出流上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr</span><br></pre></td></tr></table></figure></p>
 <p>很奇葩的是错误输出流的重定向好像有点问题<br>象如下的代码就输出不了，以后还得研究下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot;  &gt; log</span><br></pre></td></tr></table></figure></p>
-<p>后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了.</p>
-<p>改代码时用到的一坨正则，匹配html中的js代码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \</span><br><span class="line">    -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \</span><br><span class="line">    -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死了.</p>
+<p>改代码时用到的正则，匹配html中的js代码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \</span><br><span class="line">    -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \</span><br><span class="line">    -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js</span><br></pre></td></tr></table></figure></p>
 <p>trace抓下来的数据是压缩过的，用下面命令可解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib-flate -uncompress &lt; trace &gt;out</span><br></pre></td></tr></table></figure></p>
 <p>发现了一个极好多正则表达式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos;</span><br></pre></td></tr></table></figure></p>
 <p>开始port到windows上了,用的还是nodejs<br>因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -</span><br></pre></td></tr></table></figure></p>
@@ -679,6 +680,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-Graphics/" itemprop="url" rel="index">
+                    <span itemprop="name">Android_Graphics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -708,7 +731,7 @@
       
         
           
-            <p>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
+            <p><img src="/images/ape_fwk_graphics.png" alt="cover"><br>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::handleMessageRefresh() &#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    preComposition();</span><br><span class="line">    rebuildLayerStacks();</span><br><span class="line">    setUpHWComposer();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> QCOM_BSP</span></span><br><span class="line">    setUpTiledDr();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    doDebugFlashRegions();</span><br><span class="line">    doComposition();</span><br><span class="line">    postComposition();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>主要工作就是合成layer与显示</p>
 <p>一个一个来仔细看- -</p>
@@ -812,6 +835,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-Graphics/" itemprop="url" rel="index">
+                    <span itemprop="name">Android_Graphics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -841,7 +886,7 @@
       
         
           
-            <p>今天看到一篇很不错的的关于SurfaceFlinger的文章，主要是看到android源码中有一个简单明了的test，而且还被我编译过了，都不知道的前几个星期看的都是些什么东西- -<br><a href="http://blog.csdn.net/jinzhuojun/article/details/17427491" target="_blank" rel="noopener">http://blog.csdn.net/jinzhuojun/article/details/17427491</a></p>
+            <p><img src="/images/ape_fwk_graphics.png" alt="cover"><br>今天看到一篇很不错的的关于SurfaceFlinger的文章，主要是看到android源码中有一个简单明了的test，而且还被我编译过了，都不知道的前几个星期看的都是些什么东西- -<br><a href="http://blog.csdn.net/jinzhuojun/article/details/17427491" target="_blank" rel="noopener">http://blog.csdn.net/jinzhuojun/article/details/17427491</a></p>
 <p>还是从test开始看起吧<br>test的在工程中的位置:frameworks/native/services/surfaceflinger/tests/resize,用于在屏幕上显示一块色块</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// set up the thread-pool</span></span><br><span class="line">    sp&lt;ProcessState&gt; proc(ProcessState::self());</span><br><span class="line">    ProcessState::self()-&gt;startThreadPool();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 连接到surfaceflinger</span></span><br><span class="line">    sp&lt;SurfaceComposerClient&gt; client = <span class="keyword">new</span> SurfaceComposerClient();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建surface</span></span><br><span class="line">    sp&lt;SurfaceControl&gt; surfaceControl = client-&gt;createSurface(String8(<span class="string">"resize"</span>),<span class="number">600</span>, <span class="number">800</span>, PIXEL_FORMAT_RGB_565, <span class="number">0</span>);</span><br><span class="line">    sp&lt;Surface&gt; surface = surfaceControl-&gt;getSurface();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置Layer的z轴</span></span><br><span class="line">    SurfaceComposerClient::openGlobalTransaction();</span><br><span class="line">    surfaceControl-&gt;setLayer(<span class="number">100000</span>);</span><br><span class="line">    SurfaceComposerClient::closeGlobalTransaction();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 操纵Buffer中内容</span></span><br><span class="line">    ANativeWindow_Buffer outBuffer;</span><br><span class="line">    surface-&gt;lock(&amp;outBuffer, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ssize_t</span> bpr = outBuffer.stride * bytesPerPixel(outBuffer.format);</span><br><span class="line">    android_memset16((<span class="keyword">uint16_t</span>*)outBuffer.bits, <span class="number">0xffff</span>, bpr*outBuffer.height);</span><br><span class="line">    surface-&gt;unlockAndPost();</span><br><span class="line"></span><br><span class="line">    IPCThreadState::self()-&gt;joinThreadPool();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="连接到surfaceflinger"><a href="#连接到surfaceflinger" class="headerlink" title="连接到surfaceflinger"></a>连接到surfaceflinger</h2><p>补充一点，ComposerSerivce创建时会调用getSerivce函数，然后再调用defaultServiceManager获取ServiceManager接口IServiceManager，再通过IServiceManager的getService获取到SurfaceFlinger服务的接口，ISurfaceComposer其实就是SurfaceFlinger的代理接口。</p>

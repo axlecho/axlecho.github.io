@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android_framework,">
+  <meta name="keywords" content="framework,graphics,">
 
 
 
@@ -80,17 +80,19 @@
 
 
 <meta name="description" content="上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh 123456789101112void SurfaceFlinger::handleMessageRefresh() &amp;#123;">
-<meta name="keywords" content="android_framework">
+<meta name="keywords" content="framework,graphics">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SurfaceFlinger学习--Surface的绘制过程（续）">
 <meta property="og:url" content="http://axlecho.com/2019/01/12/Android_Graphics/SurfaceFlinger学习-Surface的绘制过程（续）/index.html">
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh 123456789101112void SurfaceFlinger::handleMessageRefresh() &amp;#123;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-11T04:36:32.939Z">
+<meta property="og:image" content="http://axlecho.com/images/ape_fwk_graphics.png">
+<meta property="og:updated_time" content="2019-07-10T06:52:17.723Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SurfaceFlinger学习--Surface的绘制过程（续）">
 <meta name="twitter:description" content="上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh 123456789101112void SurfaceFlinger::handleMessageRefresh() &amp;#123;">
+<meta name="twitter:image" content="http://axlecho.com/images/ape_fwk_graphics.png">
 
 
 
@@ -335,6 +337,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-Graphics/" itemprop="url" rel="index">
+                    <span itemprop="name">Android_Graphics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -362,7 +386,7 @@
       
 
       
-        <p>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
+        <p><img src="/images/ape_fwk_graphics.png" alt="cover"><br>上一篇说到surfaceflinger绘制就没了，因为surfaceflinger的流程复杂了，有vscny信号，有messagequeue，等等，所以，主要是因为懒啦，所以先分析关于surfaceflinger的核心函数handleMessageRefresh</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> SurfaceFlinger::handleMessageRefresh() &#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    preComposition();</span><br><span class="line">    rebuildLayerStacks();</span><br><span class="line">    setUpHWComposer();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> QCOM_BSP</span></span><br><span class="line">    setUpTiledDr();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    doDebugFlashRegions();</span><br><span class="line">    doComposition();</span><br><span class="line">    postComposition();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>主要工作就是合成layer与显示</p>
 <p>一个一个来仔细看- -</p>
@@ -393,7 +417,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/android-framework/" rel="tag"># android_framework</a>
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+            <a href="/tags/graphics/" rel="tag"># graphics</a>
           
         </div>
       

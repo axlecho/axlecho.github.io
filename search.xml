@@ -138,8 +138,8 @@
         <category>Java</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>技术总结</tag>
+        <tag>java</tag>
       </tags>
   </entry>
   <entry>
@@ -181,8 +181,8 @@
         <category>记事</category>
       </categories>
       <tags>
-        <tag>日常</tag>
         <tag>感想</tag>
+        <tag>日常</tag>
       </tags>
   </entry>
   <entry>
@@ -223,8 +223,8 @@
         <category>记事</category>
       </categories>
       <tags>
-        <tag>日常</tag>
         <tag>感想</tag>
+        <tag>日常</tag>
       </tags>
   </entry>
   <entry>
@@ -500,8 +500,8 @@
         <category>Android</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>JtsViewer</tag>
+        <tag>android</tag>
       </tags>
   </entry>
   <entry>
@@ -648,14 +648,6 @@
       <tags>
         <tag>framework</tag>
         <tag>audio</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[android diplay的学习]]></title>
-    <url>%2F2019%2F01%2F12%2FAndroid_Graphics%2Fandroid-diplay%E7%9A%84%E5%AD%A6%E4%B9%A0%2F</url>
-    <content type="text"><![CDATA[android display系统还是很复杂的， 上层View系统 绘制（MainThread ThreadedRender） 叠合（SurfaceFlinger） 显示（不知道是什么鬼，hw？？）]]></content>
-      <tags>
-        <tag>android_framework</tag>
       </tags>
   </entry>
   <entry>

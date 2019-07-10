@@ -291,173 +291,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/12/Android/tracing的研究/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Axlecho">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="飞翔的鸭崽">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/12/Android/tracing的研究/" itemprop="url">google tracing的研究</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-12T20:44:14+08:00">
-                2019-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。<br>主要做法是修改chrome tracing的源码</p>
-<p>话说tracing这么好用，不出个cmdline真不合理。</p>
-<p><a href="https://github.com/catapult-project/catapult" target="_blank" rel="noopener">tracing on github</a></p>
-<p>幸运的看到了一段代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*./tracing/tracing/extras/android/android_auditor.html*/</span></span><br><span class="line">pushFramesAndJudgeJank_: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span><br></pre></td></tr></table></figure></p>
-<p>一看就知道是在判断帧的状态<br>然后就加了统计代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> redFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> yellowFrame = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> greenFrame = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">app.process.frames.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">frame</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * <span class="number">2</span>) &#123;    <span class="comment">// 红帧</span></span><br><span class="line">        badFramesObserved += <span class="number">2</span>;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.TERRIBLE</span><br><span class="line">        redFrame += <span class="number">1</span>;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS </span><br><span class="line">        || frameMissedDeadline(frame)) &#123;    <span class="comment">// 黄帧</span></span><br><span class="line">        badFramesObserved++;</span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.BAD;</span><br><span class="line">        yellowFrame += <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    <span class="comment">// 绿帧</span></span><br><span class="line">        frame.perfClass = FRAME_PERF_CLASS.GOOD;</span><br><span class="line">        greenFrame += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>最后用log输出<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"%d %d %d"</span>,redFrame,yellowFrame,greenFrame);</span><br></pre></td></tr></table></figure></p>
-<p>后面又要搞自动化，就是吧js里面的东西打出来<br>有四个思路</p>
-<ul>
-<li>用nodejs运行，将结果写文件</li>
-<li>html5写文件</li>
-<li>重定向log</li>
-<li>建本地服务器，用post提交数据</li>
-</ul>
-<p>nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据</p>
-<p>html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪</p>
-<p>建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug</p>
-<p>重定向一开始以为没希望，到google查了一下还真有这个用法<br>用下面的命令可以将许多log包括控制台的log输出到错误输出流上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr</span><br></pre></td></tr></table></figure></p>
-<p>很奇葩的是错误输出流的重定向好像有点问题<br>象如下的代码就输出不了，以后还得研究下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot;  &gt; log</span><br></pre></td></tr></table></figure></p>
-<hr>
-<p>后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死了.</p>
-<p>改代码时用到的正则，匹配html中的js代码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \</span><br><span class="line">    -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \</span><br><span class="line">    -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js</span><br></pre></td></tr></table></figure></p>
-<p>trace抓下来的数据是压缩过的，用下面命令可解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib-flate -uncompress &lt; trace &gt;out</span><br></pre></td></tr></table></figure></p>
-<p>发现了一个极好多正则表达式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos;</span><br></pre></td></tr></table></figure></p>
-<p>开始port到windows上了,用的还是nodejs<br>因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -</span><br></pre></td></tr></table></figure></p>
-<p>自动化打包的功能，先了解先 <a href="http://stackoverflow.com/questions/15530435/node-js-zip-unzip-a-folder" target="_blank" rel="noopener">Node.js - Zip/Unzip a folder</a></p>
-<p>windows的cmd太难用了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/12/Android_Graphics/SurfaceFlinger学习-Binder原理/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1847,6 +1680,154 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/12/Android/通过反射去获取类的属性/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞翔的鸭崽">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/12/Android/通过反射去获取类的属性/" itemprop="url">通过反射去获取类的属性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-12T14:24:19+08:00">
+                2019-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>以前打log喜欢用toString，然后自己重写toString的方法 比如有个类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Diamond <span class="class"><span class="keyword">class</span> <span class="title">Diamod</span> </span>&#123;  </span><br><span class="line">    String color;  </span><br><span class="line">    String size;  </span><br><span class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="string">"color:"</span> + color + <span class="string">" size:"</span> + size; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>后来发现属性一多特别麻烦<br>想到反射可以查对于的属性名跟属性值，刚好可以用在这里(没处理异常)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 获取该类的所有属性值域 </span></span><br><span class="line">    Field[] fields = <span class="keyword">this</span>.getClass().getFields(); </span><br><span class="line">    <span class="keyword">for</span>(Field field : fields) &#123; </span><br><span class="line">        <span class="comment">// 获取该属性名称与值 </span></span><br><span class="line">        log += filed.getName() + filed.get(<span class="keyword">this</span>); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> log; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getFields <span class="keyword">public</span> Field[] getFields() <span class="keyword">throws</span> SecurityException</span><br></pre></td></tr></table></figure>
+<p>返回该类或接口所有访问权限为public的属性</p>
+<p>但getFields()会把父类的域也打印出来，有时候还是希望父类子类分开 发现有另外一个方法getDeclaredFields()<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getDeclaredFields：</span><br><span class="line"><span class="keyword">public</span> Field[] getDeclaredFields() <span class="keyword">throws</span> SecurityException</span><br></pre></td></tr></table></figure></p>
+<p>返回接口或类定义的所有属性的<code>Fileld</code>对象数组，包括public,protected,default(package),private访问权限的属性，但不包括继承的属性。数组里的元素没有经过排序，也没有特殊的顺序。假如类或接口没有声明属性，或该类代表一个原始的类型(Long等),array class或void，该方法返回一个长度为0的数组。</p>
+<p>反射的跟权限访问有关系，跟final，static修饰符有关，具体关系以后在去探究。反射跟继承也有很多问题。有空测一下这东西。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1899,7 +1880,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-count">73</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1910,7 +1891,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1921,7 +1902,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

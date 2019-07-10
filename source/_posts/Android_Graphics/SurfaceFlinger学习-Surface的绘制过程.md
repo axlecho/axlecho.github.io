@@ -1,13 +1,15 @@
 ---
 title: SurfaceFlinger学习--Surface的绘制过程
 date: 2019-01-12 20:22:38
+categories: Android_Graphics
 tags: 
-- android_framework
-cover: /images/ape_fwk_graphics.png
+    - framework
+    - graphics
 ---
 
+![cover](/images/ape_fwk_graphics.png)
 今天看到一篇很不错的的关于SurfaceFlinger的文章，主要是看到android源码中有一个简单明了的test，而且还被我编译过了，都不知道的前几个星期看的都是些什么东西- -
-http://blog.csdn.net/jinzhuojun/article/details/17427491
+[Android 4.4(KitKat)中的设计模式-Graphics子系统](http://blog.csdn.net/jinzhuojun/article/details/17427491)
 
 还是从test开始看起吧
 test的在工程中的位置:frameworks/native/services/surfaceflinger/tests/resize,用于在屏幕上显示一块色块
@@ -22,16 +24,16 @@ int main(int argc, char** argv)
     // 连接到surfaceflinger
     sp<SurfaceComposerClient> client = new SurfaceComposerClient();
 
-        // 创建surface
+    // 创建surface
     sp<SurfaceControl> surfaceControl = client->createSurface(String8("resize"),600, 800, PIXEL_FORMAT_RGB_565, 0);
     sp<Surface> surface = surfaceControl->getSurface();
 
-        // 设置Layer的z轴
+    // 设置Layer的z轴
     SurfaceComposerClient::openGlobalTransaction();
     surfaceControl->setLayer(100000);
     SurfaceComposerClient::closeGlobalTransaction();
 
-        // 操纵Buffer中内容
+    // 操纵Buffer中内容
     ANativeWindow_Buffer outBuffer;
     surface->lock(&outBuffer, NULL);
     ssize_t bpr = outBuffer.stride * bytesPerPixel(outBuffer.format);
@@ -90,7 +92,7 @@ SuffaceFlingerComsumer的构造函数 call call call到了… ConsumerBase::Cons
 status_t err = mConsumer->consumerConnect(proxy, controlledByApp);
 ```
 
-Bp端的调用，Bn端的实现 在BufferQueueConsumer::consumerConnect,在这里做了个转发，而且还在h文件里，搞得cpp文件都没有consumerConnect，我&*&^%!(@
+Bp端的调用，Bn端的实现 在BufferQueueConsumer::consumerConnect,在这里做了个转发，而且还在h文件里，搞得cpp文件都没有consumerConnect，我&\*&^%!(@
 ```cpp
 virtual status_t consumerConnect(const sp<IConsumerListener>& consumer,bool controlledByApp) {
     return connect(consumer, controlledByApp);

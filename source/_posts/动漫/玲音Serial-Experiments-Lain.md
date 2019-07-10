@@ -1,11 +1,12 @@
 ---
-title: 《玲音》（Serial Experiments Lain）
+title: 玲音（Serial Experiments Lain）
 date: 2019-01-22 11:33:06
 tags: acg
-cover: '/images/cover/serial experiments lain.jpg'
+categories: 动漫
+
 
 ---
-
+![cover](/images/serial_experiments_lain.jpg)
 网瘾少女的妄想
 
 三次元的乱入
@@ -18,4 +19,4 @@ cover: '/images/cover/serial experiments lain.jpg'
 
 特别喜欢其中的一个场景 既视感
 
-![Lain](./images/Lain.png)
+![Lain](/images/Lain.png)

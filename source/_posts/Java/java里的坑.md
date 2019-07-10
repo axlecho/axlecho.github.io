@@ -1,7 +1,9 @@
 ---
 title: java里的坑
 date: 2019-01-22 11:21:38
-tags: android
+categories: Java
+tags:
+	- java
 ---
 
 Comparator

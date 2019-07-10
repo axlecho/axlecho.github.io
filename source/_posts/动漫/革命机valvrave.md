@@ -1,6 +1,7 @@
 ---
 title: 革命机valvrave
 date: 2019-01-22 11:28:08
+categories: 动漫
 tags: acg
 ---
 
@@ -17,4 +18,4 @@ tags: acg
 后面越来越腐了，基佬退散！！！
 
 不过好在结局还不错的（妹妹跟妹控都没领便当，可喜可贺）。。。
-![连坊小路アキラ](.\images\valvrave.jpg)
+![连坊小路アキラ](/images/valvrave.jpg)

@@ -1,7 +1,10 @@
 ---
 title: 在framework添加system service
 date: 2019-01-22 11:18:30
-tags: android_framework
+categories: Android
+tags:
+    - android
+    - framework
 ---
 
 在Context.java添加服务名称
@@ -15,7 +18,7 @@ public static final String THREEKEY_SERVICE = "threekey";
 }
 ```
 
-在ServiceServicer注册服务
+在SystemServicer注册服务
 ```java
 //--->frameworks/base/services/java/com/android/server/SystemServer.java
 private void startOtherServices() {

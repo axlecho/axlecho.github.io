@@ -1,7 +1,10 @@
 ---
 title: aidl的使用
 date: 2019-01-22 11:23:23
-tags: android
+categories: Android
+tags:
+    - android
+    - framework
 ---
 
 接口文件aidl
@@ -18,7 +21,7 @@ manager
 ```java
 package com.zst.xposed.halo.floatingwindow3.services;
 import com.zst.xposed.halo.floatingwindow3.IActivityManagerService;
-public class ActivitManager extends IActivityManagerService.Stub {
+public class ActivityManager extends IActivityManagerService.Stub {
 
     public ActivityManagerService mService;
     public ActivitManager(ActivityManagerService service) {
@@ -47,4 +50,21 @@ public class ActivityManagerService extends Service {
         return new ActivitManager(this);
     }
 }
+```
+
+client
+```java
+    ActivityManager manager = null;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            manager = (ActivityManager)MyAIDLService.Stub.asInterface(service);
+            manager.snapActivityTop(TOP)
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            manager = null;
+        }
+    };
 ```

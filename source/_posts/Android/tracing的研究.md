@@ -1,8 +1,10 @@
 ---
 title: google tracing的研究
 date: 2019-01-12 20:44:14
-tags: android_tool
-cover: /images/systrace.png
+categories: Android
+tags:
+    - android
+    - test
 ---
 
 最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。
@@ -73,9 +75,11 @@ google-chrome --enable-logging=stderr
 google-chrome --enable-logging=stderr $1 2>&1 | grep "\[Frame\]"  > log
 ```
 
-后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死爹了.
+--- 
 
-改代码时用到的一坨正则，匹配html中的js代码
+后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死了.
+
+改代码时用到的正则，匹配html中的js代码
 ```shell
 sed -n '/<script */,/<\/script>/p' base/base.js sed -e 'a#"progressMeter.update"#"}"#g' \
     -e 'i#"progressMeter.update"#"if(tr.silent == false) {"#g' \
@@ -100,4 +104,4 @@ curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
 
 自动化打包的功能，先了解先 [Node.js - Zip/Unzip a folder](http://stackoverflow.com/questions/15530435/node-js-zip-unzip-a-folder)
 
-只能说windows的cmd去屎
+windows的cmd太难用了

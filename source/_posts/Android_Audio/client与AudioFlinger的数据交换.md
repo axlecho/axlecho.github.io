@@ -1,7 +1,10 @@
 ---
 title: client与AudioFlinger的数据交换
 date: 2019-01-19 22:26:31
-tags: android_framework
+categories: Android_Audio
+tags: 
+    - framework
+    - audio
 ---
 AudioTrack与AudioFlinger在两个不同进程，他们之间要通过共享内存进行音频的数据交换。
 交换的实现通过环形缓冲去来实现，貌似没有同步机制，从实验结果来看，AudioTrack写满缓冲区后AudioFlinger就会去读取。
@@ -54,12 +57,12 @@ status_t ClientProxy::obtainBuffer(Buffer* buffer, const struct timespec *reques
 
     // 一个死循环来获取Buffer，通过break和goto end来实现不同的Timeout
     for (;;) {
-        ...(检查cblk的flag)
+        // ...(检查cblk的flag)
         // compute number of frames available to write (AudioTrack) or read (AudioRecord)
         int32_t front;
         int32_t rear;
         if (mIsOut) {
-            ...(这里有一大段注释，说android_atomic_acquire_load可能是无用的，但就是要加，就是要任性..)
+            // ...(这里有一大段注释，说android_atomic_acquire_load可能是无用的，但就是要加，就是要任性..)
             front = android_atomic_acquire_load(&cblk->u.mStreaming.mFront);
             rear = cblk->u.mStreaming.mRear;
         } else {
@@ -71,7 +74,7 @@ status_t ClientProxy::obtainBuffer(Buffer* buffer, const struct timespec *reques
         ssize_t filled = rear - front;
         // pipe should not be overfull
         if (!(0 <= filled && (size_t) filled <= mFrameCount)) {
-            ...(gg了)
+            // ...(gg了)
         }
 
         // 获取可以利用的空间
@@ -82,15 +85,15 @@ status_t ClientProxy::obtainBuffer(Buffer* buffer, const struct timespec *reques
             // 这里要处理的是这种情况，像如下的buffer(*是数据)
             // __________**********__________
             // 获取到avail是两边空白的和，这里只能要一边
-            ...
+            // ...
             // 获取到了buffer，走人
             status = NO_ERROR;
             break;
         }
 
-        ...(后面是avail等于0的情况,有可能是server那边没读完，也有可能其他情况,根据不同的Timeout方式选择等待或放弃)
+        // ...(后面是avail等于0的情况,有可能是server那边没读完，也有可能其他情况,根据不同的Timeout方式选择等待或放弃)
     }
-end:    ...(错误处理等)
+end:    // ...(错误处理等)
 }
 
 //填充数据没有特殊的api，一般用memcpy就可以了
@@ -102,7 +105,7 @@ written += toWrite;
 // 释放数据很简单
 void ClientProxy::releaseBuffer(Buffer* buffer)
 {
-    ...(参数检查，避免释放不合法的buffer
+    // ...(参数检查，避免释放不合法的buffer
     mUnreleased -= stepCount;
     audio_track_cblk_t* cblk = mCblk;
     // 其实就只改了一个指针
@@ -120,8 +123,8 @@ void ClientProxy::releaseBuffer(Buffer* buffer)
 ```cpp
 //获取Buffer在obtainBuffer中实现，方式跟客户端的差不多
 status_t ServerProxy::obtainBuffer(Buffer* buffer, bool ackFlush)
-·{
-    ...(参数检查，避免buffer为空等)
+{
+    // ...(参数检查，避免buffer为空等)
     if (mIsOut) {
         int32_t flush = cblk->u.mStreaming.mFlush;
         rear = android_atomic_acquire_load(&cblk->u.mStreaming.mRear);
@@ -146,14 +149,14 @@ status_t ServerProxy::obtainBuffer(Buffer* buffer, bool ackFlush)
     }
 
     // 'availToServer' may be non-contiguous, so return only the first contiguous chunk 
-    ...(这里跟客户端一样也有是去左右其中一段)
+    // ...(这里跟客户端一样也有是去左右其中一段)
 no_init:
-    ...(错误处理)
+    // ...(错误处理)
 }
 
 // 服务端使用数据场景比较复杂，主要是混音跟重采样比较麻烦
 // obtainBuffer被分装在Track(AudioFlinger的一个内部类)的getNextBuffer中
-//  DirectOutputThread中使用跟客户端差不多，也是直接写
+// DirectOutputThread中使用跟客户端差不多，也是直接写
 memcpy(curBuf, buffer.raw, buffer.frameCount * mFrameSize);
 frameCount -= buffer.frameCount;
 curBuf += buffer.frameCount * mFrameSize;
@@ -180,7 +183,7 @@ do {
 // 释放Buffer也比较简单
 void ServerProxy::releaseBuffer(Buffer* buffer)
 {
-    ...(参数检查)
+    // ...(参数检查)
     // 基本跟客户端一样
     if (mIsOut) {
         int32_t front = cblk->u.mStreaming.mFront;
@@ -191,13 +194,13 @@ void ServerProxy::releaseBuffer(Buffer* buffer)
     }
 
     // 唤醒客户端
-    ...(各种参数的计算)
+    // ...(各种参数的计算)
     if (!(old & CBLK_FUTEX_WAKE)) {
         (void) syscall(__NR_futex, &cblk->mFutex,
                 mClientInServer ? FUTEX_WAKE_PRIVATE : FUTEX_WAKE, 1);
     }
 
-    ...(清空buffer)
+    // ...(清空buffer)
 }
 ```
 

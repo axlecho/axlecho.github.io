@@ -1,7 +1,11 @@
 ---
 title: Nfc年度总结
 date: 2019-01-22 11:51:44
-tags: android_framework
+categories: Android_Nfc
+tags: 
+	- android
+	- nfc
+	- framework
 ---
 
 

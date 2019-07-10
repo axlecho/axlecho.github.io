@@ -1,7 +1,9 @@
 ---
 title: Monster
 date: 2019-02-11 11:41:17
-tags: life
+categories: 无病呻吟
+tags:
+	- 日常
 ---
 
 最近刷牙老是干呕，烟确实得戒了。。

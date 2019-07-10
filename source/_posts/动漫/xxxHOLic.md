@@ -1,6 +1,7 @@
 ---
 title: xxxHOLic
 date: 2019-01-22 11:55:38
+categories: 动漫
 tags: acg
 ---
 

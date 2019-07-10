@@ -1,10 +1,10 @@
 ---
 title: surfaceflinger学习--Binder原理
 date: 2019-01-12 20:34:49
-categories: android
+categories: Android_Graphics
 tags: 
-  - framework
-  - graphics
+    - framework
+    - graphics
 ---
 
 要对系统框架有个大概的了解，再去看这些东西比较好，参考：
@@ -12,14 +12,12 @@ tags:
 《深入理解Android》
 
 SurfaceFlinger作为android绘制服务，涉及东西还是挺多的。
-
 *   跨进程通信Binder机制
 *   上层的View系统
 *   下层的Display系统
 
 Binder，Binder主要用于Android中的跨进程通信，类似与socket一样的东西，由于Android将Bindder分为了业务层与传输层，导致了一堆Bindder对象的出现，再加上有一个比较特殊的服务ServiceManager一部分使用了Bindder，一部分又没有有使用Bindder，还有什么Server跟Service，导致看的整个人都不好。
 
-先放一张IBinder的图
 **BpBinder**与**BBinder**是一对，用于传输层的通信
 **BpSerivce**与**BnSerivce**是一对，用于业务层的通信
 **ISerivce**是客户端使用的Serivce接口
@@ -41,7 +39,7 @@ SurfaceFlinger与Ap通信是通过Binder来通信的，而且还不仅仅是一�
 ISurfaceComposerClient在ISurfaceComposerClient.h中定义
 具体内容就是几个接口的声明
 
-```java
+```cpp
 class ISurfaceComposerClient : public IInterface
 {
 public:
@@ -132,7 +130,7 @@ status_t BnSurfaceComposerClient::onTransact(
             reply->writeInt32(result);
             return NO_ERROR;
         } break;
-        ...（其他ISurfaceComposerClient中接口对应的信息处理)
+        // ...（其他ISurfaceComposerClient中接口对应的信息处理)
     }
 }
 ```
@@ -147,10 +145,10 @@ BpBinder的定义
 class BpBinder : public IBinder 
 { 
     public: 
-    ...(一些binder状态查询函数) 
+    // ...(一些binder状态查询函数) 
     virtual status_t transact( uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags = 0);
-    ...(一些binder连接管理函数)
-    ...(一些锁机制)
+    // ...(一些binder连接管理函数)
+    // ...(一些锁机制)
 };
 ```
 
@@ -171,7 +169,7 @@ status_t BpBinder::transact( uint32_t code, const Parcel& data, Parcel* reply, u
 
 ### BBinder
 BBinder定义
-```java
+```cpp
 class BBinder : public IBinder
 {
 public:
@@ -193,20 +191,20 @@ protected:
 ```
 
 BBinder实现，主要是transact函数
-```java
+```cpp
 status_t BBinder::transact(
     uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags)
 {
     data.setDataPosition(0);
     status_t err = NO_ERROR;
     switch (code) {
-        ...（其他情况)
+        // ...（其他情况)
         default:
             // 将会调用子类的onTransact
             err = onTransact(code, data, reply, flags);
             break;
     }
-    ...
+    // ...
 }
 ```
 
@@ -223,11 +221,11 @@ status_t IPCThreadState::transact(int32_t handle,
                                   uint32_t code, const Parcel& data,
                                   Parcel* reply, uint32_t flags)
 {
-        ...(参数检查及打印日志)
+        // ...(参数检查及打印日志)
         err = writeTransactionData(BC_TRANSACTION, flags, handle, code, data, NULL);
-        ...(各种乱七八糟的东西)
+        // ...(各种乱七八糟的东西)
         err = waitForResponse(reply);
-        ...(参数检查及打印日志)
+        // ...(参数检查及打印日志)
 
     return err;
 }
@@ -239,8 +237,8 @@ status_t IPCThreadState::writeTransactionData(int32_t cmd, uint32_t binderFlags,
     int32_t handle, uint32_t code, const Parcel& data, status_t* statusBuffer)
 {
     binder_transaction_data tr;
-    ...(初始化tr)
-    ...(根据data填充tr)
+    // ...(初始化tr)
+    // ...(根据data填充tr)
     mOut.writeInt32(cmd);
     mOut.write(&tr, sizeof(tr));
 
@@ -255,13 +253,13 @@ status_t IPCThreadState::waitForResponse(Parcel *reply, status_t *acquireResult)
     int32_t cmd;
     while (1) {
         talkWithDriver();
-        ...(检查返回)
+        // ...(检查返回)
         cmd = mIn.readInt32();
 
         switch (cmd) {
-        ...(各种错误情况处理处理)
+        // ...(各种错误情况处理处理)
         case BR_REPLY:
-        ...(各种对reply的处理)
+        // ...(各种对reply的处理)
         break;
         default:
             err = executeCommand(cmd);  // ！！这里是服务端使用的
@@ -269,7 +267,7 @@ status_t IPCThreadState::waitForResponse(Parcel *reply, status_t *acquireResult)
         }
     }
 
-    ...(错误处理）
+    // ...(错误处理）
     return err;
 }
 ```
@@ -278,9 +276,9 @@ talkWithDriver与驱动通信
 ```cpp
 status_t IPCThreadState::talkWithDriver(bool doReceive)
 {
-    ...(初始化bwr)
+    // ...(初始化bwr)
     ioctl(mProcess->mDriverFD, BINDER_WRITE_READ, &bwr);
-    ...(错误处理)
+    // ...(错误处理)
     return err;
 }
 ```
@@ -292,14 +290,14 @@ joinThreadPool在IPCThreadState中实现，相当于时刻等待驱动的消息
 ```cpp
 void IPCThreadState::joinThreadPool(bool isMain)
 {
-    ...(处理一些东西）
+    // ...(处理一些东西）
     status_t result;
     do {
-        ...(处理一些东西）
+        // ...(处理一些东西）
         result = getAndExecuteCommand();
-        ...(处理一些东西）
+        // ...(处理一些东西）
     } while (result != -ECONNREFUSED && result != -EBADF);
-    ...(处理一些东西）
+    // ...(处理一些东西）
 }
 ```
 
@@ -310,9 +308,9 @@ status_t IPCThreadState::getAndExecuteCommand()
     status_t result;
     int32_t cmd;
     result = talkWithDriver();
-    ...(各种判断)
+    // ...(各种判断)
     result = executeCommand(cmd);
-    ...(各种处理)
+    // ...(各种处理)
     return result;
 }
 ```
@@ -322,21 +320,21 @@ executeCommand用于执行从客户端过来的命令
 status_t IPCThreadState::executeCommand(int32_t cmd)
 {
     switch (cmd) {
-    ...(各种其他操作)
+    // ...(各种其他操作)
     case BR_TRANSACTION:
         {
-            ...(各种对tr的操作)              
+            // ...(各种对tr的操作)              
             Parcel reply;
             sp<BBinder> b((BBinder*)tr.cookie);
             b->transact(tr.code, buffer, &reply, tr.flags);
 
-            ...(设置reply)
+            // ...(设置reply)
             sendReply(reply, 0);
-            ...(各种其他操作) 
+            // ...(各种其他操作) 
         }
         break;
-    ...(各种其他操作)
+    // ...(各种其他操作)
     }
-    ...(各种错误处理)
+    // ...(各种错误处理)
 }
 ```

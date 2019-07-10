@@ -1,8 +1,10 @@
 ---
 title: 每天一youtube
 date: 2019-01-12 14:19:12
-tags: android
-cover: /images/youtube.jpg
+categories: Android
+tags:
+	- android
+	- 技术学习
 ---
 [Chrome Custom Tabs ](https://www.youtube.com/watch?v=QOxIdbNwpx0)
 哈哈，听到一个印度银在讲Android开发的东西，印度英语真有趣 一个加强版的webview，可以自动填充，共享cookies，更友好的界面，以及提前加载。

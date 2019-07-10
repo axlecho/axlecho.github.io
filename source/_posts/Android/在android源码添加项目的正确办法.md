@@ -1,11 +1,13 @@
 ---
 title: 在android源码添加项目的正确办法
-date: 2019-01-19 22:34:25
-tags: android_framework
+date: 2018-04-27 22:34:25
+categories: Android
+tags:
+	- android
+	- framework
 ---
 
 源码添加项目的正确办法
-2018-04-27
 主要是Android.mk文件
 
 lib版本
@@ -46,12 +48,12 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 ```
 
 指定目录
-```
+```shell
 LOCAL_SRC_FILES := $(call $(src_dirs))
 ```
 
 当前目录
-```
+```shell
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 ```
 

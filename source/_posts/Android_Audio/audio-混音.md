@@ -1,7 +1,10 @@
 ---
 title: audio 混音
 date: 2019-01-19 22:09:41
-tags: android_framework
+categories: Android_Audio
+tags: 
+    - framework
+    - audio
 ---
 
 android的混音是通过AudioMixer来实现的，最近遇到了一个混音的问题，该是好好看看音频的基本知识了。
@@ -24,8 +27,8 @@ android的混音是通过AudioMixer来实现的，最近遇到了一个混音的
 #### 采样率
 看到知乎上有一个回答，感觉挺形象的--[什么是音频的采样率？采样率和音质有没有关系？](http://www.zhihu.com/question/20351692?utm_campaign=rss&utm_medium=rss&utm_source=rss&utm_content=title)
 
-一般的采样率固定在`44100HZ`(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ~20KHZ，这样记录能还原最高22.05KHZ的声音。
-还有一个采样率`48000HZ`也比较常见
+一般的采样率固定在`44100HZ`(- -就是一秒记44100次)，理由是因为人耳听觉范围在20HZ\~20KHZ，这样记录能还原最高22.05KHZ的声音
+还有一个采样率 `48000HZ` 也比较常见
 
 #### 编码格式
 指每次采样所用的bit数，比如8bit，16bit  
@@ -80,21 +83,22 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTrac
     // 设置通道数
     mAudioMixer->setParameter(name,AudioMixer::TRACK,AudioMixer::CHANNEL_MASK, (void *)(uintptr_t)track->channelMask());
 
-    ...
+    // ...
     // 设置采样率
     mAudioMixer->setParameter(name,AudioMixer::RESAMPLE,AudioMixer::SAMPLE_RATE,(void *)(uintptr_t)reqSampleRate);
 
     // 设置播放速率  
     mAudioMixer->setParameter(name,AudioMixer::TIMESTRETCH,AudioMixer::PLAYBACK_RATE,&playbackRate);
 
-    ... // mark一下
+    // ... 
+    // mark一下
     if (mMixerBufferEnabled && (track->mainBuffer() == mSinkBuffer || track->mainBuffer() == mMixerBuffer)) {
          mAudioMixer->setParameter(name,AudioMixer::TRACK,AudioMixer::MIXER_FORMAT, (void *)mMixerBufferFormat);
     }
 
     // 设置输出
     mAudioMixer->setParameter(name,AudioMixer::TRACK,AudioMixer::MAIN_BUFFER, (void *)mMixerBuffer);
-    ...
+    // ...
 }
 ```
 
@@ -134,12 +138,12 @@ void AudioMixer::process__validate(state_t* state, int64_t pts)
         }
         t.needs = n;    //更新track flag
 
-        ...(通过flags选择混音函数)
+        // ...(通过flags选择混音函数)
 
         //这里调用一次进行混音，后续会在MixerThread的threadLoop_mix内调用
         state->hook(state, pts);  
 
-        ...
+        // ...
     }
 }
 ```
@@ -156,7 +160,7 @@ void AudioMixer::process__genericResampling(state_t* state, int64_t pts)
 
     uint32_t e0 = state->enabledTracks;
     while (e0) {
-        ...(选出有相同mainBuffer的track集合e1)
+        // ...(选出有相同mainBuffer的track集合e1)
         int32_t *out = t1.mainBuffer;
         memset(outTemp, 0, size);
 
@@ -176,7 +180,9 @@ void AudioMixer::process__genericResampling(state_t* state, int64_t pts)
             if (t.needs & NEEDS_RESAMPLE) {
                 t.resampler->setPTS(pts);
                 t.hook(&t, outTemp, numFrames, state->resampleTemp, aux);
-            } else {...}
+            } else {
+                //...
+            }
         }
     }
 }
@@ -192,7 +198,7 @@ void AudioMixer::track__genericResample(track_t* t, int32_t* out, size_t outFram
 
     // ramp gain - resample to temp buffer and scale/mix in 2nd step
     if (aux != NULL) {
-        ...(设置ramp音量)
+        // ...(设置ramp音量)
     } else {
         if (CC_UNLIKELY(t->volumeInc[0]|t->volumeInc[1])) {
             t->resampler->setVolume(UNITY_GAIN_FLOAT, UNITY_GAIN_FLOAT);

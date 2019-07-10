@@ -1,7 +1,10 @@
 ---
 title: Nfc学习
 date: 2019-01-22 11:39:57
-tags: android_framework
+categories: Android_Nfc
+tags: 
+	- android
+	- nfc
 ---
 
 证书相关

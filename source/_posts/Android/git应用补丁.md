@@ -1,7 +1,9 @@
 ---
 title: git应用补丁
-date: 2019-01-19 22:30:53
-tags: android_tool
+date: 2019-01-19 22:30:5
+categories: Android
+tags:
+	- git
 ---
 
 注意打补丁的路径

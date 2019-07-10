@@ -1,17 +1,19 @@
 ---
 title: Audio的播放流程
 date: 2019-01-12 20:53:32
+categories: Android_Audio
 tags: 
-- android_framework
-cover: /images/ape_fwk_audio.png
+    - framework
+    - audio
 ---
 
+[cover](/images/ape_fwk_audio.png)
 
 这是基于Android5.1分析的，前几版本好像有些不同，6.0没改太多，不过大体思想是一致的
 
 播放就像个排水机，AuidoPolicyService是阀门，AudioFlinger是排水池，PlaybackThread是发动机，Track是源，AudioOutput是排水孔。AudioTrack是水桶
 
-排水首先要凿个孔（openOutput），然后添加发动机（建立PlaybackThread），然后将源接到水桶上（建立Track），选择排水孔（selectOutput），开启相应的发动机（PlaybackThread从睡眠中唤醒），然后就各自排水了。。。。
+排水首先要凿个孔（openOutput），然后添加发动机（建立PlaybackThread），然后将源接到水桶上（建立Track），选择排水孔（selectOutput），开启相应的发动机（PlaybackThread从睡眠中唤醒），然后就开始播放（排水）了。。。。
 
 AudioTrack服务端的启动及准备
 ---
@@ -23,15 +25,15 @@ AUDIO相关的服务启动
 开机时系统启动各种服务，AudioFlinger跟AudioPolicyService和一些音频相关的服务会在此启动。
 各服务的Instantiate()函数在BinderService.h中定义实现，主要是用于抽象出注册服务的操作。
 BinderService是个模板类，服务继承该类后可以直接注册到systemserver。
-```java
+```cpp
 //--->frameworks/av/media/mediaserver/main_mediaserver.cpp
 int main(int argc __unused, char** argv)
 {
-    ...
+    // ...
     AudioFlinger::instantiate();
     MediaPlayerService::instantiate();
     AudioPolicyService::instantiate();
-    ...
+    // ...
 }
 
 //--->frameworks/native/include/binder/BinderService.h
@@ -47,9 +49,9 @@ public:
                 String16(SERVICE::getServiceName()),
                 new SERVICE(), allowIsolated);
     }
-    ...
+    // ...
     static void instantiate() { publish(); }
-    ...
+    // ...
 
 };
 ```
@@ -59,7 +61,7 @@ AUDIOFLINGER的创建
 AudioFlinger承担混音工作。（总之很重要啦）
 AudioFlinger的构造函数主要是对成员变量和调试工具的初始化。
 onFirstRef一般做进一步的初始化工作，AudioFlinger暂时没有在该函数中做重要的工作。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger.cpp
 AudioFlinger::AudioFlinger()
     : BnAudioFlinger(),
@@ -98,7 +100,7 @@ AudioPolicyService用于控制音频播放策略（比如插耳机的时候来�
 
 AudioPolicyService的构造函数更简单，只是初始化主要成员。
 AudioPolicyService会在onFristRef中做比较多的工作，比如创建command线程，初始化重要成员mAudioPolicyManager。
-```
+```cpp
 //--->frameworks/av/services/audiopolicy/AudioPolicyService.cpp
 AudioPolicyService::AudioPolicyService()
     : BnAudioPolicyService(),
@@ -111,7 +113,7 @@ AudioPolicyService::AudioPolicyService()
 
 void AudioPolicyService::onFirstRef()
 {
-    ...
+    // ...
     {
         Mutex::Autolock _l(mLock);
         mTonePlaybackThread = new AudioCommandThread(String8("ApmTone"), this);
@@ -119,13 +121,13 @@ void AudioPolicyService::onFirstRef()
         mOutputCommandThread = new AudioCommandThread(String8("ApmOutput"), this);
 
 #ifdef USE_LEGACY_AUDIO_POLICY
-    ...(暂时这宏意义不明)
+    // ...(暂时这宏意义不明)
 #else
         mAudioPolicyClient = new AudioPolicyClient(this);
         mAudioPolicyManager = createAudioPolicyManager(mAudioPolicyClient);
 #endif
     }
-    ...(效果相关)
+    // ...(效果相关)
 }
 ```
 
@@ -136,7 +138,7 @@ AudioPolicyManager作为音频调度策略的实现，在AudioPolicyService关�
 （貌似可以重载AudioPolicyManager来改动音频策略的实现,6.0开始可以直接动态选择不同的AudiPolicyManger实现）
 
 在构造函数中，打开了所有能用的音频设备和录音设备，并调用AudioPolicyService创建了相应设备的混音线程。
-```c
+```cpp
 //--->frameworks/av/services/audiopolicy/AudioPolicyManager.cpp
 AudioPolicyManager::AudioPolicyManager(AudioPolicyClientInterface *clientInterface)
     :mPrimaryOutput((audio_io_handle_t)0),
@@ -144,14 +146,14 @@ AudioPolicyManager::AudioPolicyManager(AudioPolicyClientInterface *clientInterfa
 
 {
     mpClientInterface = clientInterface;
-    ...
+    .// ..
     // 加载音频模块
     defaultAudioPolicyConfig();
-    ...
+    // ...
     for (size_t i = 0; i < mHwModules.size(); i++) {
-        ...
+        // ...
         for (size_t j = 0; j < mHwModules[i]->mOutputProfiles.size(); j++) {
-            ...
+            // ...
             status_t status = mpClientInterface->openOutput(outProfile->mModule->mHandle,  // 打开音频设备
                 &output,
                 &config,
@@ -162,12 +164,12 @@ AudioPolicyManager::AudioPolicyManager(AudioPolicyClientInterface *clientInterfa
         }
     }
 
-    ...(打开录音设备)
+    // ...(打开录音设备)
 }
 ```
 
 mpClientInterface就是AudioPolicyService，AudioPolicyService最终会调用AudioFlinger的openOutput函数。
-```c
+```cpp
 //--->frameworks/av/services/audiopolicy/AudioPolicyClientImpl.cpp
 status_t AudioPolicyService::AudioPolicyClient::openOutput(audio_module_handle_t module,
     audio_io_handle_t *output,
@@ -190,7 +192,7 @@ AudioFlinger的openOutput中会针对输出设备的类型创建了一个Playbac
 PlaybackThread在AudioFlinger相当重要，相当于音频系统的发动机
 
 PlaybackThread有几种，比较常见有MixerThread，蓝牙耳机设备需要外放（比如ring类型的流需要同时从耳机与喇叭出来）的时候使用DuplicatingThread。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/AudioFlinger.cpp
 status_t AudioFlinger::openOutput(audio_module_handle_t module,
     audio_io_handle_t *output,
@@ -199,9 +201,9 @@ status_t AudioFlinger::openOutput(audio_module_handle_t module,
     const String8& address,
     uint32_t *latencyMs,
     audio_output_flags_t flags){
-    ...
+    // ...
     sp<PlaybackThread> thread = openOutput_l(module, output, config, *devices, address, flags);
-    ...
+    // ...
 }
 
 sp<AudioFlinger::PlaybackThread> AudioFlinger::openOutput_l(audio_module_handle_t module,
@@ -211,7 +213,7 @@ sp<AudioFlinger::PlaybackThread> AudioFlinger::openOutput_l(audio_module_handle_
     const String8& address,
     audio_output_flags_t flags)
 {
-    ...
+    // ...
     status_t status = hwDevHal->open_output_stream(
         hwDevHal,
         *output,
@@ -220,7 +222,7 @@ sp<AudioFlinger::PlaybackThread> AudioFlinger::openOutput_l(audio_module_handle_
         config,
         &outStream,
         address.string());
-    ...
+    // ...
     // 根据flags 创建相应的thread
     AudioStreamOut *outputStream = new AudioStreamOut(outHwDev, outStream, flags);
     PlaybackThread *thread;
@@ -233,18 +235,20 @@ sp<AudioFlinger::PlaybackThread> AudioFlinger::openOutput_l(audio_module_handle_
     } else {
         thread = new MixerThread(this, outputStream, *output, devices);
     }
-    ...
+    // ...
 }
 ```
 
 PlaybackThread创建完之后在onFirstRef()中会自己启动起来,并会在threadLoop等待一个AudioTrack的连接。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/Threads.cpp
 AudioFlinger::MixerThread::MixerThread(const sp<AudioFlinger>& audioFlinger, AudioStreamOut* output,
         audio_io_handle_t id, audio_devices_t device, type_t type)
     :   PlaybackThread(audioFlinger, output, id, device, type),
         mFastMixerFutex(0)
-{...(主要初始化了Mixer)}
+{
+    // ...(主要初始化了Mixer)
+}
 
 AudioFlinger::PlaybackThread::PlaybackThread(const sp<AudioFlinger>& audioFlinger,
     AudioStreamOut* output,
@@ -252,8 +256,10 @@ AudioFlinger::PlaybackThread::PlaybackThread(const sp<AudioFlinger>& audioFlinge
     audio_devices_t device,
     type_t type)
     :   ThreadBase(audioFlinger, id, device, AUDIO_DEVICE_NONE, type),
-    ...
-{...(初始化了音量相关的参数和获取输出设备的参数)}
+    // ...
+{
+    // ...(初始化了音量相关的参数和获取输出设备的参数)
+}
 
 // 在此PlaybackThread会跑起来，运行threadLoop()
 void AudioFlinger::PlaybackThread::onFirstRef()
@@ -264,15 +270,15 @@ void AudioFlinger::PlaybackThread::onFirstRef()
 // threadLoop是整个AudioFlinger的核心，混音的工作在此进行
 bool AudioFlinger::PlaybackThread::threadLoop()
 {
-    ...
+    // ...
     cacheParameters_l();
-    ...
+    // ...
     checkSilentMode_l();
     while (!exitPending())
     {
-        ...
+        // ...
         processConfigEvents_l();
-        ...
+        // ...
         size_t size = mActiveTracks.size();
         for (size_t i = 0; i < size; i++) {
             sp<Track> t = mActiveTracks[i].promote();
@@ -281,29 +287,29 @@ bool AudioFlinger::PlaybackThread::threadLoop()
                         t->mAudioTrackServerProxy->framesReleased());
             }
         }
-        ...
+        // ...
         saveOutputTracks();
-        ...
+        // ...
         threadLoop_standby();
-        ...
+        // ...
         clearOutputTracks();
-        ...
+        // ...
         checkSilentMode_l();
-        ...
+        // ...
         mMixerStatus = prepareTracks_l(&tracksToRemove);
-        ...
+        // ...
         // 混音，主要设置AudioMixer的参数
         threadLoop_mix();
-        ...
+        // ...
         ssize_t ret = threadLoop_write();
-        ...
+        // ...
         threadLoop_drain();
-        ...
+        // ...
         threadLoop_removeTracks(tracksToRemove);
         tracksToRemove.clear();
     }
     threadLoop_exit();
-    ...
+    // ...
 }
 ```
 到此各种线程服务准备完毕，可以播放AudioTrack了
@@ -319,7 +325,7 @@ AUDIOTRACK的构建
 //--->frameworks/base/media/java/android/media/AudioTrack.java
  public AudioTrack(AudioAttributes attributes, AudioFormat format, int bufferSizeInBytes,
             int mode, int sessionId)throws IllegalArgumentException {
-    ...(参数检查)
+    // ...(参数检查)
     mStreamType = AudioSystem.STREAM_DEFAULT;
     int[] session = new int[1];
     session[0] = sessionId;
@@ -327,21 +333,21 @@ AUDIOTRACK的构建
     int initResult = native_setup(new WeakReference<AudioTrack>(this), mAttributes,
             mSampleRate, mChannels, mAudioFormat,
             mNativeBufferSizeInBytes, mDataLoadMode, session);
-    ...
+    // ...
 }
 ```
 
 jni对应的函数是android_media_AudioTrack_setup，生成一个AudioTrack(c++)并设置其参数
-```c
+```cpp
 //--->android/frameworks/base/core/jni/android_media_AudioTrack.cpp
 static jint android_media_AudioTrack_setup(JNIEnv *env, jobject thiz, jobject weak_this,
     jobject jaa,
     jint sampleRateInHertz, jint javaChannelMask,
     jint audioFormat, jint buffSizeInBytes, jint memoryMode, jintArray jSession) {
 
-    ...(检查参数)
+    // ...(检查参数)
     sp<AudioTrack> lpTrack = new AudioTrack();
-    ...
+    // ...
     // 看样子很重要
     AudioTrackJniStorage* lpJniStorage = new AudioTrackJniStorage();
 
@@ -355,7 +361,7 @@ static jint android_media_AudioTrack_setup(JNIEnv *env, jobject thiz, jobject we
         status = lpTrack->set(...);
         break;
     }
-    ...(错误处理)
+    // ...(错误处理)
 }
 ```
 
@@ -398,7 +404,7 @@ status_t AudioTrack::set(
         pid_t pid,
         const audio_attributes_t* pAttributes)
 {
-    ...(设置参数等)
+    // ...(设置参数等)
     if (cbf != NULL) {
         mAudioTrackThread = new AudioTrackThread(*this, threadCanCallJava);
         mAudioTrackThread->run("AudioTrack", ANDROID_PRIORITY_AUDIO, 0 /*stack*/);
@@ -406,17 +412,17 @@ status_t AudioTrack::set(
 
 
     status_t status = createTrack_l();
-    ...(错误处理)
+    // ...(错误处理)
 }
 ```
 
 这里插入一个track选择output的一个过程,在工作中经常碰到这个鬼东西。在创建track的时候其实音频的路由已经定好了，之前还一直以为在start后选，在createTrack之前，会调用getOutputForAttr来获取当前的流对应的output（后面有空会补一下output跟device及stream的乱七八糟的关系）
-```c
+```cpp
 //--->frameworks/av/media/libmedia/AudioTrack.cpp
 status_t AudioTrack::createTrack_l()
 {
     const sp<IAudioFlinger>& audioFlinger = AudioSystem::get_audio_flinger();
-    ...(计算FrameCount，Latency等
+    // ...(计算FrameCount，Latency等
 
     // 这里的output即到底层的通路，可以用adb shell dumpsys media.audio_policy 看到所有的output
     status_t status = AudioSystem::getOutputForAttr(attr, &output,
@@ -437,10 +443,10 @@ status_t AudioTrack::createTrack_l()
         mClientUid,
         &status);
 
-    ...(debug代码等)
+    // ...(debug代码等)
     // AudioTrackClientProxy主要实现管理cblk和服务端通信
     mProxy = new AudioTrackClientProxy(cblk, buffers, frameCount, mFrameSizeAF);
-    ...
+    // ...
 }
 
 // AudioSystem转发给AudiopolicyService
@@ -478,7 +484,7 @@ status_t AudioPolicyService::getOutputForAttr(const audio_attributes_t *attr,
                                               audio_port_handle_t selectedDeviceId,
                                               const audio_offload_info_t *offloadInfo)
 {
-    ...
+    // ...
     if (IPCThreadState::self()->getCallingPid() != getpid_cached || uid == (uid_t)-1) {
         uid_t newclientUid = IPCThreadState::self()->getCallingUid();
         if (uid != (uid_t)-1 && uid != newclientUid) {
@@ -504,23 +510,23 @@ status_t AudioPolicyManager::getOutputForAttr(const audio_attributes_t *attr,
                                               audio_port_handle_t selectedDeviceId,
                                               const audio_offload_info_t *offloadInfo)
 {
-    ...(流类型判断)
+    // ...(流类型判断)
     // 获取路由策略
     routing_strategy strategy = (routing_strategy) getStrategyForAttr(&attributes);
     // 获取策略对应的设备
     audio_devices_t device = getDeviceForStrategy(strategy, false /*fromCache*/);
-    ...(判断flag)
+    // ...(判断flag)
     // 获取对应设备的output
     *output = getOutputForDevice(device, session, *stream,
                                  samplingRate, format, channelMask,
                                  flags, offloadInfo);
-    ...
+    // ...
     return NO_ERROR;
 }
 ```
 
 接下来的服务端AudioFlinger会调用PlaybackThread的createTrack_l创建Track。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/AudioFlinger.cpp
 sp<IAudioTrack> AudioFlinger::createTrack(
     audio_stream_type_t streamType,
@@ -536,14 +542,14 @@ sp<IAudioTrack> AudioFlinger::createTrack(
     int clientUid,
     status_t *status)
 {
-    ...(参数检查)
+    // ...(参数检查)
     // 根据output选择对应的thread
     PlaybackThread *thread = checkPlaybackThread_l(output);
-    ...
+    // ...
 
     track = thread->createTrack_l(client, streamType, sampleRate, format,
             channelMask, frameCount, sharedBuffer, lSessionId, flags, tid, clientUid, &lStatus);
-    ...
+    // ...
     // return handle to client
     trackHandle = new TrackHandle(track);
 
@@ -554,7 +560,7 @@ Exit:
 ```
 
 PlaybackThread会创建Track的实体对象
-```c
+```cpp
 //--->android/frameworks/av/services/audioflinger/Threads.cpp
 sp<AudioFlinger::PlaybackThread::Track> AudioFlinger::PlaybackThread::createTrack_l(
     const sp<AudioFlinger::Client>& client,
@@ -570,7 +576,7 @@ sp<AudioFlinger::PlaybackThread::Track> AudioFlinger::PlaybackThread::createTrac
     int uid,
     status_t *status)
 {
-    ...(设置参数)
+    // ...(设置参数)
     if (!isTimed) {
         track = new Track(this, client, streamType, sampleRate, format,
                           channelMask, frameCount, NULL, sharedBuffer,
@@ -579,7 +585,7 @@ sp<AudioFlinger::PlaybackThread::Track> AudioFlinger::PlaybackThread::createTrac
         track = TimedTrack::create(this, client, streamType, sampleRate, format,
                 channelMask, frameCount, sharedBuffer, sessionId, uid);
     }
-    ...
+    // ...
 }
 ```
 (**TODO**:这样应有Track构建的分析)
@@ -607,7 +613,7 @@ throws IllegalStateException {
 ```
 
 play()会调用jni的native_start(),对应的函数是android_media_AudioTrack_start(), android_media_AudioTrack_start()只是做了转发，最后会调用 AudioTrack(c++)的start(), AudioTrack的start又会调用TrackHandle(服务端的Track代理) 的start，最后会调用到服务端Track的start。
-```c
+```cpp
 //--->frameworks/av/media/libmedia/AudioTrack.cpp
 status_t AudioTrack::start()
 {
@@ -618,7 +624,7 @@ status_t AudioTrack::start()
 ```
 
 TrackHandle仅仅做过转发,最后会触发PlaybackThread的addTrack_l()
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/Tracks.cpp
 status_t AudioFlinger::TrackHandle::start() {
     return mTrack->start();
@@ -634,7 +640,7 @@ status_t AudioFlinger::PlaybackThread::Track::start(AudioSystem::sync_event_t ev
 ```
 
 PlaybackTread的addTrack_l主要工作是添加track到mActiveTracks,并激活沉睡的PlaybackTread。
-```
+```cpp
 //--->frameworks/av/services/audioflinger/Threads.cpp
 status_t AudioFlinger::PlaybackThread::addTrack_l(const sp<Track>& track)
 {
@@ -663,7 +669,7 @@ void AudioFlinger::PlaybackThread::broadcast_l()
 ```
 
 接下来就是写入音频数据 AudioTrack.java会调用write写入音频数据(播放声音)
-```
+```java
 //--->frameworks/base/media/java/android/media/AudioTrack.java
 public int write(byte[] audioData, int offsetInBytes, int sizeInBytes) {
     int ret = native_write_byte(audioData, offsetInBytes, sizeInBytes, mAudioFormat,
@@ -673,7 +679,7 @@ public int write(byte[] audioData, int offsetInBytes, int sizeInBytes) {
 
 native_write_byte()会调用jni的android_media_AudioTrack_write_byte，会调用jni的android_media_AudioTrack_write_byte，
 主要是获取java传下来的数据， 并调用writeToTrack来向共享内存写入数据，writeToTrack又分track是否为stream或static来做不同的处理。
-```
+```cpp
 //--->android/frameworks/base/core/jni/android_media_AudioTrack.cpp
 static jint android_media_AudioTrack_write_byte(JNIEnv *env,  jobject thiz,
     jbyteArray javaAudioData,
@@ -681,12 +687,12 @@ static jint android_media_AudioTrack_write_byte(JNIEnv *env,  jobject thiz,
     jint javaAudioFormat,
     jboolean isWriteBlocking)
 {
-    ...
+    // ...
     cAudioData = (jbyte *)env->GetByteArrayElements(javaAudioData, NULL);
-    ...
+    // ...
     jint written = writeToTrack(lpTrack, javaAudioFormat, cAudioData, offsetInBytes, sizeInBytes,
             isWriteBlocking == JNI_TRUE /* blocking */);
-    ...
+    // ...
 }
 
 jint writeToTrack(const sp<AudioTrack>& track, jint audioFormat, const jbyte* data,
@@ -694,19 +700,19 @@ jint writeToTrack(const sp<AudioTrack>& track, jint audioFormat, const jbyte* da
     if (track->sharedBuffer() == 0) {
         written = track->write(data + offsetInBytes, sizeInBytes, blocking);
     } else {
-        ...
+        // ...
         switch (format) {
         default:
         case AUDIO_FORMAT_PCM_FLOAT:
         case AUDIO_FORMAT_PCM_16_BIT: {
-            ...
+            // ...
             memcpy(track->sharedBuffer()->pointer(), data + offsetInBytes, sizeInBytes);
-            ...
+            // ...
             } break;
         case AUDIO_FORMAT_PCM_8_BIT: {
-            ...
+            // ...
             memcpy_to_i16_from_u8(dst, src, count);
-            ...
+            // ...
             } break;
 
         }
@@ -718,18 +724,18 @@ jint writeToTrack(const sp<AudioTrack>& track, jint audioFormat, const jbyte* da
 
 其中stream类型的track会调用AudioTrack(c++)的write,AudioTrack会使用obtainBuffer获取一块共享内存，
 并写入数据，写完后用releaseBuffer释放共享内存。（就可以给AudioFlingr使用了）
-```c
+```cpp
 //--->frameworks/av/media/libmedia/AudioTrack.cpp
 ssize_t AudioTrack::write(const void* buffer, size_t userSize, bool blocking)
 {
-    ...(参数检查)
+    // ...(参数检查)
     while (userSize >= mFrameSize) {
           audioBuffer.frameCount = userSize / mFrameSize;
           status_t err = obtainBuffer(&audioBuffer,
                   blocking ? &ClientProxy::kForever : &ClientProxy::kNonBlocking);
-          ...(错误处理)
-          ...(memcpy buffer -> audioBuffer);
-          ...(计算剩余数据)
+          // ...(错误处理)
+          // ...(memcpy buffer -> audioBuffer);
+          // ...(计算剩余数据)
           releaseBuffer(&audioBuffer);
       }
 
@@ -737,23 +743,23 @@ ssize_t AudioTrack::write(const void* buffer, size_t userSize, bool blocking)
 
 status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, int32_t waitCount)
 {
-    ...（参数转换跟计算)
+    // ...（参数转换跟计算)
     return obtainBuffer(audioBuffer, requested);
 }
 
 status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, const struct timespec *requested,
         struct timespec *elapsed, size_t *nonContig)
 {
-    ...（参数转换）
+    // ...（参数转换）
     status = proxy->obtainBuffer(&buffer, requested, elapsed);
-    ...(结果的填充)
+    // ...(结果的填充)
 }
 
 void AudioTrack::releaseBuffer(Buffer* audioBuffer)
 {
-    ...
+    // ...
     mProxy->releaseBuffer(&buffer);
-    ...
+    // ...
 }
 ```
 
@@ -761,34 +767,35 @@ obtainBuffer跟releaseBuffer的具体实现交给了AudioTrackClientProxy来实�
 
 服务端读取共享内存的音频数据是在PlaybackThread的threadLoop()中进行的，MixerThread也使用该函数，
 不过重写了threadLoop_mix()等关键函数(典型的多态)。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/Threads.cpp
 bool AudioFlinger::PlaybackThread::threadLoop()
 {
-    ...
+    // ...
     cacheParameters_l();
-    ...
+    // ...
     acquireWakeLock();
-    ...
+    // ...
     checkSilentMode_l();
     while (!exitPending()){
-        ...(lock)
+        // ...(lock)
         processConfigEvents_l();
-        ...
+        // ...
         saveOutputTracks();
-        ...(wakelock wait,not understand,**mark**)
-        ...
+        // ...(wakelock wait,not understand,**mark**)
+        // ...
         threadLoop_standby(); // 准备音频设备??
-        ...(参数检测)
+        // ...(参数检测)
         prepareTracks_l(&tracksToRemove);
-        ...
+        // ...
         if (mBytesRemaining == 0) {
             mCurrentWriteLength = 0;
             if (mMixerStatus == MIXER_TRACKS_READY) {
                 // threadLoop_mix() sets mCurrentWriteLength
                 threadLoop_mix(); // 混音
-            } ...(其他情况处理)
-            ...(音效处理)
+            } 
+            // ...(其他情况处理)
+            // ...(音效处理)
         }
 
         if (mBytesRemaining) {
@@ -799,7 +806,8 @@ bool AudioFlinger::PlaybackThread::threadLoop()
                   mBytesWritten += ret;
                   mBytesRemaining -= ret;
               }
-          }...(其他情况处理)
+          }
+          // ...(其他情况处理)
           // 播放完成，删除已经播放的tracks
           threadLoop_removeTracks(tracksToRemove);
           tracksToRemove.clear();
@@ -808,38 +816,37 @@ bool AudioFlinger::PlaybackThread::threadLoop()
     }
 
     threadLoop_exit();
-    ...
+    //...
     releaseWakeLock();
     mWakeLockUids.clear();
     mActiveTracksGeneration++;
-  }
 }
 ```
 
 这里重点看一下 MixerThread的threadLoop_mix 和 threadLoop_write
 threadLoop_mix调用了AudioMixer的process,threadLoop_write最终调用mOutput->stream->write写到驱动里去了
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/Threads.cpp
 void AudioFlinger::MixerThread::threadLoop_mix()
 {
-    ...
+    // ...
     // mix buffers...
     mAudioMixer->process(pts);
-    ...
+    // ...
 }
 
 ssize_t AudioFlinger::MixerThread::threadLoop_write()
 {
-    ...(处理一些fastmix的情况)
+    // ...(处理一些fastmix的情况)
     return PlaybackThread::threadLoop_write();
 }
 
 ssize_t AudioFlinger::PlaybackThread::threadLoop_write()
 {
-    ...(一些Sink操作)
+    // ...(一些Sink操作)
     bytesWritten = mOutput->stream->write(mOutput->stream,
                                            (char *)mSinkBuffer + offset, mBytesRemaining);
-    ...
+    // ...
 }
 ```
 
@@ -854,7 +861,7 @@ AudioMixer的process是一个hook函数，根据不同的情况会调用不同�
 *   void AudioMixer::process_NoResampleOneTrack(state_t* state, int64_t pts)
 
 这里以process__OneTrack16BitsStereoNoResampling为例子,在获取buffer的时候使用了Track的getNextBuffer和releaseBuffer。
-```c
+```cpp
 //--->frameworks/av/services/audioflinger/AudioMixer.cpp
 void AudioMixer::process(int64_t pts)
 {
@@ -867,11 +874,11 @@ void AudioMixer::process__OneTrack16BitsStereoNoResampling(state_t* state,
     const int i = 31 - __builtin_clz(state->enabledTracks);
     const track_t& t = state->tracks[i];
     AudioBufferProvider::Buffer& b(t.buffer);
-    ...(音量设置)
+    // ...(音量设置)
     while (numFrames) {
-        ...(Frame的计算)
+        // ...(Frame的计算)
         t.bufferProvider->getNextBuffer(&b, outputPTS);     // 获取客户端写入的buffer
-        ...(错误处理)
+        // ...(错误处理)
 
         // 混音
         switch (t.mMixerFormat) {
@@ -879,7 +886,7 @@ void AudioMixer::process__OneTrack16BitsStereoNoResampling(state_t* state,
             case AUDIO_FORMAT_PCM_16_BIT: ... break;
             default:LOG_ALWAYS_FATAL("bad mixer format: %d", t.mMixerFormat);
         }
-        ...
+        // ...
         t.bufferProvider->releaseBuffer(&b);
 }
 ```

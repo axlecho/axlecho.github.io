@@ -1,7 +1,10 @@
 ---
 title: Audio调节音量流程
 date: 2019-01-19 22:17:55
-tags: android_framework
+categories: Android_Audio
+tags: 
+    - framework
+    - audio
 ---
 
 Audio音量调节是一级一级调节，而且分不同的流类型，如响铃，通话，多媒体等。不同的设备(蓝牙设备)的设置方法有所区别。
@@ -26,22 +29,22 @@ java层Service实现,volume的调节的实现是用state模式来实现，可能
 private void setStreamVolume(int streamType, int index, int flags, 
     String callingPackage,String caller, int uid) {
 
-    ...(检查参数)
-    ...(转换参数)
+    // ...(检查参数)
+    // ...(转换参数)
 
     // 获取设备
     final int device = getDeviceForStream(streamType);
-    ...(特殊处理a2dp)
-    ...(检查uid，实体按键调节音量需要判断当前用户？)
+    // ...(特殊处理a2dp)
+    // ...(检查uid，实体按键调节音量需要判断当前用户？)
 
     synchronized (mSafeMediaVolumeState) {
         mPendingVolumeCommand = null;
         oldIndex = streamState.getIndex(device);
         index = rescaleIndex(index * 10, streamType, streamTypeAlias);
 
-        ...(特殊处理a2dp)
-        ...(特殊处理HDMI)
-        ...(设置一些标志位，如标记一些不可调节音量的设备)
+        // ...(特殊处理a2dp)
+        // ...(特殊处理HDMI)
+        // ...(设置一些标志位，如标记一些不可调节音量的设备)
 
         //检查当前是否可设置音量
         if (!checkSafeMediaVolume(streamTypeAlias, index, device)) {
@@ -67,7 +70,7 @@ private void onSetStreamVolume(int streamType, int index, int flags,
     // 设置音量
     setStreamVolumeInt(stream, index, device, false, caller);
 
-    ...(判断音量是否为0，调节模式(静音或响铃))
+    // ...(判断音量是否为0，调节模式(静音或响铃))
     mStreamStates[stream].mute(index == 0);
 }
 
@@ -84,14 +87,14 @@ private void setStreamVolumeInt(int streamType,int index,int device,
 
   @Override
 public void handleMessage(Message msg) {
-    ...
+    // ...
     switch (msg.what) {
         case MSG_SET_DEVICE_VOLUME:
             setDeviceVolume((VolumeStreamState) msg.obj, msg.arg1);
             break;
-        ...
+        // ...
     }
-    ...
+    // ...
 }
 
 private void setDeviceVolume(VolumeStreamState streamState, int device) {
@@ -100,7 +103,7 @@ private void setDeviceVolume(VolumeStreamState streamState, int device) {
         // 设置音量
         streamState.applyDeviceVolume_syncVSS(device);
 
-        ...(Apply change to all streams using this one as alias)
+        // ...(Apply change to all streams using this one as alias)
     }
 
     // Post a persist volume msg
@@ -176,23 +179,23 @@ status_t AudioPolicyManager::setStreamVolumeIndex(audio_stream_type_t stream,
     int index,audio_devices_t device)
 {
 
-    ...(检查音量及设备是否为audio设备)
-    ...(策略判断)
+    // ...(检查音量及设备是否为audio设备)
+    // ...(策略判断)
     if ((device != AUDIO_DEVICE_OUT_DEFAULT) && 
         (device & (strategyDevice | accessibilityDevice)) == 0) {
         return NO_ERROR;
     }
 
-    ...(设置每个输出设备的音量)
+    // ...(设置每个输出设备的音量)
     status_t volStatus = checkAndSetVolume(stream, index, desc, curDevice);
-    ...
+    // ...
 }
 
 status_t AudioPolicyManager::checkAndSetVolume(audio_stream_type_t stream,int index,
     const sp<AudioOutputDescriptor>& outputDesc,audio_devices_t device,int delayMs,bool force)
 {
-    ...(do not change actual stream volume if the stream is muted)
-    ...(do not change in call volume if bluetooth is connected and vice versa)
+    // ...(do not change actual stream volume if the stream is muted)
+    // ...(do not change in call volume if bluetooth is connected and vice versa)
 
     // 声音等级与真正参数的转换
     float volumeDb = computeVolume(stream, index, device);  
@@ -201,10 +204,9 @@ status_t AudioPolicyManager::checkAndSetVolume(audio_stream_type_t stream,int in
 
     // 设置通话的音量？？
     if (stream == AUDIO_STREAM_VOICE_CALL || stream == AUDIO_STREAM_BLUETOOTH_SCO) {
-            ...
-            mpClientInterface->setVoiceVolume(voiceVolume, delayMs);
-            ...
-        }
+        // ...
+        mpClientInterface->setVoiceVolume(voiceVolume, delayMs);
+        // ...
     }
     return NO_ERROR;
 }
@@ -261,28 +263,30 @@ int AudioPolicyService::setStreamVolume(audio_stream_type_t stream,float volume,
 status_t AudioPolicyService::AudioCommandThread::volumeCommand(audio_stream_type_t stream,
     float volume,audio_io_handle_t output,int delayMs)
 {
-    ...(封装了一下data跟command)
+    // ...(封装了一下data跟command)
     return sendCommand(command, delayMs);
 }
 
-status_t AudioPolicyService::AudioCommandThread::sendCommand(sp<AudioCommand>& command, int delayMs) {...(一些命令队列的操作)}
+status_t AudioPolicyService::AudioCommandThread::sendCommand(sp<AudioCommand>& command, int delayMs) {
+    // ...(一些命令队列的操作)
+}
 
 // 处理函数
 bool AudioPolicyService::AudioCommandThread::threadLoop()
 {
-    ...
+    // ...
     while (!exitPending())
     {
-        ...
+        // ...
         switch (command->mCommand) {
-        ...
+        // ...
         case SET_VOLUME: 
-            ...(Lock)
+            // ...(Lock)
             VolumeData *data = (VolumeData *)command->mParam.get();
             command->mStatus = AudioSystem::setStreamVolume(data->mStream,
                 data->mVolume,data->mIO);
         break;
-        ...
+        // ...
     }
 }
 ```
@@ -293,7 +297,7 @@ AudioSystem又转到AudioFlinger
 status_t AudioSystem::setStreamVolume(audio_stream_type_t stream, float value,
     audio_io_handle_t output)
 {
-    ...(权限参数检查)
+    // ...(权限参数检查)
     af->setStreamVolume(stream, value, output);
     return NO_ERROR;
 }
@@ -303,11 +307,11 @@ AudioFlinger会去获取output对应的PlaybackThread并设置PlaybackThread的�
 status_t AudioFlinger::setStreamVolume(audio_stream_type_t stream, float value,
         audio_io_handle_t output)
 {
-    ...(权限检查)
-    ...(流类型检查)
+    // ...(权限检查)
+    // ...(流类型检查)
 
     AutoMutex lock(mLock);
-    ...(获取对应设备的PlaybackTread)
+    // ...(获取对应设备的PlaybackTread)
 
     // ???
     mStreamTypes[stream].volume = value;
@@ -339,11 +343,11 @@ void AudioFlinger::PlaybackThread::setStreamVolume(audio_stream_type_t stream, f
 //--->frameworks/av/services/audioflinger/Threads.cpp
 AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTracks_l(
     Vector< sp<Track> > *tracksToRemove) {
-    ...
+    // ...
     // FastTrack
     track->mCachedVolume = masterVolume * mStreamTypes[track->streamType()].volume;
 
-    ...
+    // ...
     // NormalTrack
     // 这里涉及到了左右声道的音量的计算
     // compute volume for this track
@@ -351,12 +355,12 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTrac
     float vlf, vrf, vaf;   // in [0.0, 1.0] float format
     float typeVolume = mStreamTypes[track->streamType()].volume;
     float v = masterVolume * typeVolume;
-    ...
+    // ...
     //计算完设置混音器的参数
     mAudioMixer->setParameter(name, param, AudioMixer::VOLUME0, &vlf);
     mAudioMixer->setParameter(name, param, AudioMixer::VOLUME1, &vrf);
     mAudioMixer->setParameter(name, param, AudioMixer::AUXLEVEL, &vaf);
-    ...
+    // ...
 }
 
 // 最后会调用到mAudioMixer的setVolumeRampVariables
@@ -373,7 +377,7 @@ void AudioFlinger::DirectOutputThread::processVolume_l(Track *track, bool lastTr
     ...
     float typeVolume = mStreamTypes[track->streamType()].volume;
     float v = mMasterVolume * typeVolume;
-    ...(一系列的设置)
+    // ...(一系列的设置)
     if (mOutput->stream->set_volume) {
         mOutput->stream->set_volume(mOutput->stream, left, right);
     }

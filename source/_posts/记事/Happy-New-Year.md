@@ -1,7 +1,7 @@
 ---
 title: Happy New Year
 date: 2019-01-22 11:54:59
-categories: 生活
+categories: 记事
 tag:
     - 不孝牙
 ---

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Android的一些基础总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-09T09:57:15.781Z">
+<meta property="og:updated_time" content="2019-07-10T05:34:26.176Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android总结">
 <meta name="twitter:description" content="Android的一些基础总结">
@@ -385,41 +385,37 @@
 
       
         <p>Android的一些基础总结<br><a id="more"></a></p>
-<p>Activity<br>Activity的生命周期</p>
-<p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
+<h2 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h2><h3 id="Activity的生命周期"><a href="#Activity的生命周期" class="headerlink" title="Activity的生命周期"></a>Activity的生命周期</h3><p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>———— onRestart ———–</p>
 <p>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
 <p>横竖屏切换<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume</p>
 <p>android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>    public void onConfigurationChanged(Configuration newConfig) {<br>        super.onConfigurationChanged(newConfig);<br>    }<br>activity优先级<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onConfigurationChanged(newConfig);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>activity优先级<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
 <p>启动模式<br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
 <p>singleTop 防重复点击，通知栏</p>
-<p>1<br>2<br>3<br>4<br>@Override<br>protected void onNewIntent(Intent intent) {<br>    super.onNewIntent(intent);<br>}<br>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onNewIntent</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onNewIntent(intent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
 <p>特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。</p>
 <p>Activity flags<br>FLAG_ACTIVITY_NEW_TASK<br>FLAG_ACTIVITY_SINGLE_TOP<br>FLAG_ACTIVITY_CLEAR_TOP</p>
-<p>BroadcastReceiver<br>模型：观察者模式</p>
-<p>订阅者<br>发布者<br>消息中心 AM<br>注册：</p>
-<p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏<br>广播种类</p>
-<p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)<br>ContentProvider<br>数据交互与共享</p>
-<p>ContentProvider的使用</p>
-<p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor</p>
-<p>ContentUris<br>UriMatcher<br>ContentObserver</p>
+<h2 id="BroadcastReceiver"><a href="#BroadcastReceiver" class="headerlink" title="BroadcastReceiver"></a>BroadcastReceiver</h2><p>模型：观察者模式<br>订阅者 - 发布者 - 消息中心 AM</p>
+<p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏</p>
+<h3 id="广播种类"><a href="#广播种类" class="headerlink" title="广播种类"></a>广播种类</h3><p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)</p>
+<h2 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h2><p>数据交互与共享</p>
+<h3 id="ContentProvider的使用"><a href="#ContentProvider的使用" class="headerlink" title="ContentProvider的使用"></a>ContentProvider的使用</h3><p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor<br>ContentUris<br>UriMatcher<br>ContentObserver</p>
 <p>进程内通信<br>进程间通信</p>
-<p>1<br>2<br>3</p>
-<p><provider android:name="MyProvider" android:authorities="cn.scu.myprovider"><br>优点:安全、访问简单&amp;高效，(数据源的adapter)</provider></p>
-<p>消息机制<br>Message – MessageQueue – Handler –Looper</p>
-<p>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
-<p>流程</p>
-<p>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage<br>事件分发机制<br>分发MotionEvent<br>流程</p>
-<p>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super<br>默认情况</p>
-<p>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
-<p>View消费事件的条件</p>
-<p>enable<br>onTouch 返回true<br>onTouch 高于onClick<br>事件的连锁机制<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
-<p>异步<br>AsyncTask其实是个线程池</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">provider</span> <span class="attr">android:name</span>=<span class="string">"MyProvider"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:authorities</span>=<span class="string">"cn.scu.myprovider"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>优点:安全、访问简单&amp;高效，(数据源的adapter)</p>
+<h2 id="消息机制"><a href="#消息机制" class="headerlink" title="消息机制"></a>消息机制</h2><p>Message – MessageQueue – Handler –Looper<br>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
+<p>流程<br>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage</p>
+<h2 id="事件分发机制"><a href="#事件分发机制" class="headerlink" title="事件分发机制"></a>事件分发机制</h2><p>分发MotionEvent</p>
+<p>流程<br>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super</p>
+<p>默认情况<br>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
+<p>View消费事件的条件<br>enable<br>onTouch 返回true<br>onTouch 高于onClick</p>
+<p>事件的连锁机制<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
+<h2 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h2><p>AsyncTask其实是个线程池</p>
 <p>实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler</p>
-<p>核心方法</p>
-<p>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
-<p>note:使用不当会引起不良后果</p>
-<p>生命周期 在onDestroy内调用cancel<br>内存泄漏<br>结果丢失</p>
+<h3 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h3><p>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
+<p>note:使用不当会引起不良后果<br>例如在生命周期onDestroy内调用cancel 会造成内存泄漏、结果丢失</p>
 
       
     </div>
@@ -512,8 +508,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -591,6 +596,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity"><span class="nav-number">1.</span> <span class="nav-text">Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity的生命周期"><span class="nav-number">1.1.</span> <span class="nav-text">Activity的生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BroadcastReceiver"><span class="nav-number">2.</span> <span class="nav-text">BroadcastReceiver</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#广播种类"><span class="nav-number">2.1.</span> <span class="nav-text">广播种类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentProvider"><span class="nav-number">3.</span> <span class="nav-text">ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentProvider的使用"><span class="nav-number">3.1.</span> <span class="nav-text">ContentProvider的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息机制"><span class="nav-number">4.</span> <span class="nav-text">消息机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件分发机制"><span class="nav-number">5.</span> <span class="nav-text">事件分发机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步"><span class="nav-number">6.</span> <span class="nav-text">异步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心方法"><span class="nav-number">6.1.</span> <span class="nav-text">核心方法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

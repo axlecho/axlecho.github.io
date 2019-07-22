@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[习惯]]></title>
+    <url>%2F2019%2F07%2F22%2F%E7%9B%AE%E6%A0%87%2F%E4%B9%A0%E6%83%AF%2F</url>
+    <content type="text"><![CDATA[一次只做一件事]]></content>
+      <categories>
+        <category>目标</category>
+      </categories>
+      <tags>
+        <tag>目标</tag>
+        <tag>方法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[明日方舟]]></title>
+    <url>%2F2019%2F07%2F14%2F%E6%B8%B8%E6%88%8F%2F%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F%2F</url>
+    <content type="text"><![CDATA[王者荣耀花费精力太大，不得不戒了，没游戏玩总觉得有点无聊 逛TAPTAP的时候看到热版第一的游戏，塔防 + 养成，可以啊，这不就是我理想中的游戏吗 其实第一次接触舟游还在二测的时候，在还是训练关时候，看到贴图有些廉价，连主界面都没进去就卸载了 当时是晚上下的，觉得主界面挺有科技感的，关卡也挺有趣，一玩就玩到早上，不过跟植物大战僵尸一样，没几天主线就通关了问题就是体力没多少，一天打没半小时就没事干了，就只是逛论坛跟别人嘴，不过也没多大意思 不过游戏本身包括界面，立绘，可玩性都还可以，在各个平台下载量热度都很高 一开始抽了3个6星，后面又出了两重复，果然非洲人 黑心老板上线，派些手下做这做那的，没事就割割韭菜 花了600合成玉买的简历，简历都是用包包的。。。 怎么又是你！！ 没事干就只能刷钱刷材料，跟阴阳师一个德行 玩到后面没啥可玩的，就无聊的刷起小号，有3个6星开局，羊，星熊，小火龙小火龙那个号玩了还有一段时间，不过两个号切换实在麻烦，就删掉了。 后来又在BiliBili服搞了新号，简直就是非洲偷渡过来的，一开始只有系统送的5星，到现在两6星都是保底出的。当然这么非的号]]></content>
+      <categories>
+        <category>游戏</category>
+      </categories>
+      <tags>
+        <tag>塔防</tag>
+        <tag>养成</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Android总结]]></title>
     <url>%2F2019%2F07%2F09%2FAndroid%2FAndroid%E6%80%BB%E7%BB%93%2F</url>
     <content type="text"><![CDATA[Android的一些基础总结 ActivityActivity的生命周期onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy↑ || ↓———— onRestart ———– 第一次启动 onCreate -&gt; onStart -&gt; onResume打开新Activity onPause -&gt; onStop回到原来的Activity onRestart -&gt; onStart -&gt; onResume按back返回 onPause -&gt; onStop -&gt; onDestory按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResumefinish onDestory 横竖屏切换onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceStateonPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume android:configChanges = “orientation| screenSize” 避免横竖屏切换销毁activity 1234@Override public void onConfigurationChanged(Configuration newConfig) &#123; super.onConfigurationChanged(newConfig); &#125; activity优先级前台activity Resumed（活动状态）可见activity Paused（暂停状态）后台activity Stopped（停止状态） 启动模式标准模式（standard）栈顶复用模式（singleTop）栈内复用模式（singleTask）单例模式（singleInstance） singleTop 防重复点击，通知栏 1234@Overrideprotected void onNewIntent(Intent intent) &#123; super.onNewIntent(intent);&#125; singleTask 单例模式的activity 主界面singleInstance 单例模式的activity加强版 桌面启动，呼叫来电 特殊情况：调用SingleTask模式的后台任务栈中的Activity，会把整个栈的Actvity压入当前栈的栈顶。singleTask会具有clearTop特性，把之上的栈内Activity清除。 Activity flagsFLAG_ACTIVITY_NEW_TASKFLAG_ACTIVITY_SINGLE_TOPFLAG_ACTIVITY_CLEAR_TOP BroadcastReceiver模型：观察者模式订阅者 - 发布者 - 消息中心 AM 静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统动态注册 使用Context的registerReceiver动态广播 注册必须注销，不然会有内存泄漏 广播种类普通广播系统广播有序广播应用内广播(exported = false，permission，setPackage) ContentProvider数据交互与共享 ContentProvider的使用统一资源识别符 schema:authorith:path:idmime /表数据增、删、查、改ContentResolver - cursorContentUrisUriMatcherContentObserver 进程内通信进程间通信 123&lt;provider android:name="MyProvider" android:authorities="cn.scu.myprovider"/&gt; 优点:安全、访问简单&amp;高效，(数据源的adapter) 消息机制Message – MessageQueue – Handler –Looperhandler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage 流程looper – Looper.prepare – Looper.loophandler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage 事件分发机制分发MotionEvent 流程驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; ViewdispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super 默认情况dispatchTouchEvent:activity -&gt; viewgroup -&gt; viewonTouchEvent:view -&gt; viewgroup -&gt; activityviewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view调用onTouch,activity不再处理事件 View消费事件的条件enableonTouch 返回trueonTouch 高于onClick 事件的连锁机制ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到onInterceptTouchEvent 异步AsyncTask其实是个线程池 实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler 核心方法onPreExecute() // 主线程doInBackgroud() // 子线程onProgressUpdate(Progress…) // 主线程onPostExecute(Result) // 主线程onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()cancel 设置cancel标记位note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。 note:使用不当会引起不良后果例如在生命周期onDestroy内调用cancel 会造成内存泄漏、结果丢失]]></content>
@@ -500,8 +524,8 @@
         <category>Android</category>
       </categories>
       <tags>
-        <tag>JtsViewer</tag>
         <tag>android</tag>
+        <tag>JtsViewer</tag>
       </tags>
   </entry>
   <entry>

@@ -291,6 +291,136 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/10/15/Android/游戏Mod修改/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞翔的鸭崽">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/15/Android/游戏Mod修改/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-15T13:43:06+08:00">
+                2019-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="游戏Mod制作"><a href="#游戏Mod制作" class="headerlink" title="游戏Mod制作"></a>游戏Mod制作</h1><p>游戏Mod就是在原有的游戏上修改部分功能的修改版游戏，一般体现为修改攻击力，HP等<br>现在的游戏大部分基于Unity 3D的引擎开发，其逻辑实现全都集中在<code>libil2cpp.so</code>上，因此只需修改该库便可实现效果</p>
+<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><p>那让我们开始吧</p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>这里我们选<a href="https://ak.hypergryph.com" target="_blank" rel="noopener">明日方舟</a>这款游戏，因为弱联网的缘故，反破解手段用得比较少（是根本没有）<br>下载目标apk并解压出<code>libil2cpp.so</code>及<code>global-metadata.dat</code><br><img src="/images/明日方舟修改_目标.png" alt="明日方舟修改_目标"></p>
+<h3 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h3><p><strong>Il2CppDumper</strong><br>用于反编译<code>global-metadata.dat</code>的符号表及生成<code>libil2cpp.so</code>的符号加载脚本<br>此工具为开源工具<a href="https://github.com/Perfare/Il2CppDumper" target="_blank" rel="noopener">github</a></p>
+<p><strong>IDA</strong><br>用于反汇编<code>libil2cpp.so</code>，主要的修改工作用于此</p>
+<p><strong>jarsigner</strong><br>用于重新签名apk，安装JDK便可得到该工具</p>
+<p><img src="/images/明日方舟修改_工具.png" alt="明日方舟修改_工具"></p>
+<h2 id="反编译"><a href="#反编译" class="headerlink" title="反编译"></a>反编译</h2><p>打开<strong>Il2CppDumper</strong>，第一次选<code>libil2cpp.so</code>，<br><img src="/images/明日方舟修改_反编译_Il2CppDump_1.png" alt="明日方舟修改_反编译_il2CppDump_1"></p>
+<p>再选<code>global-metadata.dat</code><br><img src="/images/明日方舟修改_反编译_il2CppDump_2.png" alt="明日方舟修改_反编译_il2CppDump_2"></p>
+<p>模式我们选<code>Auto(Plus)</code><br><img src="/images/明日方舟修改_反编译_il2CppDump_3.png" alt="明日方舟修改_反编译_il2CppDump_3"></p>
+<p>（结果目标加壳了，算了算了）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/07/22/目标/习惯/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -385,6 +515,8 @@
         
           
             <p>一次只做一件事</p>
+<p>不要在房间里抽烟</p>
+<p>多喝水</p>
 
           
         
@@ -531,15 +663,15 @@
 <p>其实第一次接触舟游还在二测的时候，在还是训练关时候，看到贴图有些廉价，连主界面都没进去就卸载了</p>
 <p>当时是晚上下的，觉得主界面挺有科技感的，关卡也挺有趣，一玩就玩到早上，不过跟植物大战僵尸一样，没几天主线就通关了<br>问题就是体力没多少，一天打没半小时就没事干了，就只是逛论坛跟别人嘴，不过也没多大意思</p>
 <p>不过游戏本身包括界面，立绘，可玩性都还可以，在各个平台下载量热度都很高</p>
-<p><img src="/明日方舟/主界面.png" alt="主界面"></p>
-<p>一开始抽了3个6星，后面又出了两重复，果然非洲人<br><img src="/明日方舟/手下.png" alt="手下"></p>
-<p>黑心老板上线，派些手下做这做那的，没事就割割韭菜<br><img src="/明日方舟/基地.png" alt="基地"><br><img src="/明日方舟/基地实景.png" alt="基地"></p>
-<p>花了600合成玉买的简历，简历都是用包包的。。。<br><img src="/明日方舟/招聘手下.png" alt="招聘手下"></p>
-<p>怎么又是你！！<br><img src="/明日方舟/新来的小伙子.png" alt="新来的小伙子"></p>
-<p>没事干就只能刷钱刷材料，跟阴阳师一个德行<br><img src="/明日方舟/捞钱.png" alt="捞钱"></p>
+<p><img src="/images/明日方舟/主界面.png" alt="主界面"></p>
+<p>一开始抽了3个6星，后面又出了两重复，果然非洲人<br><img src="/images/明日方舟/手下.png" alt="手下"></p>
+<p>黑心老板上线，派些手下做这做那的，没事就割割韭菜<br><img src="/images/明日方舟/基地.png" alt="基地"><br>![基地]/images(/明日方舟/基地实景.png)</p>
+<p>花了600合成玉买的简历，简历都是用包包的。。。<br><img src="/images/明日方舟/招聘手下.png" alt="招聘手下"></p>
+<p>怎么又是你！！<br><img src="/images/明日方舟/新来的小伙子.png" alt="新来的小伙子"></p>
+<p>没事干就只能刷钱刷材料，跟阴阳师一个德行<br><img src="/images/明日方舟/捞钱.png" alt="捞钱"></p>
 <hr>
 <p>玩到后面没啥可玩的，就无聊的刷起小号，有3个6星开局，羊，星熊，小火龙<br>小火龙那个号玩了还有一段时间，不过两个号切换实在麻烦，就删掉了。</p>
-<p>后来又在BiliBili服搞了新号，简直就是非洲偷渡过来的，一开始只有系统送的5星，到现在两6星都是保底出的。<br>当然这么非的号</p>
+<p>后来又在BiliBili服搞了新号，简直就是非洲偷渡过来的，一开始只有系统送的5星，到现在两6星都是保底出的。<br>当然这么非的号，只能靠科技来拯救。</p>
 
           
         
@@ -1566,148 +1698,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/02/11/记事/又一年/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Axlecho">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="飞翔的鸭崽">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/11/记事/又一年/" itemprop="url">又一年</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T11:44:59+08:00">
-                2019-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/记事/" itemprop="url" rel="index">
-                    <span itemprop="name">记事</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>生日悄悄的过去了，最惦记我的还是招行，中国联通 - -。。<br>无太所谓了，阴阳师弃掉，JtsViewer捡起来，生意要学着做，已经没有退路了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1760,7 +1750,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

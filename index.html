@@ -361,20 +361,14 @@
 
       
         
-          
-            <h1 id="游戏Mod制作"><a href="#游戏Mod制作" class="headerlink" title="游戏Mod制作"></a>游戏Mod制作</h1><p>游戏Mod就是在原有的游戏上修改部分功能的修改版游戏，一般体现为修改攻击力，HP等<br>现在的游戏大部分基于Unity 3D的引擎开发，其逻辑实现全都集中在<code>libil2cpp.so</code>上，因此只需修改该库便可实现效果</p>
-<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><p>那让我们开始吧</p>
-<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>这里我们选<a href="https://ak.hypergryph.com" target="_blank" rel="noopener">明日方舟</a>这款游戏，因为弱联网的缘故，反破解手段用得比较少（是根本没有）<br>下载目标apk并解压出<code>libil2cpp.so</code>及<code>global-metadata.dat</code><br><img src="/images/明日方舟修改_目标.png" alt="明日方舟修改_目标"></p>
-<h3 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h3><p><strong>Il2CppDumper</strong><br>用于反编译<code>global-metadata.dat</code>的符号表及生成<code>libil2cpp.so</code>的符号加载脚本<br>此工具为开源工具<a href="https://github.com/Perfare/Il2CppDumper" target="_blank" rel="noopener">github</a></p>
-<p><strong>IDA</strong><br>用于反汇编<code>libil2cpp.so</code>，主要的修改工作用于此</p>
-<p><strong>jarsigner</strong><br>用于重新签名apk，安装JDK便可得到该工具</p>
-<p><img src="/images/明日方舟修改_工具.png" alt="明日方舟修改_工具"></p>
-<h2 id="反编译"><a href="#反编译" class="headerlink" title="反编译"></a>反编译</h2><p>打开<strong>Il2CppDumper</strong>，第一次选<code>libil2cpp.so</code>，<br><img src="/images/明日方舟修改_反编译_Il2CppDump_1.png" alt="明日方舟修改_反编译_il2CppDump_1"></p>
-<p>再选<code>global-metadata.dat</code><br><img src="/images/明日方舟修改_反编译_il2CppDump_2.png" alt="明日方舟修改_反编译_il2CppDump_2"></p>
-<p>模式我们选<code>Auto(Plus)</code><br><img src="/images/明日方舟修改_反编译_il2CppDump_3.png" alt="明日方舟修改_反编译_il2CppDump_3"></p>
-<p>（结果目标加壳了，算了算了）</p>
-
-          
+          <h1 id="游戏Mod制作"><a href="#游戏Mod制作" class="headerlink" title="游戏Mod制作"></a>游戏Mod制作</h1><p>本想写个明日方舟Mod教程，结果目标加壳了，算了算了</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/10/15/Android/游戏Mod修改/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -665,7 +659,7 @@
 <p>不过游戏本身包括界面，立绘，可玩性都还可以，在各个平台下载量热度都很高</p>
 <p><img src="/images/明日方舟/主界面.png" alt="主界面"></p>
 <p>一开始抽了3个6星，后面又出了两重复，果然非洲人<br><img src="/images/明日方舟/手下.png" alt="手下"></p>
-<p>黑心老板上线，派些手下做这做那的，没事就割割韭菜<br><img src="/images/明日方舟/基地.png" alt="基地"><br>![基地]/images(/明日方舟/基地实景.png)</p>
+<p>黑心老板上线，派些手下做这做那的，没事就割割韭菜<br><img src="/images/明日方舟/基地.png" alt="基地"><br><img src="/images(/明日方舟/基地实景.png" alt="基地"></p>
 <p>花了600合成玉买的简历，简历都是用包包的。。。<br><img src="/images/明日方舟/招聘手下.png" alt="招聘手下"></p>
 <p>怎么又是你！！<br><img src="/images/明日方舟/新来的小伙子.png" alt="新来的小伙子"></p>
 <p>没事干就只能刷钱刷材料，跟阴阳师一个德行<br><img src="/images/明日方舟/捞钱.png" alt="捞钱"></p>

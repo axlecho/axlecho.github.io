@@ -691,6 +691,18 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[android diplay的学习]]></title>
+    <url>%2F2019%2F01%2F12%2FAndroid_Graphics%2Fandroid-diplay%E7%9A%84%E5%AD%A6%E4%B9%A0%2F</url>
+    <content type="text"><![CDATA[android display系统还是很复杂的， 上层View系统 绘制（MainThread ThreadedRender） 叠合（SurfaceFlinger） 显示（hw层）]]></content>
+      <categories>
+        <category>Android_Graphics</category>
+      </categories>
+      <tags>
+        <tag>framework</tag>
+        <tag>graphics</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[google tracing的研究]]></title>
     <url>%2F2019%2F01%2F12%2FAndroid%2Ftracing%E7%9A%84%E7%A0%94%E7%A9%B6%2F</url>
     <content type="text"><![CDATA[最近使用systrace做性能测试，在systrace上统计红绿灯，因为数到眼残，所以做了个自动数帧的工具。主要做法是修改chrome tracing的源码 话说tracing这么好用，不出个cmdline真不合理。 tracing on github 幸运的看到了一段代码12/*./tracing/tracing/extras/android/android_auditor.html*/pushFramesAndJudgeJank_: function() 一看就知道是在判断帧的状态然后就加了统计代码12345678910111213141516171819var redFrame = 0;var yellowFrame = 0;var greenFrame = 0;app.process.frames.forEach(function(frame) &#123; if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS * 2) &#123; // 红帧 badFramesObserved += 2; frame.perfClass = FRAME_PERF_CLASS.TERRIBLE redFrame += 1; &#125; else if (frame.totalDuration &gt; EXPECTED_FRAME_TIME_MS || frameMissedDeadline(frame)) &#123; // 黄帧 badFramesObserved++; frame.perfClass = FRAME_PERF_CLASS.BAD; yellowFrame += 1; &#125; else &#123; // 绿帧 frame.perfClass = FRAME_PERF_CLASS.GOOD; greenFrame += 1; &#125;&#125;); 最后用log输出1console.log("%d %d %d",redFrame,yellowFrame,greenFrame); 后面又要搞自动化，就是吧js里面的东西打出来有四个思路 用nodejs运行，将结果写文件 html5写文件 重定向log 建本地服务器，用post提交数据 nodejs的很简单，下了node-webkit的源码，然后建了个helloword的工程，发现打不开，突然就想到tracing这个东西跟chrome有很强关系，于是用火狐打开trace2html生成的html发现打不开，应该就是只有chrome能解析systrace的数据 html5的没怎么尝试，因为写文件会写到chrome的安装目录上的，无法写到html文件所在的目录（安全机制，这个限制是必须的），即使写出来用法也很奇怪 建本地服务器，这个应该是可以的，感觉就复杂了点，而且流程太多也不好，容易出bug 重定向一开始以为没希望，到google查了一下还真有这个用法用下面的命令可以将许多log包括控制台的log输出到错误输出流上1google-chrome --enable-logging=stderr 很奇葩的是错误输出流的重定向好像有点问题象如下的代码就输出不了，以后还得研究下，1google-chrome --enable-logging=stderr $1 2&gt;&amp;1 | grep &quot;\[Frame\]&quot; &gt; log 后来用nodejs移植了tracing,主要用了vm.runInThisContext,来运行tracing的各个模块,nodejs和javascript有好多不兼容多东西,坑死了. 改代码时用到的正则，匹配html中的js代码123sed -n '/&lt;script */,/&lt;\/script&gt;/p' base/base.js sed -e 'a#"progressMeter.update"#"&#125;"#g' \ -e 'i#"progressMeter.update"#"if(tr.silent == false) &#123;"#g' \ -e 's#"progressMeter.update"#"console.log"#g' tracing/importer/import.js trace抓下来的数据是压缩过的，用下面命令可解压1zlib-flate -uncompress &lt; trace &gt;out 发现了一个极好多正则表达式1echo &quot;asdfkjasldjkf\&quot;shiner\&quot;df&quot; | sed &apos;s/\(.*\)&quot;\(.*\)&quot;\(.*\)/\2/g&apos; 开始port到windows上了,用的还是nodejs因为用到的同步执行命令要求node最新版,所以用下面的命令来安装最新的工具1curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash - 自动化打包的功能，先了解先 Node.js - Zip/Unzip a folder windows的cmd太难用了]]></content>

@@ -291,6 +291,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/19/Android_Audio/蓝牙设备播放流程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Axlecho">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞翔的鸭崽">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/19/Android_Audio/蓝牙设备播放流程/" itemprop="url">蓝牙设备播放流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-19T22:05:48+08:00">
+                2019-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-Audio/" itemprop="url" rel="index">
+                    <span itemprop="name">Android_Audio</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为蓝牙通路与其他设备不同（多了一个蓝牙设备），因此播放的流程也与其他设备略有不同。</p>
+<h2 id="蓝牙设备的连接"><a href="#蓝牙设备的连接" class="headerlink" title="蓝牙设备的连接"></a>蓝牙设备的连接</h2><p>从setDeviceConnectionState开始,AudioPolicyManager先注册Device后，再去打开设备对应的output，如果是duplicating类型的话，还要建一个DuplicateOutput，关联该output与<strong>mPrimaryOutput</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audiopolicy/managerdefault/AudioPolicyManager.cpp</span></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::setDeviceConnectionState(<span class="keyword">audio_devices_t</span> device,</span><br><span class="line">                                                      <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                      <span class="keyword">const</span> <span class="keyword">char</span> *device_address,</span><br><span class="line">                                                      <span class="keyword">const</span> <span class="keyword">char</span> *device_name)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> setDeviceConnectionStateInt(device, state, device_address, device_name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::setDeviceConnectionStateInt(<span class="keyword">audio_devices_t</span> device,</span><br><span class="line">                                                     <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                     <span class="keyword">const</span> <span class="keyword">char</span> *device_address,</span><br><span class="line">                                                     <span class="keyword">const</span> <span class="keyword">char</span> *device_name)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    sp&lt;DeviceDescriptor&gt; devDesc = mHwModules.getDeviceDescriptor(device, device_address, device_name);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// handle output devices</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    SortedVector &lt;<span class="keyword">audio_io_handle_t</span>&gt; outputs;</span><br><span class="line">    <span class="keyword">ssize_t</span> index = mAvailableOutputDevices.indexOf(devDesc);</span><br><span class="line">    mPreviousOutputs = mOutputs;</span><br><span class="line">    <span class="comment">// ...(注册设备)</span></span><br><span class="line">    <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        sp&lt;HwModule&gt; <span class="keyword">module</span> = mHwModules.getModuleForDevice(device);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">module</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            mAvailableOutputDevices.remove(devDesc);</span><br><span class="line">            <span class="keyword">return</span> INVALID_OPERATION;</span><br><span class="line">        &#125;</span><br><span class="line">        mAvailableOutputDevices[index]-&gt;attach(<span class="keyword">module</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> NO_MEMORY;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (checkOutputsForDevice(devDesc, state, outputs, devDesc-&gt;mAddress) != NO_ERROR) &#123;</span><br><span class="line">        mAvailableOutputDevices.remove(devDesc);</span><br><span class="line">        <span class="keyword">return</span> INVALID_OPERATION;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">status_t</span> AudioPolicyManager::checkOutputsForDevice(<span class="keyword">const</span> sp&lt;DeviceDescriptor&gt; devDesc,</span><br><span class="line">                                                   <span class="keyword">audio_policy_dev_state_t</span> state,</span><br><span class="line">                                                   SortedVector&lt;<span class="keyword">audio_io_handle_t</span>&gt;&amp; outputs,</span><br><span class="line">                                                   <span class="keyword">const</span> String8 address)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 打开设备所对应的output</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">ssize_t</span> profile_index = <span class="number">0</span>; profile_index &lt; (<span class="keyword">ssize_t</span>)profiles.size(); profile_index++) &#123;</span><br><span class="line">        sp&lt;IOProfile&gt; profile = profiles[profile_index];</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">status_t</span> status = mpClientInterface-&gt;openOutput(profile-&gt;getModuleHandle(),</span><br><span class="line">                                                        &amp;output,</span><br><span class="line">                                                        &amp;config,</span><br><span class="line">                                                        &amp;desc-&gt;mDevice,</span><br><span class="line">                                                        address,</span><br><span class="line">                                                        &amp;desc-&gt;mLatency,</span><br><span class="line">                                                        desc-&gt;mFlags);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 后续处理</span></span><br><span class="line">    <span class="keyword">if</span> (output != AUDIO_IO_HANDLE_NONE) &#123;</span><br><span class="line">        addOutput(output, desc);</span><br><span class="line">        ... </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (((desc-&gt;mFlags &amp; AUDIO_OUTPUT_FLAG_DIRECT) == <span class="number">0</span>) &amp;&amp;</span><br><span class="line">                        hasPrimaryOutput()) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="comment">// open a duplicating output thread for the new output and the primary output</span></span><br><span class="line">            duplicatedOutput =</span><br><span class="line">                    mpClientInterface-&gt;openDuplicateOutput(output,</span><br><span class="line">                                                           mPrimaryOutput-&gt;mIoHandle);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>openOutput的流程跟其他Output的流程是一样的，最终在AudioFlinger建立了对应Output的Thread。DuplicateOutput使用openDuplicateOutput来打开，最终也是在AudioFlinger建立一个DuplicatingThread。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audiopolicy/service/AudioPolicyClientImpl.cpp</span></span><br><span class="line"><span class="comment">// AudioPolicyService的转发</span></span><br><span class="line"><span class="keyword">audio_io_handle_t</span> AudioPolicyService::AudioPolicyClient::openDuplicateOutput(</span><br><span class="line">                                                                <span class="keyword">audio_io_handle_t</span> output1,</span><br><span class="line">                                                                <span class="keyword">audio_io_handle_t</span> output2)</span><br><span class="line">&#123;</span><br><span class="line">    sp&lt;IAudioFlinger&gt; af = AudioSystem::get_audio_flinger();</span><br><span class="line">    <span class="keyword">if</span> (af == <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"%s: could not get AudioFlinger"</span>, __func__);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> af-&gt;openDuplicateOutput(output1, output2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/AudioFlinger.cpp</span></span><br><span class="line"><span class="keyword">audio_io_handle_t</span> AudioFlinger::openDuplicateOutput(<span class="keyword">audio_io_handle_t</span> output1,</span><br><span class="line">        <span class="keyword">audio_io_handle_t</span> output2)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 这里两个output对应的thread都是MixerThread，意味着DuplicatingThread对应的线程是MixerThread？？</span></span><br><span class="line">    Mutex::Autolock _l(mLock);</span><br><span class="line">    MixerThread *thread1 = checkMixerThread_l(output1);</span><br><span class="line">    MixerThread *thread2 = checkMixerThread_l(output2);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">audio_io_handle_t</span> id = nextUniqueId();</span><br><span class="line">    DuplicatingThread *thread = <span class="keyword">new</span> DuplicatingThread(<span class="keyword">this</span>, thread1, id, mSystemReady);</span><br><span class="line">    thread-&gt;addOutputTrack(thread2);</span><br><span class="line">    mPlaybackThreads.add(id, thread);</span><br><span class="line">    thread-&gt;ioConfigChanged(AUDIO_OUTPUT_OPENED);</span><br><span class="line">    <span class="keyword">return</span> id;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/Threads.cpp    </span></span><br><span class="line">AudioFlinger::DuplicatingThread::DuplicatingThread(<span class="keyword">const</span> sp&lt;AudioFlinger&gt;&amp; audioFlinger,</span><br><span class="line">        AudioFlinger::MixerThread* mainThread, <span class="keyword">audio_io_handle_t</span> id, <span class="keyword">bool</span> systemReady)</span><br><span class="line">    :   MixerThread(audioFlinger, mainThread-&gt;getOutput(), id, mainThread-&gt;outDevice(),</span><br><span class="line">                    systemReady, DUPLICATING),</span><br><span class="line">        mWaitTimeMs(UINT_MAX)</span><br><span class="line">&#123;</span><br><span class="line">    addOutputTrack(mainThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DuplicatingThread的addOutputTrack会创建对应thread的track(也就是生产者啦)<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//---&gt;frameworks/av/services/audioflinger/Threads.cpp    </span></span><br><span class="line"><span class="keyword">void</span> AudioFlinger::DuplicatingThread::addOutputTrack(MixerThread *thread)</span><br><span class="line">&#123;</span><br><span class="line">    Mutex::Autolock _l(mLock);</span><br><span class="line">    <span class="comment">// The downstream MixerThread consumes thread-&gt;frameCount() amount of frames per mix pass.</span></span><br><span class="line">    <span class="comment">// Adjust for thread-&gt;sampleRate() to determine minimum buffer frame count.</span></span><br><span class="line">    <span class="comment">// Then triple buffer because Threads do not run synchronously and may not be clock locked.</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span> frameCount =</span><br><span class="line">            <span class="number">3</span> * sourceFramesNeeded(mSampleRate, thread-&gt;frameCount(), thread-&gt;sampleRate());</span><br><span class="line"></span><br><span class="line">    sp&lt;OutputTrack&gt; outputTrack = <span class="keyword">new</span> OutputTrack(thread,</span><br><span class="line">                                            <span class="keyword">this</span>,</span><br><span class="line">                                            mSampleRate,</span><br><span class="line">                                            mFormat,</span><br><span class="line">                                            mChannelMask,</span><br><span class="line">                                            frameCount,</span><br><span class="line">                                            IPCThreadState::self()-&gt;getCallingUid());</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="DuplicatingThread播放"><a href="#DuplicatingThread播放" class="headerlink" title="DuplicatingThread播放"></a>DuplicatingThread播放</h2><p>普通的连蓝牙播放（音乐，触屏音等）还不会用到DuplicatingThread，只有在需要双设备播放的情况下（如闹铃，来电等），才会用到DuplicatingThread。DuplicatingThread跟别的PlaybackThread一样，也有prepareTrack_l和mix，就是write的时候不大一样。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ssize_t</span> AudioFlinger::DuplicatingThread::threadLoop_write()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 对每个Tracks写数据 这里DuplicatingThread相当于生产者了</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; outputTracks.size(); i++) &#123;</span><br><span class="line">        outputTracks[i]-&gt;write(mSinkBuffer, writeFrames);</span><br><span class="line">    &#125;</span><br><span class="line">    mStandby = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">ssize_t</span>)mSinkBufferSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>OutputThrack与AudioTrack类似，也是用obtainBuffer与releaseBuffer来驱动PlaybackThread<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> AudioFlinger::PlaybackThread::OutputTrack::write(<span class="keyword">void</span>* data, <span class="keyword">uint32_t</span> frames)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">while</span> (waitTimeLeftMs) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">status_t</span> status = obtainBuffer(&amp;mOutBuffer, waitTimeLeftMs);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="built_in">memcpy</span>(mOutBuffer.raw, pInBuffer-&gt;raw, outFrames * mFrameSize);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        mClientProxy-&gt;releaseBuffer(&amp;buf);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DuplicatingThread作用很明了，就是把一个output的流dup到其他output，这个一开始看名字就看出来了，就是不知道关联的是那个output，驱动其他两个thread的方式。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/19/动漫/Charlotte/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1768,138 +1917,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://axlecho.com/2019/01/12/音乐/乐理的学习/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Axlecho">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="飞翔的鸭崽">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/12/音乐/乐理的学习/" itemprop="url">乐理的学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-12T20:07:13+08:00">
-                2019-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>平时都弹吉他都是看这六线谱弹，感觉就像练武掌握了招式，却没理解精髓，为了达到手里有剑，心中无剑的境界，还是要学习点五线谱啊。</p>
-<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>从最简单的开始<br>do re mi fa sol la si</p>
-<p>就是平时说的<br>1 2 3 4 5 6 7</p>
-<p>然后就是开始C大调的<br>C D E F G A B</p>
-<p>然后是五线谱<br>五线谱音阶<br>好啦今天就这样，改变要一步一步来</p>
-<h2 id="12平均率"><a href="#12平均率" class="headerlink" title="12平均率"></a>12平均率</h2><p>一个纯8度分为平均12份 原理请看：<a href="http://www.cnblogs.com/devymex/p/3387054.html" target="_blank" rel="noopener">写给理工科人看的乐理</a></p>
-<h2 id="音程"><a href="#音程" class="headerlink" title="音程"></a>音程</h2><p>纯8度每两个音之间都是有距离的，每个距离都有名称</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0.5   小二度</span><br><span class="line">1     大二度</span><br><span class="line">1.5   小三度</span><br><span class="line">2     大三度</span><br><span class="line">2.5   纯四度</span><br><span class="line">3     三全音</span><br><span class="line">3.5   纯五度</span><br><span class="line">4     小六度</span><br><span class="line">4.5   大六度</span><br><span class="line">5     小七度</span><br><span class="line">5.5   大七度</span><br><span class="line">6     纯八度</span><br></pre></td></tr></table></figure>
-<h2 id="五线谱"><a href="#五线谱" class="headerlink" title="五线谱"></a>五线谱</h2><p>五线谱就是五条线的谱子，从下往上叫作第一线、第二线、第三线、第四线、第五线，其间的空隙也有名称，从下往上叫作第一间，第二间，第三间，第四间（这命名起得太没创意了，应该叫什么世界线，生命线，叫个毛线都比这好记）</p>
-<p>算了今天就到这了，明天继续学习五线谱吧，感觉写这个都没时间练琴了</p>
-<h2 id="音调"><a href="#音调" class="headerlink" title="音调"></a>音调</h2><p>五线谱有4个音调，高音G2，中音C3，中音C4，低音F4（- -我也不知道G2 C3是什么东西）</p>
-<p>然后是<code>b</code>跟<code>#</code>,分别是降调号跟升调号</p>
-<p>还有一堆类似于节拍，休止符，附点符，小节什么的，以后再补上吧</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1952,7 +1969,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

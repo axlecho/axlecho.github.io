@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="飞翔的鸭崽">
 <meta property="og:description" content="Android的一些基础总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-09T06:25:51.200Z">
+<meta property="og:updated_time" content="2019-11-09T06:31:27.857Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android总结">
 <meta name="twitter:description" content="Android的一些基础总结">
@@ -386,10 +386,10 @@
       
         <p>Android的一些基础总结<br><a id="more"></a></p>
 <h2 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h2><h3 id="Activity的生命周期"><a href="#Activity的生命周期" class="headerlink" title="Activity的生命周期"></a>Activity的生命周期</h3><p>onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy<br>↑ |<br>| ↓<br>onRestart</p>
-<p>##各种场景流程##<br>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
-<p>##横竖屏切换##<br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume<br>避免横竖屏切换销毁activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">android:configChanges = <span class="string">"orientation\| screenSize"</span> </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onConfigurationChanged(newConfig);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>##activity优先级##<br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
-<p>##启动模式##<br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
+<p><strong>各种场景流程</strong><br>第一次启动 onCreate -&gt; onStart -&gt; onResume<br>打开新Activity onPause -&gt; onStop<br>回到原来的Activity onRestart -&gt; onStart -&gt; onResume<br>按back返回 onPause -&gt; onStop -&gt; onDestory<br>按home键 onPause -&gt; onStop -&gt; onRestart -&gt; onStart -&gt; onResume<br>finish onDestory</p>
+<p><strong>横竖屏切换</strong><br>onStop之前 onSaveInstanceState &amp;&amp; onStart之后 onRestoreInstanceState<br>onPause -&gt; onSaveInstanceState -&gt; onStop -&gt; onDestory -&gt; onCreate -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume<br>避免横竖屏切换销毁activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">android:configChanges = <span class="string">"orientation\| screenSize"</span> </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onConfigurationChanged(newConfig);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>activity优先级</strong><br>前台activity Resumed（活动状态）<br>可见activity Paused（暂停状态）<br>后台activity Stopped（停止状态）</p>
+<p><strong>启动模式</strong><br>标准模式（standard）<br>栈顶复用模式（singleTop）<br>栈内复用模式（singleTask）<br>单例模式（singleInstance）</p>
 <p>singleTop 防重复点击，通知栏</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onNewIntent</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onNewIntent(intent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>singleTask 单例模式的activity 主界面<br>singleInstance 单例模式的activity加强版 桌面启动，呼叫来电</p>
@@ -399,20 +399,20 @@
 <p>静态注册 在AndroidMainifest.mxl首次启动app，会实例化该广播并注册到系统<br>动态注册 使用Context的registerReceiver<br>动态广播 注册必须注销，不然会有内存泄漏</p>
 <h3 id="广播种类"><a href="#广播种类" class="headerlink" title="广播种类"></a>广播种类</h3><p>普通广播<br>系统广播<br>有序广播<br>应用内广播(exported = false，permission，setPackage)</p>
 <h2 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h2><p>数据交互与共享</p>
-<p>##ContentProvider的使用##</p>
+<p><strong>ContentProvider的使用</strong></p>
 <p>统一资源识别符 schema:authorith:path:id<br>mime /<br>表数据<br>增、删、查、改<br>ContentResolver - cursor<br>ContentUris<br>UriMatcher<br>ContentObserver</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">provider</span> <span class="attr">android:name</span>=<span class="string">"MyProvider"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:authorities</span>=<span class="string">"cn.scu.myprovider"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br></pre></td></tr></table></figure>
 <p>优点:安全、访问简单&amp;高效，(数据源的adapter)</p>
 <h2 id="消息机制"><a href="#消息机制" class="headerlink" title="消息机制"></a>消息机制</h2><p>Message – MessageQueue – Handler –Looper<br>handler.sendMessage –&gt; MessageQueue -&gt; Looper.loop(Message.next) –&gt; handler.dispatchMessage -&gt; handler.handleMessage</p>
-<p>##流程##<br>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage</p>
+<p><strong>流程</strong><br>looper – Looper.prepare – Looper.loop<br>handler – (post &amp;&amp; send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage</p>
 <h2 id="事件分发机制"><a href="#事件分发机制" class="headerlink" title="事件分发机制"></a>事件分发机制</h2><p>分发MotionEvent</p>
-<p>##流程##<br>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super</p>
-<p>##默认情况##<br>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
-<p>##View消费事件的条件##<br>enable<br>onTouch 返回true<br>onTouch 高于onClick</p>
-<p>##事件的连锁机制##<br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
+<p><strong>流程</strong><br>驱动捕获 -&gt; Activity（Window） -&gt; ViewGroup -&gt; View<br>dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super</p>
+<p><strong>默认情况</strong><br>dispatchTouchEvent:activity -&gt; viewgroup -&gt; view<br>onTouchEvent:view -&gt; viewgroup -&gt; activity<br>viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view<br>调用onTouch,activity不再处理事件</p>
+<p><strong>View消费事件的条件</strong><br>enable<br>onTouch 返回true<br>onTouch 高于onClick</p>
+<p><strong>事件的连锁机制</strong><br>ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到<br>onInterceptTouchEvent</p>
 <h2 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h2><p>AsyncTask其实是个线程池</p>
 <p>实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler</p>
-<p>##核心方法##<br>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
+<p><strong>核心方法</strong><br>onPreExecute() // 主线程<br>doInBackgroud() // 子线程<br>onProgressUpdate(Progress…) // 主线程<br>onPostExecute(Result) // 主线程<br>onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()<br>cancel 设置cancel标记位<br>note:InternalHandler是一个静态类，为了能够将执行环境切换到主线程，因此这个类必须在主线程中进行加载。所以变相要求AsyncTask的类必须在主线程中进行加载。</p>
 <p>note:使用不当会引起不良后果<br>例如在生命周期onDestroy内调用cancel 会造成内存泄漏、结果丢失</p>
 
       

@@ -18,34 +18,34 @@ Activity
 onCreate -> onStart -> onResume -> onPause -> onStop -> onDestroy
 ↑ |
 | ↓
-———— onRestart ———–
+onRestart
 
+**各种场景流程**
 第一次启动 onCreate -> onStart -> onResume
-打开新Activity onPause -> onStop
-回到原来的Activity onRestart -> onStart -> onResume
-按back返回 onPause -> onStop -> onDestory
+打开新Activity onPause(A) -> onCreate(B) -> onStart(B) -> onResume(B) -> onStop(A)
+按back返回原来的Activity onPause(B) onRestart(A)-> -> onStart(A) -> onResume(A) -> onStop(B) -> onDestory(B)
 按home键 onPause -> onStop -> onRestart -> onStart -> onResume
 finish onDestory
 
-横竖屏切换
+**横竖屏切换**
 onStop之前 onSaveInstanceState && onStart之后 onRestoreInstanceState
 onPause -> onSaveInstanceState -> onStop -> onDestory -> onCreate -> onStart -> onRestoreInstanceState -> onResume
-
-android:configChanges = "orientation\| screenSize" 避免横竖屏切换销毁activity
-
+避免横竖屏切换销毁activity
 ```java
+android:configChanges = "orientation\| screenSize" 
+
 @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+}
 ```
 
-activity优先级
+**activity优先级**
 前台activity Resumed（活动状态）
 可见activity Paused（暂停状态）
 后台activity Stopped（停止状态）
 
-启动模式
+**启动模式**
 标准模式（standard）
 栈顶复用模式（singleTop）
 栈内复用模式（singleTask）
@@ -90,7 +90,7 @@ ContentProvider
 ---
 数据交互与共享
 
-### ContentProvider的使用
+**ContentProvider的使用**
 
 统一资源识别符 schema:authorith:path:id
 mime /
@@ -100,9 +100,6 @@ ContentResolver - cursor
 ContentUris
 UriMatcher
 ContentObserver
-
-进程内通信
-进程间通信
 
 ```xml
 <provider android:name="MyProvider"
@@ -114,10 +111,9 @@ ContentObserver
 
 消息机制
 ---
+**流程**
 Message – MessageQueue – Handler –Looper
 handler.sendMessage –> MessageQueue -> Looper.loop(Message.next) –> handler.dispatchMessage -> handler.handleMessage
-
-流程
 looper – Looper.prepare – Looper.loop
 handler – (post && send)sendMessageAtTime – MessageQueue.enqueueMessage – MessageQueue.next – handler.dispatchMessage
 
@@ -125,22 +121,22 @@ handler – (post && send)sendMessageAtTime – MessageQueue.enqueueMessage – 
 ---
 分发MotionEvent
 
-流程
+**流程**
 驱动捕获 -> Activity（Window） -> ViewGroup -> View
 dispatchTouchEvent() – onInterceptTouchEvent – onTouchEvent() return true(消费该事件) false (拦截消息) super
 
-默认情况
+**默认情况**
 dispatchTouchEvent:activity -> viewgroup -> view
 onTouchEvent:view -> viewgroup -> activity
 viewgroup重载onInterceptTouchEvent() 并返回true，事件不再传递到view
 调用onTouch,activity不再处理事件
 
-View消费事件的条件
+**View消费事件的条件**
 enable
 onTouch 返回true
 onTouch 高于onClick
 
-事件的连锁机制
+**事件的连锁机制**
 ACTION_DWON return true后，ACTION_UP与ACTION_MOVE才能收到
 onInterceptTouchEvent
 
@@ -150,7 +146,7 @@ AsyncTask其实是个线程池
 
 实现:SerialExecutor，THREAD_POOL_EXECUTOR，InternalHandler
 
-### 核心方法
+**核心方法**
 onPreExecute() // 主线程
 doInBackgroud() // 子线程
 onProgressUpdate(Progress…) // 主线程
@@ -161,3 +157,15 @@ note:InternalHandler是一个静态类，为了能够将执行环境切换到主
 
 note:使用不当会引起不良后果
 例如在生命周期onDestroy内调用cancel 会造成内存泄漏、结果丢失
+
+
+跨进程
+---
+**Android跨进程形式**
+Activity隐式启动
+Content provider
+Broadcast
+Remote Service(startService、AIDL）
+
+Binder有什么优点
+高效、安全（Uid鉴权）
